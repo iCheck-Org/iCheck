@@ -20,7 +20,7 @@ import Typography from '@mui/material/Typography';
 const drawerWidth = 220;
 
 function ResponsiveDrawer(props) {
-  const { window } = props;
+  const { window, user } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [isClosing, setIsClosing] = React.useState(false);
 
@@ -95,7 +95,7 @@ function ResponsiveDrawer(props) {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
-            Student Dashboard
+          {user ? `Welcome, ${user.displayName}!` : 'Welcome!'}
           </Typography>
         </Toolbar>
       </AppBar>

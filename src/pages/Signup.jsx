@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { auth, db } from "../config/fire-base";
 import { collection, addDoc } from "firebase/firestore";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { Link, useNavigate } from "react-router-dom";
 
 
@@ -28,9 +28,14 @@ const Signup = () => {
             const userRef = addDoc(collection(db, "users"),{
                 id: user.uid,
                 email: email,
+                name: name,
                 type: type 
                 
-            })
+            });
+            
+            await updateProfile(auth.currentUser, {
+                displayName: name
+            });
             
                 
                 navigate("/");
@@ -65,6 +70,21 @@ const Signup = () => {
                             htmlFor = "signupEmail" 
                             className = "form-label">
                                 Enter an email address for your username
+                        </label>
+                    </div>
+                    <div className="form-floating mb-3">
+                        <input
+                            id="signupName"
+                            type="text"
+                            className="form-control"
+                            placeholder="Your Name"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                        />
+                        <label
+                            htmlFor="signupName"
+                            className="form-label">
+                            Your Name
                         </label>
                     </div>
                     <div className = "form-floating mb-3">

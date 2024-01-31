@@ -14,45 +14,42 @@ const Login = () => {
 
     const loginWithUsernameAndPassword = async (e) => {
         e.preventDefault();
-
+    
         try {
             await signInWithEmailAndPassword(auth, email, password);
-            try{
-            
+            try {
                 const users_collection_Ref = collection(db, "users");
-                
-                const q = query(users_collection_Ref, where("id", "==", auth.currentUser.uid))
-                
+                const q = query(users_collection_Ref, where("id", "==", auth.currentUser.uid));
                 const querySnapshot = await getDocs(q);
-                
-                if(!querySnapshot.empty){
-                    const userData= querySnapshot.docs[0].data();
+                if (!querySnapshot.empty) {
+                    const userData = querySnapshot.docs[0].data();
                     setUserType(userData.type);
-                }else{
+                    
+                    switch (userData.type) {
+                        case "student":
+                            navigate("/StudentDashTest");
+                            break;
+                        case "lecturer":
+                            navigate("/LecturerDashboard");
+                            break;
+                        case "checker":
+                            navigate("/CheckerDashboard");
+                            break;
+                        default:
+                            navigate("/");
+                            break;
+                    }
+                } else {
                     console.log("No matching document found.");
                 }
-            }catch{
-                setNotice("somthig went wrong in db")
-            }
-
-            switch (userType) {
-                case "student":
-                    navigate("/StudentDashTest");
-                    break;
-                case "lecturer":
-                    navigate("/LecturerDashboard");
-                    break;
-                case "checker":
-                    navigate("/CheckerDashboard");
-                    break;
-                default:
-                    navigate("/");
-                    break;
+            } catch {
+                setNotice("something went wrong in db");
             }
         } catch {
             setNotice("You entered a wrong username or password.");
         }
     }
+    
 
     
 
