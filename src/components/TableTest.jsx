@@ -1,14 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { DataGrid } from "@mui/x-data-grid";
-import { Box, IconButton, Backdrop} from "@mui/material";
-import { collection, getDocs } from "firebase/firestore";
+import { Box, IconButton, Backdrop, Typography } from "@mui/material";
+import {
+  collection,
+  getDocs,
+  query,
+  where,
+  getDoc,
+  doc,
+} from "firebase/firestore";
 import { db } from "../config/fire-base";
 import GetAppIcon from "@mui/icons-material/GetApp";
 import UploadIcon from "@mui/icons-material/Upload";
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import BackDropSample from './BackDropSample'
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import BackDropSample from "./BackDropSample";
 // import Moment from "react-moment";
-
 
 const PATH_URL_PDF = "http://localhost:5173/Week3 Assignment - Dor Shir.pdf";
 
@@ -34,7 +40,7 @@ const columns = [
     field: "Actions",
     headerName: "Actions",
     width: 140,
-    
+
     renderCell: (value) => {
       const isClickableDownload = value.row.Status !== "None";
       const isClickableShow = value.row.Status !== "Checked";
@@ -42,36 +48,63 @@ const columns = [
 
       const onDownload = (url) => {
         const filename = url.split("/").pop();
-        const link = document.createElement('a');
+        const link = document.createElement("a");
         link.href = url;
-        link.setAttribute("download",filename);
+        link.setAttribute("download", filename);
         document.body.appendChild(link);
         link.click();
         link.remove();
       };
 
-  
       return (
         <div>
-          <IconButton 
-            onClick={isClickableDownload ? (event) => onDownload(PATH_URL_PDF) : undefined} 
+          <IconButton
+            onClick={
+              isClickableDownload
+                ? (event) => onDownload(PATH_URL_PDF)
+                : undefined
+            }
             disabled={!isClickableDownload}
           >
             <GetAppIcon />
           </IconButton>
-          <IconButton onClick={() => handleUploadOpen(value.row.id)} disabled={!isClickableUpload}>
-            <UploadIcon/>
+          <IconButton
+            onClick={() => handleUploadOpen(value.row.id)}
+            disabled={!isClickableUpload}
+          >
+            <UploadIcon />
           </IconButton>
           <IconButton disabled={!isClickableShow}>
             <VisibilityIcon />
           </IconButton>
         </div>
       );
-    }
+    },
   },
 ];
 
-const TableTest = () => {
+const fetchUserId = async (db, userUid) => {
+  try {
+    // Query the 'users' collection where the 'id' field equals the user's UID
+    const querySnapshot = await getDocs(
+      query(collection(db, "users"), where("id", "==", userUid))
+    );
+
+    // If a document is found, return its document ID
+    if (!querySnapshot.empty) {
+      const userId = querySnapshot.docs[0].id;
+      return userId;
+    } else {
+      // If no document is found, return null
+      return null;
+    }
+  } catch (error) {
+    console.error("Error fetching user ID from Firestore:", error);
+    return null;
+  }
+};
+
+const TableTest = ({ user }) => {
   const [rows, setRows] = useState([]);
   const [uploadOpen, setUploadOpen] = useState(false);
   const [selectedRowId, setSelectedRowId] = useState(null);
@@ -79,23 +112,40 @@ const TableTest = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const querySnapshot = await getDocs(collection(db, "assignments"));
-        const data = [];
-        querySnapshot.forEach((doc) => {
-          const row = { id: doc.id, ...doc.data() };
-          // Convert Firestore Timestamp to JavaScript Date
-          row["Due Date"] = row["Due Date"].toDate();
-          data.push(row);
-        });
+        if (!user) {
+          console.log("User is not defined. Aborting data fetching.");
+          return;
+        }
+        const userId = await fetchUserId(db, user.uid);
+        const coursesSnapshot = await getDocs(
+          query(
+            collection(db, "courses-test"),
+            where("students", "array-contains", userId)
+          )
+        );
+
+        const courseIds = coursesSnapshot.docs.map((course) => course.id);
+        const assignmentsSnapshot = await getDocs(
+          query(
+            collection(db, "assignments"),
+            where("Course-ref", "in", courseIds)
+          )
+        );
+
+        const data = assignmentsSnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+
         setRows(data);
-        
       } catch (error) {
         console.error("Error fetching data from Firestore:", error);
       }
     };
 
+    console.log("Starting data fetching process...");
     fetchData();
-  }, []);
+  }, [user]);
 
   const handleUploadOpen = (rowId) => {
     setSelectedRowId(rowId);
@@ -110,7 +160,7 @@ const TableTest = () => {
     <Box height={400} width={1300}>
       <DataGrid columns={columns} rows={rows} />
       <Backdrop
-        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={uploadOpen}
         onClick={handleUploadClose}
       >
