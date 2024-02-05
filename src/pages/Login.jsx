@@ -30,10 +30,10 @@ const Login = () => {
                             navigate("/StudentDashTest");
                             break;
                         case "lecturer":
-                            navigate("/LecturerDashboard");
+                            navigate("/LecturerDash");
                             break;
                         case "checker":
-                            navigate("/CheckerDashboard");
+                            navigate("/CheckerDash");
                             break;
                         default:
                             navigate("/");
