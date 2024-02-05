@@ -36,7 +36,6 @@ export default function StudentDashTest() {
   return (
     <div>
       <ResponsiveDrawer user={user} />
-      {/* <BackDropSample/> */}
       <TableTest user={user}/>
     </div>
   );
