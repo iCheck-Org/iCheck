@@ -3,6 +3,7 @@ import {  collection, query, where, getDocs } from "firebase/firestore";
 import { auth, db } from "../config/fire-base";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { Link, useNavigate } from "react-router-dom";
+import logo from '../logo/icheck_logo_1.png';
 
 
 const Login = () => {
@@ -27,6 +28,7 @@ const Login = () => {
                     
                     switch (userData.type) {
                         case "student":
+                            console.log("User is signed in 2");
                             navigate("/StudentDashTest");
                             break;
                         case "lecturer":
@@ -53,50 +55,73 @@ const Login = () => {
 
     
 
-    return(
-       
-        <div className = "container">
-            <div className = "row justify-content-center">
-                <form className = "col-md-4 mt-3 pt-3 pb-3">
-                    { "" !== notice &&
-                        <div className = "alert alert-warning" role = "alert">
-                            { notice }    
+    return (
+        <div className="container">
+            <div className="row justify-content-center">
+                <img src={logo} alt="Logo" className="logo" />
+                <h2 className="text-3xl font-bold mb-2 signup-title text-center">iCheck</h2>
+                {notice && <div className="text-red-500 mb-2">{notice}</div>}
+                <div className="subtitle">
+                    Start your journey with us today.
+                </div>
+                <br />
+
+                <form className="col-md-4 mt-3 pt-3 pb-3">
+                    {notice && (
+                        <div className="alert alert-warning" role="alert">
+                            {notice}
                         </div>
-                    }     
+                    )}
 
-                    <div className = "form-floating mb-3">
-
-                        <input type = "email" className = "form-control" id = "exampleInputEmail1" 
-                            aria-describedby = "emailHelp" placeholder = "name@example.com" value = { email }
-                            onChange = { (e) => setEmail(e.target.value) }>
-                        </input>
-
-                        <label htmlFor = "exampleInputEmail1" className = "form-label">Email address</label>
+                    <div className="inputContainer">
+                        <input
+                            type="email"
+                            className="inputBox"
+                            id="exampleInputEmail1"
+                            aria-describedby="emailHelp"
+                            placeholder="name@example.com"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                        />
+                        <label htmlFor="exampleInputEmail1" className="form-label">
+                            Email address
+                        </label>
                     </div>
 
-                    <div className = "form-floating mb-3">
-
-                        <input type = "password" className = "form-control" id = "exampleInputPassword1"
-                        placeholder = "Password" value = { password } 
-                        onChange = { (e) => setPassword(e.target.value) }>
-                        </input>
-
-                        <label htmlFor = "exampleInputPassword1" className = "form-label">Password</label>
+                    <div className="inputContainer">
+                        <input
+                            type="password"
+                            className="inputBox"
+                            id="exampleInputPassword1"
+                            placeholder="Password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
+                        <label htmlFor="exampleInputPassword1" className="form-label">
+                            Password
+                        </label>
                     </div>
 
-                    <div className = "d-grid">
-                        <button type = "submit" className = "btn btn-primary pt-3 pb-3" 
-                        onClick = {(e) => loginWithUsernameAndPassword(e)}>Submit
+                    <div className="d-grid">
+                        <button
+                            type="submit"
+                            className="inputButton"
+                            onClick={(e) => loginWithUsernameAndPassword(e)}
+                        >
+                            Submit
                         </button>
                     </div>
+                    <br />
 
-                    <div className = "mt-3 text-center">
-                        <span>Need to sign up for an account? <Link to = "./signup">Click here.</Link></span>
+                    <div className="centered-text">
+                        <span>
+                            Need to sign up for an account? <Link to="./signup">Click here.</Link>
+                        </span>
                     </div>
                 </form>
             </div>
         </div>
-    )
-}
+    );
+};
 
 export default Login

@@ -16,6 +16,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import BackDropSample from "./BackDropSample";
 // import Moment from "react-moment";
 
+
 const PATH_URL_PDF = "http://localhost:5173/Week3 Assignment - Dor Shir.pdf";
 
 const columns = [
@@ -158,6 +159,7 @@ const TableTest = ({ user }) => {
 
   return (
     <Box height={400} width={1300}>
+      <img src='/src/logo/icheck_logo_1.png' alt="Logo" className="dashboard-logo"/>
       <DataGrid columns={columns} rows={rows} />
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
