@@ -287,6 +287,7 @@
 
     return (
       <Box height={400} width={1300}>
+        <img src='/src/logo/icheck_logo_1.png' alt="Logo" className="dashboard-logo"/>
         <DataGrid columns={columns} rows={rows} />
         <Backdrop
           sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
