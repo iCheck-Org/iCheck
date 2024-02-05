@@ -1,0 +1,118 @@
+body {
+    background-color: #fff; /* White background color */
+}
+
+.btn-primary {
+    background-color: blue; /* Change the background color */
+    color: white; /* Change the text color */
+    padding: 10px 20px; /* Change the padding */
+    border: none; /* Remove the border */
+    border-radius: 5px; /* Add border radius for rounded corners */
+    cursor: pointer; /* Add cursor pointer */
+}
+  
+.btn-primary:hover {
+    background-color: darkblue; /* Change the background color on hover */
+}
+  
+
+.signup-title {
+  color: rgb(70, 148, 244);
+  font-size: 3em; /* Adjust this value to make the title bigger or smaller */
+  margin-top: +100px; /* Adjust this value to move the title higher or lower */
+}
+
+.form-input {
+  color: black; /* This will change the text color to black */
+  background-color: white; /* This will change the background color to white */
+  border-color: rgb(211, 212, 212); /* Replace #yourColor with the color you want */
+}
+
+.inputContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  margin-bottom: 10px; /* Added margin-bottom */
+}
+
+.inputContainer > .errorLabel {
+  color: red;
+  font-size: 12px;
+}
+
+.inputBox {
+  box-sizing: border-box; /* Add this line */
+  height: 48px;
+  width: 400px;
+  font-size: large;
+  border-radius: 8px;
+  border: 1px solid grey;
+  padding-left: 8px;
+  background-color: white;
+  color: black;
+}
+
+.inputBox select {
+  height: 100%;
+  width: 100%;
+}
+
+.inputButton {
+  display: block; /* Block level element */
+  margin: 0 auto; /* Center the button */
+  background-color: rgb(70, 148, 244);
+  color: white; /* White text color */
+  padding: 10px 20px; /* Padding for size */
+  border: none; /* No border */
+  border-radius: 50px; /* Large border radius for round corners */
+  cursor: pointer; /* Cursor pointer on hover */
+  text-align: center; /* Center the text */
+}
+
+.inputButton:hover {
+  background-color: rgb(36, 115, 211);
+
+}
+
+.centered-text {
+  display: block;
+  text-align: center;
+  color: rgb(142, 147, 153);
+}
+
+.subtitle {
+  color: gray;
+  font-size: 1.2em; /* Adjust size as needed */
+  text-align: center; /* Center align the text */
+}
+
+.mb-2 {
+  margin-bottom: 0.5rem;
+}
+
+.logo {
+  position: fixed;
+  top: 90px; /* Adjust the top position as needed */
+  left: 49.5%; /* Center the logo horizontally */
+  transform: translateX(-50%); /* Adjust to center the logo */
+  width: 100px; /* Adjust the width as needed */
+  height: auto; /* Automatically adjust height */
+  z-index: 1000; /* Set z-index to ensure it's above other elements */
+}
+
+.dashboard-logo {
+  position: fixed;
+  bottom: 5%; /* Adjust the bottom position as needed */
+  left: 5%; /* Center the logo horizontally */
+  transform: translateX(-50%); /* Adjust to center the logo */
+  width: 7%; /* Adjust the width as needed */
+  height: auto; /* Automatically adjust height */
+  z-index: 5%; /* Set z-index to ensure it's above other elements */
+}
+
+.logout-button {
+  background-color:  #fff;
+  color:rgb(36, 115, 211);
+  font-weight: bold;
+}

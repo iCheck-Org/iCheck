@@ -76,8 +76,8 @@ function ResponsiveDrawer(props) {
       <AppBar
         position="fixed"
         sx={{
-          width: { sm: `calc(114% - ${drawerWidth}px)` },
-          ml: { sm: `${drawerWidth}px` },
+          width: '100%',
+          backgroundColor: 'rgb(36, 115, 211)', // Set the color here
         }}
       >
         <Toolbar>
@@ -94,7 +94,7 @@ function ResponsiveDrawer(props) {
           {firebaseUser && firebaseUser.name ? `Welcome, ${firebaseUser.name}!` : 'Welcome!'}
           </Typography>
           <Box sx={{ ml: 'auto' }} />
-          <button onClick={handleLogout}>Logout</button>
+          <button className="logout-button" onClick={handleLogout}>Log out</button>        
         </Toolbar>
       </AppBar>
     </Box>
