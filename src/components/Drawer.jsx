@@ -16,6 +16,9 @@ import MailIcon from '@mui/icons-material/Mail';
 import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
+import { useEffect } from 'react';
+import { db } from "../config/fire-base";
+import { doc, getDoc } from 'firebase/firestore';
 
 const drawerWidth = 220;
 
@@ -23,7 +26,8 @@ function ResponsiveDrawer(props) {
   const { window, user } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [isClosing, setIsClosing] = React.useState(false);
-
+  const [firebaseUser,setFirebaseUser] = React.useState(null);
+  
   const handleDrawerClose = () => {
     setIsClosing(true);
     setMobileOpen(false);
@@ -32,6 +36,37 @@ function ResponsiveDrawer(props) {
   const handleDrawerTransitionEnd = () => {
     setIsClosing(false);
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (!user) {
+          console.log("User is not defined. Aborting data fetching.");
+          return;
+        }
+        console.log("uid",user.uid);
+        const userRef = doc(db,"users",user.uid);
+        console.log("userRef",userRef);
+        const userSnap = await getDoc(userRef);
+        console.log("userSnap",userSnap);
+
+        const userRecord = userSnap.data();
+        console.log("userrecord",userRecord);  
+        setFirebaseUser(userRecord);
+
+      } catch (error) {
+        console.error("Error fetching data from Firestore:", error);
+      }
+    };
+
+    console.log("Starting data fetching process...");
+    fetchData();
+  }, [user]);
+
+
+  // useEffect(()=>{
+  //     console.log(firebaseUser);
+  // },[firebaseUser])
 
   const handleDrawerToggle = () => {
     if (!isClosing) {
@@ -95,7 +130,7 @@ function ResponsiveDrawer(props) {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
-          {user ? `Welcome, ${user.displayName}!` : 'Welcome!'}
+          {firebaseUser && firebaseUser.name ? `Welcome, ${firebaseUser.name}!` : 'Welcome!'}
           </Typography>
         </Toolbar>
       </AppBar>

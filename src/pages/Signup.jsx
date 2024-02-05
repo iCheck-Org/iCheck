@@ -25,7 +25,7 @@ const Signup = () => {
                 const user = userCredential.user;
 
                 // Save additional user data to Firestore
-            const userRef = addDoc(collection(db, "users"),{
+            const userRef = addDoc(collection(db, "users",user.uid),{
                 id: user.uid,
                 email: email,
                 name: name,
