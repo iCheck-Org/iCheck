@@ -3,22 +3,16 @@ import PropTypes from 'prop-types';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
-import Divider from '@mui/material/Divider';
-import Drawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import MailIcon from '@mui/icons-material/Mail';
 import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { useEffect } from 'react';
 import { db } from "../config/fire-base";
 import { doc, getDoc } from 'firebase/firestore';
+import { signOut } from "firebase/auth";
+import { Link, useNavigate } from "react-router-dom";
+import { auth } from "../config/fire-base";
 
 const drawerWidth = 220;
 
@@ -44,16 +38,11 @@ function ResponsiveDrawer(props) {
           console.log("User is not defined. Aborting data fetching.");
           return;
         }
-        console.log("uid",user.uid);
         const userRef = doc(db,"users",user.uid);
-        console.log("userRef",userRef);
         const userSnap = await getDoc(userRef);
-        console.log("userSnap",userSnap);
-
         const userRecord = userSnap.data();
-        console.log("userrecord",userRecord);  
-        setFirebaseUser(userRecord);
 
+        setFirebaseUser(userRecord);
       } catch (error) {
         console.error("Error fetching data from Firestore:", error);
       }
@@ -63,51 +52,23 @@ function ResponsiveDrawer(props) {
     fetchData();
   }, [user]);
 
-
-  // useEffect(()=>{
-  //     console.log(firebaseUser);
-  // },[firebaseUser])
-
   const handleDrawerToggle = () => {
     if (!isClosing) {
       setMobileOpen(!mobileOpen);
     }
   };
 
-  const drawer = (
-    <div>
-      <Toolbar />
-      <Divider />
-      <List>
-        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-      <Divider />
-      <List>
-        {['All mail', 'Trash', 'Spam'].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-    </div>
-  );
+  const navigate = useNavigate();
 
-  // Remove this const when copying and pasting into your project.
-  const container = window !== undefined ? () => window().document.body : undefined;
+  const handleLogout = () => {
+    signOut(auth)
+      .then(() => {
+        navigate("/"); // Redirect to the login page after logout
+      })
+      .catch((error) => {
+        console.error("Error during logout:", error.message);
+      });
+  };
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -132,6 +93,8 @@ function ResponsiveDrawer(props) {
           <Typography variant="h6" noWrap component="div">
           {firebaseUser && firebaseUser.name ? `Welcome, ${firebaseUser.name}!` : 'Welcome!'}
           </Typography>
+          <Box sx={{ ml: 'auto' }} />
+          <button onClick={handleLogout}>Logout</button>
         </Toolbar>
       </AppBar>
     </Box>
