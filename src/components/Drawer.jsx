@@ -17,10 +17,10 @@ import { auth } from "../config/fire-base";
 const drawerWidth = 220;
 
 function ResponsiveDrawer(props) {
-  const { window, user } = props;
+  const { window, firebaseUser } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [isClosing, setIsClosing] = React.useState(false);
-  const [firebaseUser,setFirebaseUser] = React.useState(null);
+  // const [firebaseUser,setFirebaseUser] = React.useState(null);
   
   const handleDrawerClose = () => {
     setIsClosing(true);
@@ -31,26 +31,26 @@ function ResponsiveDrawer(props) {
     setIsClosing(false);
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (!user) {
-          console.log("User is not defined. Aborting data fetching.");
-          return;
-        }
-        const userRef = doc(db,"users",user.uid);
-        const userSnap = await getDoc(userRef);
-        const userRecord = userSnap.data();
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       if (!user) {
+  //         console.log("User is not defined. Aborting data fetching.");
+  //         return;
+  //       }
+  //       const userRef = doc(db,"users",user.uid);
+  //       const userSnap = await getDoc(userRef);
+  //       const userRecord = userSnap.data();
 
-        setFirebaseUser(userRecord);
-      } catch (error) {
-        console.error("Error fetching data from Firestore:", error);
-      }
-    };
+  //       setFirebaseUser(userRecord);
+  //     } catch (error) {
+  //       console.error("Error fetching data from Firestore:", error);
+  //     }
+  //   };
 
-    console.log("Starting data fetching process...");
-    fetchData();
-  }, [user]);
+  //   console.log("Starting data fetching process...");
+  //   fetchData();
+  // }, [user]);
 
   const handleDrawerToggle = () => {
     if (!isClosing) {
