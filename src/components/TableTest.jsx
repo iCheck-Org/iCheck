@@ -241,10 +241,11 @@
     useEffect(() => {
       const fetchData = async () => {
         try {
-          // if (!user) {
-          //   console.log("User is not defined. Aborting data fetching.");
-          //   return;
-          // }
+          //TODO: this line is happend after login and refreshing the page (mabe its ok...) shachar
+          if (!firebaseUser) {
+            console.log("User is not defined. Aborting data fetching.");
+            return;
+          }
           // const userId = await fetchUserId(db, user.uid);
           const coursesSnapshot = await getDocs(
             query(
