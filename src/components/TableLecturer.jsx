@@ -55,142 +55,41 @@ const columns = [
   {field: "Actions",headerName: "Actions",width: 140,
     renderCell: (value) => {
 
-      const onDownload = async () => {
+      const onDownload = async (row) => {
         try {
           const userId = await fetchUserId(db, user.uid);
-          const course = value.row.Course;
-          const assignmentNo = value.row["Assignment No."];
-      
-          // Query the "pdfs" collection based on course, assignmentNo, and userId
-          const querySnapshot = await getDocs(
-            query(
-              collection(db, "pdfs"),
-              where("course", "==", course),
-              where("assignmentNo", "==", assignmentNo),
-              where("userId", "==", userId)
-            )
-          );
-      
-          // Check if a document is found
-          if (!querySnapshot.empty) {
-            const downloadURL = querySnapshot.docs[0].data().url;
-      
-            // Trigger the file download
-            const filename = downloadURL.split("/").pop();
-            const link = document.createElement("a");
-            link.href = downloadURL;
-            link.setAttribute("download", filename);  // Set the download attribute
-            document.body.appendChild(link);
-            link.click();
-            link.remove();
-          } else {
-            console.error("No matching document found in the 'pdfs' collection.");
-          }
+          const File_doc = row["File_doc"]; // Access the row object and get the value of "File_doc"
+          console.log(File_doc);
+          // Fetch all documents from the "pdfs" collection
+          const querySnapshot = await getDocs(collection(db, "pdfs"));
+          // Iterate through each document
+          querySnapshot.forEach(doc => {
+            console.log(doc.id);
+            // Compare the File_doc with the document ID
+            if (doc.id === File_doc) {
+              console.log("I am here 2");
+              const downloadURL = doc.data().url;
+        
+              // Trigger the file download
+              const filename = downloadURL.split("/").pop();
+              const link = document.createElement("a");
+              link.href = downloadURL;
+              link.setAttribute("download", filename);  // Set the download attribute
+              document.body.appendChild(link);
+              link.click();
+              link.remove();
+            }
+          });
         } catch (error) {
           console.error("Error fetching document for download:", error);
         }
-      };
-
-      const handleFileUpload = async (rowId) => {
-        try {
-          const userId = await fetchUserId(db, user.uid);
-          const fileInput = document.createElement("input");
-          fileInput.type = "file";
-      
-          fileInput.addEventListener("change", async (event) => {
-            const file = event.target.files[0];
-            if (file) {
-              const course = value.row.Course;
-              const assignmentNo = value.row["Assignment No."];
-      
-              // Check if a document with the same user_id, course, and assignment no. exists
-              const querySnapshot = await getDocs(
-                query(
-                  collection(db, "pdfs"),
-                  where("userId", "==", userId),
-                  where("course", "==", course),
-                  where("assignmentNo", "==", assignmentNo)
-                )
-              );
-      
-              if (!querySnapshot.empty) {
-                const existingDocId = querySnapshot.docs[0].id;
-                const storageRef = ref(storage, `pdfs/${file.name}`);
-                await uploadBytes(storageRef, file);
-      
-                // Update the existing document with the new storage URL and timestamp
-                await updateDoc(doc(db, "pdfs", existingDocId), {
-                  name: file.name,
-                  url: await getDownloadURL(storageRef),
-                  timestamp: serverTimestamp(),
-                });
-      
-                // Fetch the updated timestamp from the document
-                const updatedDoc = await getDoc(doc(db, "pdfs", existingDocId));
-                const updatedTimestamp = updatedDoc.data().timestamp;
-      
-                // Update the due date in the row
-                setRows((prevRows) => {
-                  const updatedRows = prevRows.map((row) => {
-                    if (row.id === rowId) {
-                      return { ...row, "Due Date": updatedTimestamp };
-                    }
-                    return row;
-                  });
-                  return updatedRows;
-                });
-              } else {
-                // If no document exists, create a new document
-                const storageRef = ref(storage, `pdfs/${file.name}`);
-                await uploadBytes(storageRef, file);
-      
-                // Get the download URL and timestamp of the uploaded file
-                const downloadURL = await getDownloadURL(storageRef);
-                const timestamp = serverTimestamp();
-      
-                // Create a new document in the "pdfs" collection
-                const newDocRef = await addDoc(collection(db, "pdfs"), {
-                  name: file.name,
-                  url: downloadURL,
-                  userId: userId,
-                  course: course,
-                  assignmentNo: assignmentNo,
-                  timestamp: timestamp,
-                });
-      
-                // Fetch the timestamp from the newly created document
-                const newDoc = await getDoc(newDocRef);
-                const newTimestamp = newDoc.data().timestamp;
-      
-                // Update the due date in the row
-                setRows((prevRows) => {
-                  const updatedRows = prevRows.map((row) => {
-                    if (row.id === rowId) {
-                      return { ...row, "Due Date": newTimestamp };
-                    }
-                    return row;
-                  });
-                  return updatedRows;
-                });
-              }
-      
-              // Update the state to indicate a successful file upload
-              setFileUploaded(true);
-            }
-          });
-      
-          // Trigger the file input click
-          fileInput.click();
-        } catch (error) {
-          console.error("Error uploading file:", error);
-        }
-      };
+      }; 
       
       
 
       return (
         <div>
-          <IconButton onClick={ onDownload()}>
+          <IconButton onClick={ onDownload(value.row)}>
           <GetAppIcon />
           </IconButton>
           <IconButton onClick={() => handleFileUpload(value.row.id)}>
