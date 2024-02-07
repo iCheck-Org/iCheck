@@ -3,12 +3,11 @@
   import { Box, IconButton, Backdrop, Typography } from "@mui/material";
   import { updateDoc, doc, collection, getDoc , getDocs, query, where, addDoc, serverTimestamp } from "firebase/firestore";
   import GetAppIcon from "@mui/icons-material/GetApp";
-  import UploadIcon from "@mui/icons-material/Upload";
   import VisibilityIcon from "@mui/icons-material/Visibility";
   import BackDropSample from "./BackDropSample";
   import { format } from 'date-fns';
   import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-  import { storage, db } from "../config/fire-base";
+  import { db } from "../config/fire-base";
 
 
 
@@ -39,7 +38,7 @@
   };
 
   const columns = [
-    {field: "Id", headerName: "Id", width: 130 },
+    {field: "Student_ID", headerName: "Student_ID", width: 130 },
     {field: "Course", headerName: "Course", width: 130 },
     {field: "Assignment No.",headerName: "Assignment No.",width: 140,align: "center",},
     {field: "Checked by", headerName: "Checked by", width: 150 },
@@ -66,7 +65,7 @@
               console.log(doc.id);
               // Compare the File_doc with the document ID
               if (doc.id === File_doc) {
-                console.log("I am here 2");
+
                 const downloadURL = doc.data().url;
           
                 // Trigger the file download
@@ -108,38 +107,59 @@
     const [selectedRowId, setSelectedRowId] = useState(null);
 
     useEffect(() => {
-      const fetchData = async () => {
-          try {
-            if (!user) {
-              console.log("User is not defined. Aborting data fetching.");
-              return;
-            }
-        
-            // Fetch user ID
-            const userId = await fetchUserId(db, user.uid);
-        
-            // Fetch user document
-            const userDoc = await getDoc(doc(db, "users", userId));
-        
-            // Get the courses array from the user document
-            const userCourses = userDoc.data().courses || [];
-        
-            // Fetch assignments that match the user's courses
-            const assignmentsSnapshot = await getDocs(
-              query(collection(db, "assignments"), where("Course-ref", "in", userCourses))
-            );
-        
-            // Map the fetched assignments data
-            const data = assignmentsSnapshot.docs.map((doc) => ({
-              id: doc.id,
-              ...doc.data(),
-            }));
-        
-            setRows(data);
-          } catch (error) {
-            console.error("Error fetching data from Firestore:", error);
-          }
+    const fetchData = async () => {
+    try {
+      if (!user) {
+      console.log("User is not defined. Aborting data fetching.");
+      return;
+      }
+
+    // Fetch user ID
+    const userId = await fetchUserId(db, user.uid);
+
+    // Fetch user document
+    const userDoc = await getDoc(doc(db, "users", userId));
+
+    // Get the courses array from the user document
+    const userCourses = userDoc.data().courses || [];
+
+    // Fetch assignments that match the user's courses
+    const assignmentsSnapshot = await getDocs(
+      query(collection(db, "assignments"), where("Course-ref", "in", userCourses))
+    );
+
+    // Map the fetched assignments data
+      const data = await Promise.all(assignmentsSnapshot.docs.map(async (doc) => {
+      const assignmentData = doc.data();
+      
+      // Fetch corresponding user document based on the 'Owner' field
+      const userQuerySnapshot = await getDocs(query(collection(db, "users"), where("id", "==", assignmentData.Owner)));
+      
+      // Check if a matching user document exists
+      if (!userQuerySnapshot.empty) {
+        // Get the student_id from the user document
+        const studentId = userQuerySnapshot.docs[0].data().student_id;
+        // Return modified assignment data with the student_id
+        return {
+          id: doc.id,
+          ...assignmentData,
+          Student_ID: studentId // Add the Student_ID field to the assignment data
         };
+      } else {
+        // If no matching user document found, return assignment data without modifying
+        return {
+          id: doc.id,
+          ...assignmentData
+        };
+      }
+    }));
+
+    setRows(data);
+  } catch (error) {
+    console.error("Error fetching data from Firestore:", error);
+  }
+};
+
 
       console.log("Starting data fetching process...");
       fetchData();

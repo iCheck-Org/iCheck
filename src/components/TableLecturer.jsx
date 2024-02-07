@@ -18,7 +18,7 @@ const TableLecturer = ({ firebaseUser }) => {
 
 
 const columns = [
-  {field: "Id", headerName: "Id", width: 130 },
+  {field: "Student_ID", headerName: "Student_ID", width: 130 },
   {field: "Course", headerName: "Course", width: 130 },
   {field: "Assignment No.",headerName: "Assignment No.",width: 140,align: "center",},
   {field: "Checked by", headerName: "Checked by", width: 150 },
@@ -110,9 +110,29 @@ const columns = [
           );
       
           // Map the fetched assignments data
-          const data = assignmentsSnapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
+          const data = await Promise.all(assignmentsSnapshot.docs.map(async (doc) => {
+            const assignmentData = doc.data();
+            
+            // Fetch corresponding user document based on the 'Owner' field
+            const userQuerySnapshot = await getDocs(query(collection(db, "users"), where("id", "==", assignmentData.Owner)));
+            
+            // Check if a matching user document exists
+            if (!userQuerySnapshot.empty) {
+              // Get the student_id from the user document
+              const studentId = userQuerySnapshot.docs[0].data().student_id;
+              // Return modified assignment data with the student_id
+              return {
+                id: doc.id,
+                ...assignmentData,
+                Student_ID: studentId // Add the Student_ID field to the assignment data
+              };
+            } else {
+              // If no matching user document found, return assignment data without modifying
+              return {
+                id: doc.id,
+                ...assignmentData
+              };
+            }
           }));
       
           setRows(data);

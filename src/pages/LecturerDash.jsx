@@ -8,7 +8,6 @@ import { onAuthStateChanged } from "firebase/auth";
 
 
 export default function LecturerDash() {
-  const navigate = useNavigate();
   const user = auth.currentUser;
   const [firebaseUser,setFirebaseUser] = useState(null);
 
@@ -16,7 +15,6 @@ export default function LecturerDash() {
     // Redirect to login page if user is not authenticated, stay in after refresh the page
     const unsubscribe = onAuthStateChanged(auth, (user)=>{
       if(user){
-        // navigate("/LecturerDash");
         const fetchData = async () => {
         try {
           const userRef = doc(db,"users",user.uid);
