@@ -8,6 +8,8 @@
   import { format } from 'date-fns';
   import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
   import { db } from "../config/fire-base";
+  import Review from "./Review";
+
 
 
 
@@ -83,16 +85,18 @@
           }
         };        
         
-
+        const [showReview, setShowReview] = useState(false);
         return (
           <div>
             <IconButton onClick={() => onDownload(value.row)}>
             <GetAppIcon />
             </IconButton>
 
-            <IconButton onClick={() => handleFileUpload(value.row.id)}>
+            <IconButton onClick={() => setShowReview(prevState => !prevState)}>
               <VisibilityIcon />
             </IconButton>
+            {/* Conditionally render the CreateAssignment component */}
+            {showReview && <Review user={user} onClose={() => setShowReview(false)} />}
           </div>
         );
       },

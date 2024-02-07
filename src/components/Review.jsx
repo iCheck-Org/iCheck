@@ -1,19 +1,25 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { styled, css } from '@mui/system';
 import { Modal as BaseModal } from '@mui/base/Modal';
+import { Box } from '@mui/material';
+import TextBox from './TextBox';
 
-export default function ModalUnstyled() {
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+export default function Review({ onClose }) {
+  const [open, setOpen] = useState(true);
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    onClose(); // Call the onClose function passed from the parent component
+  };
 
   return (
     <div>
-      <TriggerButton type="button" onClick={handleOpen}>
-        Open modal
-      </TriggerButton>
       <Modal
         aria-labelledby="unstyled-modal-title"
         aria-describedby="unstyled-modal-description"
@@ -21,18 +27,31 @@ export default function ModalUnstyled() {
         onClose={handleClose}
         slots={{ backdrop: StyledBackdrop }}
       >
-        <ModalContent sx={{ width: 400 }}>
-          <h2 id="unstyled-modal-title" className="modal-title">
-            Text in a modal
-          </h2>
-          <p id="unstyled-modal-description" className="modal-description">
-            Aliquid amet deserunt earum!
-          </p>
-        </ModalContent>
+<ModalContent sx={{ width: 900, height: 500, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+  <Box width={700} height={500} sx={{ textAlign: 'center' }}>
+    <h2>Review Assignment</h2>
+    <TextBox/>
+    
+  </Box>
+  <Box width={200} height={200} sx={{ textAlign: 'center' }}>
+  <input type="text" placeholder="Grade"
+  style={{ width: '30%', height: '50%', textAlign: 'start', paddingLeft: '10px' }}
+  > </input>
+  </Box>
+  <Box width={200} height={500} sx={{ textAlign: 'center' }}>
+  <button>Submit</button>
+  </Box>
+</ModalContent>
+
       </Modal>
     </div>
   );
 }
+
+Review.propTypes = {
+  onClose: PropTypes.func.isRequired, // Define onClose prop as a function
+};
+
 
 const Backdrop = React.forwardRef((props, ref) => {
   const { open, className, ...other } = props;
