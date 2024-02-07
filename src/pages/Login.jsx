@@ -3,6 +3,7 @@ import {  collection, query, where, getDocs } from "firebase/firestore";
 import { auth, db } from "../config/fire-base";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { Link, useNavigate } from "react-router-dom";
+import { doc, getDoc } from 'firebase/firestore';
 import logo from '../logo/icheck_logo_1.png';
 
 
@@ -11,7 +12,7 @@ const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [notice, setNotice] = useState("");
-    const [userType,setUserType] = useState("");
+    // const [userType,setUserType] = useState("");
 
     const loginWithUsernameAndPassword = async (e) => {
         e.preventDefault();
@@ -19,14 +20,14 @@ const Login = () => {
         try {
             await signInWithEmailAndPassword(auth, email, password);
             try {
-                const users_collection_Ref = collection(db, "users");
-                const q = query(users_collection_Ref, where("id", "==", auth.currentUser.uid));
-                const querySnapshot = await getDocs(q);
-                if (!querySnapshot.empty) {
-                    const userData = querySnapshot.docs[0].data();
-                    setUserType(userData.type);
+                const userRef = doc(db,"users",auth.currentUser.uid);
+                const userSnap = await getDoc(userRef);
+                const userRecord = userSnap.data();
+                if (!userRecord.empty) {
                     
-                    switch (userData.type) {
+                    // setUserType(userRecord.type);
+                    
+                    switch (userRecord.type) {
                         case "student":
                             console.log("User is signed in 2");
                             navigate("/StudentDashTest");
