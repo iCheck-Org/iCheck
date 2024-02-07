@@ -9,7 +9,7 @@ import BackDropSample from "./BackDropSample";
 import { format } from 'date-fns';
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage, db } from "../config/fire-base";
-
+import CreateAssignment from "./CreateAssignment";
 
 
 
@@ -54,7 +54,6 @@ const columns = [
   },
   {field: "Actions",headerName: "Actions",width: 140,
     renderCell: (value) => {
-
       const onDownload = async (row) => {
         try {
           const userId = await fetchUserId(db, user.uid);
@@ -83,15 +82,16 @@ const columns = [
         } catch (error) {
           console.error("Error fetching document for download:", error);
         }
-      }; 
+      };        
       
       
 
       return (
         <div>
-          <IconButton onClick={ onDownload(value.row)}>
+          <IconButton onClick={() => onDownload(value.row)}>
           <GetAppIcon />
           </IconButton>
+
           <IconButton onClick={() => handleFileUpload(value.row.id)}>
             <VisibilityIcon />
           </IconButton>
@@ -155,9 +155,21 @@ const columns = [
     setUploadOpen(false);
   };
 
+  const [showCreateAssignment, setShowCreateAssignment] = useState(false);
+
   return (
-    <Box height={400} width={1300}>
+    
+     <Box height={500} width={1300}>
+      <Box height={80} width={1300}>
+        {/* Use a function to toggle the state */}
+        <button onClick={() => setShowCreateAssignment(prevState => !prevState)}>Upload Assignment</button>
+      </Box>
+
+      {/* Conditionally render the CreateAssignment component */}
+      {showCreateAssignment && <CreateAssignment user={user} onClose={() => setShowCreateAssignment(false)} />}
+
       <DataGrid columns={columns} rows={rows} />
+      
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={uploadOpen}
