@@ -17,7 +17,7 @@ export default function StudentDashTest() {
     const unsubscribe = onAuthStateChanged(auth, (user)=>{
       if(user){
         console.log("User is signed in 1");
-        navigate("/StudentDashTest");
+        // navigate("/StudentDashTest");
 
         //get user doc
         const fetchData = async () => {
@@ -44,8 +44,11 @@ export default function StudentDashTest() {
 
   return (
     <div>
+      {firebaseUser && (<>
       <ResponsiveDrawer firebaseUser={firebaseUser} />
       <TableTest firebaseUser={firebaseUser}/>
+      </>)
+      }
     </div>
   );
 }
