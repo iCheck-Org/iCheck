@@ -14,29 +14,8 @@ import CreateAssignment from "./CreateAssignment";
 
 
 
-const TableLecturer = ({ user }) => {
+const TableLecturer = ({ firebaseUser }) => {
 
-  
-  const fetchUserId = async (db, userUid) => {
-    try {
-      // Query the 'users' collection where the 'id' field equals the user's UID
-      const querySnapshot = await getDocs(
-      query(collection(db, "users"), where("id", "==", userUid))
-    );
-
-    // If a document is found, return its document ID
-    if (!querySnapshot.empty) {
-      const userId = querySnapshot.docs[0].id;
-      return userId;
-    } else {
-      // If no document is found, return null
-      return null;
-    }
-  } catch (error) {
-    console.error("Error fetching user ID from Firestore:", error);
-    return null;
-  }
-};
 
 const columns = [
   {field: "Id", headerName: "Id", width: 130 },
@@ -56,7 +35,7 @@ const columns = [
     renderCell: (value) => {
       const onDownload = async (row) => {
         try {
-          const userId = await fetchUserId(db, user.uid);
+          const userId = firebaseUser.id
           const File_doc = row["File_doc"]; // Access the row object and get the value of "File_doc"
           console.log(File_doc);
           // Fetch all documents from the "pdfs" collection
@@ -111,19 +90,19 @@ const columns = [
   useEffect(() => {
     const fetchData = async () => {
         try {
-          if (!user) {
+          if (!firebaseUser) {
             console.log("User is not defined. Aborting data fetching.");
             return;
           }
       
           // Fetch user ID
-          const userId = await fetchUserId(db, user.uid);
+          const userId = firebaseUser.id;
       
           // Fetch user document
-          const userDoc = await getDoc(doc(db, "users", userId));
+          const userDoc = firebaseUser;
       
           // Get the courses array from the user document
-          const userCourses = userDoc.data().courses || [];
+          const userCourses = userDoc.courses || [];
       
           // Fetch assignments that match the user's courses
           const assignmentsSnapshot = await getDocs(
@@ -144,7 +123,7 @@ const columns = [
 
     console.log("Starting data fetching process...");
     fetchData();
-  }, [user]);
+  }, [firebaseUser]);
 
   const handleUploadOpen = (rowId) => {
     setSelectedRowId(rowId);
@@ -166,7 +145,7 @@ const columns = [
       </Box>
 
       {/* Conditionally render the CreateAssignment component */}
-      {showCreateAssignment && <CreateAssignment user={user} onClose={() => setShowCreateAssignment(false)} />}
+      {showCreateAssignment && <CreateAssignment firebaseUser={firebaseUser} onClose={() => setShowCreateAssignment(false)} />}
 
       <DataGrid columns={columns} rows={rows} />
       

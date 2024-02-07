@@ -7,7 +7,7 @@ import { Box } from '@mui/material';
 import { collection, doc, addDoc, getDocs, getDoc, arrayUnion , Timestamp } from "firebase/firestore";
 import { db } from "../config/fire-base";
 
-export default function CreateAssignment({ user, onClose }) {
+export default function CreateAssignment({ firebaseUser, onClose }) {
     const [open, setOpen] = useState(true);
     const [courseOptions, setCourseOptions] = useState([]); // State to store course options
     const [selectedCourse, setSelectedCourse] = useState(''); // State to store the selected course
@@ -18,11 +18,11 @@ export default function CreateAssignment({ user, onClose }) {
         const fetchCourseOptions = async () => {
             try {
                 // Get the user document from the "users" collection
-                const userDocRef = doc(db, 'users', user.uid);
-                const userDocSnapshot = await getDoc(userDocRef);
+                // const userDocRef = doc(db, 'users', user.uid);
+                // const userDocSnapshot = await getDoc(userDocRef);
 
-                if (userDocSnapshot.exists()) {
-                    const userData = userDocSnapshot.data();
+                if (firebaseUser) {
+                    const userData = firebaseUser
 
                     // Array to store promises for fetching course names
                     const fetchCoursePromises = [];
@@ -55,7 +55,7 @@ export default function CreateAssignment({ user, onClose }) {
         };
 
         fetchCourseOptions();
-    }, [user]);
+    }, [firebaseUser]);
 
     const handleClose = () => {
         setOpen(false);
