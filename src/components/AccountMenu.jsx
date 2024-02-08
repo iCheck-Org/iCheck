@@ -154,6 +154,9 @@ export default function AccountMenu(props) {
             horizontal: "right",
           }}
         >
+            <MenuItem onClick={handleClose} sx={{ fontSize: "small" }}>
+            Name: {firebaseUser.name}
+          </MenuItem>
           <MenuItem onClick={handleClose} sx={{ fontSize: "small" }}>
             ID: {userId}
           </MenuItem>
@@ -165,8 +168,8 @@ export default function AccountMenu(props) {
           </MenuItem>
         </Collapse>
         <Divider />
-        <MenuItem onClick={handleLogout} sx={{ color: '#ff8a80' }}>
-          <ListItemIcon sx={{ color: '#ff8a80' }}>
+        <MenuItem onClick={handleLogout} sx={{ color: '#ff5a4d' }}>
+          <ListItemIcon sx={{ color: '#ff5a4d' }}>
             <Logout fontSize="small" />
           </ListItemIcon>
           Logout
