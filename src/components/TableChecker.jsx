@@ -17,27 +17,6 @@
 
   const TableChecker = ({ firebaseUser }) => {
 
-    
-  //   const fetchUserId = async (db, userUid) => {
-  //     try {
-  //       // Query the 'users' collection where the 'id' field equals the user's UID
-  //       const querySnapshot = await getDocs(
-  //       query(collection(db, "users"), where("id", "==", userUid))
-  //     );
-
-  //     // If a document is found, return its document ID
-  //     if (!querySnapshot.empty) {
-  //       const userId = querySnapshot.docs[0].id;
-  //       return userId;
-  //     } else {
-  //       // If no document is found, return null
-  //       return null;
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching user ID from Firestore:", error);
-  //     return null;
-  //   }
-  // };
 
   const columns = [
     {field: "Student_ID", headerName: "Student_ID", width: 130 },
@@ -59,12 +38,10 @@
           try {
             const userId = firebaseUser.id;
             const File_doc = row["File_doc"]; // Access the row object and get the value of "File_doc"
-            console.log(File_doc);
             // Fetch all documents from the "pdfs" collection
             const querySnapshot = await getDocs(collection(db, "pdfs"));
             // Iterate through each document
             querySnapshot.forEach(doc => {
-              console.log(doc.id);
               // Compare the File_doc with the document ID
               if (doc.id === File_doc) {
 
@@ -95,8 +72,8 @@
             <IconButton onClick={() => setShowReview(prevState => !prevState)}>
               <VisibilityIcon />
             </IconButton>
-            {/* Conditionally render the CreateAssignment component */}
-            {showReview && <Review firebaseUser={firebaseUser} onClose={() => setShowReview(false)} />}
+            {/* Pass assignmentId as a prop to the Review component */}
+            {showReview && <Review assignmentID={value.row.id} onClose={() => setShowReview(false)} />}
           </div>
         );
       },
@@ -106,9 +83,10 @@
 
 
 
-    const [rows, setRows] = useState([]);
-    const [uploadOpen, setUploadOpen] = useState(false);
-    const [selectedRowId, setSelectedRowId] = useState(null);
+  const [rows, setRows] = useState([]);
+  const [uploadOpen, setUploadOpen] = useState(false);
+  const [selectedRowId, setSelectedRowId] = useState(null);
+
 
     useEffect(() => {
       const fetchData = async () => {
@@ -169,31 +147,32 @@
       fetchData();
   }, [firebaseUser]);
 
-    const handleUploadOpen = (rowId) => {
-      setSelectedRowId(rowId);
-      setUploadOpen(true);
-    };
 
-    const handleUploadClose = () => {
-      setUploadOpen(false);
-    };
+  const handleUploadOpen = (rowId) => {
+    setSelectedRowId(rowId);
+    setUploadOpen(true);
+  };
 
-    return (
-      <Box height={400} width={1300}>
-        <DataGrid columns={columns} rows={rows} />
-        <Backdrop
+  const handleUploadClose = () => {
+    setUploadOpen(false);
+  };
+
+return (
+  <Box height={400} width={1300}>
+      <DataGrid columns={columns} rows={rows} />
+      <Backdrop
           sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
           open={uploadOpen}
           onClick={handleUploadClose}
-        >
+      >
           <Box>
-            {selectedRowId && (
-              <BackDropSample rowId={selectedRowId} onClose={handleUploadClose} />
-            )}
+              {selectedRowId && (
+                  <BackDropSample rowId={selectedRowId} onClose={handleUploadClose} />
+              )}
           </Box>
-        </Backdrop>
-      </Box>
-    );
-  };
+      </Backdrop>
+  </Box>
+);
+};
 
   export default TableChecker;

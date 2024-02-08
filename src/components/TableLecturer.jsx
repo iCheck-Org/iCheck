@@ -10,6 +10,7 @@ import { format } from 'date-fns';
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage, db } from "../config/fire-base";
 import CreateAssignment from "./CreateAssignment";
+import Review from "./Review";
 
 
 
@@ -63,7 +64,7 @@ const columns = [
         }
       };        
       
-      
+      const [showReview, setShowReview] = useState(false);
 
       return (
         <div>
@@ -71,9 +72,10 @@ const columns = [
           <GetAppIcon />
           </IconButton>
 
-          <IconButton onClick={() => handleFileUpload(value.row.id)}>
+          <IconButton onClick={() => setShowReview(prevState => !prevState)}>
             <VisibilityIcon />
           </IconButton>
+          {showReview && <Review assignmentID={value.row.id} onClose={() => setShowReview(false)} />}
         </div>
       );
     },
