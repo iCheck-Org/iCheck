@@ -227,14 +227,13 @@ const TableTest = ({ firebaseUser }) => {
             <IconButton
               onClick={() => {
                 console.log(value.row.id),
-                  setShowReviewView((prevState) => !prevState);
-              }}
+                  setShowReviewView((prevState) => !prevState);}}
               disabled={!isClickableShow}
               title="View Review"
             >
               <VisibilityIcon />
             </IconButton>
-            {showReviewView && <ReviewView assignmentID={value.row.id} />}
+            {showReviewView && <ReviewView assignmentID={value.row.id}  onClose={()=> setShowReviewView((prevState) => !prevState)}/>}
           </div>
         );
       },

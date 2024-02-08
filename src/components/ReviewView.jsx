@@ -8,7 +8,7 @@ import TextBox from './TextBox';
 import { db } from '../config/fire-base';
 import { getDoc, doc } from 'firebase/firestore';
 
-export default function ReviewView({ assignmentID }) {
+export default function ReviewView({ assignmentID, onClose }) {
   const [open, setOpen] = useState(true);
   const [comment, setComment] = useState('');
   const [grade, setGrade] = useState('');
@@ -33,6 +33,7 @@ export default function ReviewView({ assignmentID }) {
 
   const handleClose = () => {
     setOpen(false);
+    onClose();
   };
 
   return (
