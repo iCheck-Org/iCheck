@@ -22,6 +22,8 @@ import { storage, db } from "../config/fire-base";
 import ReviewView from "./ReviewView";
 
 const TableTest = ({ firebaseUser }) => {
+  const [showReviewView, setShowReviewView] = useState(false); // Move showReviewView state to the TableTest component
+
   const columns = [
     { field: "Course", headerName: "Course Name", width: 200 },
     {
@@ -43,26 +45,26 @@ const TableTest = ({ firebaseUser }) => {
         return dueDate ? format(dueDate, "dd/MM/yyyy, HH:mm:ss") : "";
       },
     },
-    { 
-      field: "Status", 
-      headerName: "Status", 
+    {
+      field: "Status",
+      headerName: "Status",
       width: 200,
       renderCell: (params) => {
         const status = params.value;
-  
-        let backgroundColor = '';
-        if (status === 'Unchecked') {
-          backgroundColor = '#FFE0B2'; // Orange color when status is 'Unchecked'
+
+        let backgroundColor = "";
+        if (status === "Unchecked") {
+          backgroundColor = "#FFE0B2"; // Orange color when status is 'Unchecked'
         } else {
-          backgroundColor = '#C8E6C9'; // Green color for other statuses
+          backgroundColor = "#C8E6C9"; // Green color for other statuses
         }
-  
+
         return (
-          <div style={{ backgroundColor, padding: '8px', borderRadius: '4px' }}>
+          <div style={{ backgroundColor, padding: "8px", borderRadius: "4px" }}>
             {status}
           </div>
         );
-      }
+      },
     },
     {
       field: "Actions",
@@ -223,18 +225,16 @@ const TableTest = ({ firebaseUser }) => {
               <UploadIcon />
             </IconButton>
             <IconButton
-              onClick={() => setShowReviewView((prevState) => !prevState)}
+              onClick={() => {
+                console.log(value.row.id),
+                  setShowReviewView((prevState) => !prevState);
+              }}
               disabled={!isClickableShow}
               title="View Review"
             >
               <VisibilityIcon />
             </IconButton>
-            {showReviewView && (
-              <ReviewView
-                assignmentID={value.row.id}
-                onClose={() => setShowReviewView(false)}
-              />
-            )}
+            {showReviewView && <ReviewView assignmentID={value.row.id} />}
           </div>
         );
       },
@@ -285,6 +285,10 @@ const TableTest = ({ firebaseUser }) => {
     setUploadOpen(false);
   };
 
+  const handleReviewViewToggle = () => {
+    setShowReviewView((prevState) => !prevState); // Toggle the showReviewView state
+  };
+
   return (
     <Box height={400} width={1024} style={{ position: "relative" }}>
       <img
@@ -300,8 +304,8 @@ const TableTest = ({ firebaseUser }) => {
         onClick={handleUploadClose}
       >
         <Box>
-          {selectedRowId && (
-            <BackDropSample rowId={selectedRowId} onClose={handleUploadClose} />
+          {showReviewView  && (
+            <BackDropSample rowId={selectedRowId} /*onClose={handleUploadClose} - didnt use it eventually*/  />
           )}
         </Box>
       </Backdrop>

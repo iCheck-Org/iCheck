@@ -8,40 +8,31 @@ import TextBox from './TextBox';
 import { db } from '../config/fire-base';
 import { getDoc, doc } from 'firebase/firestore';
 
-export default function ReviewView({ assignmentID, onClose }) {
+export default function ReviewView({ assignmentID }) {
   const [open, setOpen] = useState(true);
   const [comment, setComment] = useState('');
   const [grade, setGrade] = useState('');
 
-//   useEffect(() => {
-//     const fetchData = async () => {
-//       try {
-//         const docRef = doc(db, 'assignments', assignmentID);
-//         const docSnap = await getDoc(docRef);
-//         if (docSnap.exists()) {
-//           const data = docSnap.data();
-//           setComment(data.Comment || ''); // If Comment field is null, set an empty string
-//           setGrade(data.Grade || ''); // If Grade field is null, set an empty string
-//         }
-//         // Set the open state to true after fetching data
-//         setOpen(true);
-//       } catch (error) {
-//         console.error('Error fetching data:', error);
-//       }
-//     };
-  
-//     fetchData();
-  
-//     return () => {
-//       setOpen(false);
-//       onClose();
-//     };
-//   }, [assignmentID, onClose]);
-  
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const docRef = doc(db, 'assignments', assignmentID);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setComment(data.Comment || '');
+          setGrade(data.Grade || '');
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, [assignmentID]);
 
   const handleClose = () => {
     setOpen(false);
-    onClose(); // Call the onClose function passed from the parent component
   };
 
   return (
@@ -56,7 +47,7 @@ export default function ReviewView({ assignmentID, onClose }) {
         <ModalContent sx={{ width: 900, height: 500, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
           <Box width={700} height={500} sx={{ textAlign: 'center' }}>
             <h2>Review Assignment</h2>
-            <TextBox value={comment} onChange={() => {}} /> {/* This TextBox is now populated with the fetched comment */}
+            <TextBox value={comment} onChange={() => {}} />
           </Box>
           <Box width={200} height={200} sx={{ textAlign: 'center' }}>
             <input
@@ -64,7 +55,7 @@ export default function ReviewView({ assignmentID, onClose }) {
               placeholder="Grade"
               style={{ width: '30%', height: '50%', textAlign: 'start', paddingLeft: '10px' }}
               value={grade}
-              onChange={() => {}} // This input is now populated with the fetched grade
+              onChange={() => {}}
             />
           </Box>
         </ModalContent>
@@ -73,9 +64,8 @@ export default function ReviewView({ assignmentID, onClose }) {
   );
 }
 
-
 ReviewView.propTypes = {
-  onClose: PropTypes.func.isRequired, // Define onClose prop as a function
+  assignmentID: PropTypes.string.isRequired,
 };
 
 
