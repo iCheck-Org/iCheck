@@ -9,7 +9,7 @@ import { db } from '../config/fire-base';
 import { getDoc, doc } from 'firebase/firestore';
 
 export default function ReviewView({ assignmentID, onClose }) {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const [comment, setComment] = useState('');
   const [grade, setGrade] = useState('');
 
@@ -22,6 +22,7 @@ export default function ReviewView({ assignmentID, onClose }) {
           const data = docSnap.data();
           setComment(data.Comment || '');
           setGrade(data.Grade || '');
+          setOpen(true); // Update the state to open the modal after data fetching is complete
         }
       } catch (error) {
         console.error('Error fetching data:', error);
