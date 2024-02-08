@@ -43,7 +43,27 @@ const TableTest = ({ firebaseUser }) => {
         return dueDate ? format(dueDate, "dd/MM/yyyy, HH:mm:ss") : "";
       },
     },
-    { field: "Status", headerName: "Status", width: 150 },
+    { 
+      field: "Status", 
+      headerName: "Status", 
+      width: 200,
+      renderCell: (params) => {
+        const status = params.value;
+  
+        let backgroundColor = '';
+        if (status === 'Unchecked') {
+          backgroundColor = '#FFE0B2'; // Orange color when status is 'Unchecked'
+        } else {
+          backgroundColor = '#C8E6C9'; // Green color for other statuses
+        }
+  
+        return (
+          <div style={{ backgroundColor, padding: '8px', borderRadius: '4px' }}>
+            {status}
+          </div>
+        );
+      }
+    },
     {
       field: "Actions",
       headerName: "Actions",
@@ -58,7 +78,7 @@ const TableTest = ({ firebaseUser }) => {
 
         const isClickableUpload = isPastDueDate;
         const isClickableDownload = File_doc !== null && File_doc !== undefined;
-        const isClickableShow = value.row.Status !== 'Unchecked';
+        const isClickableShow = value.row.Status !== "Unchecked";
 
         const onDownload = async (row) => {
           try {
@@ -203,8 +223,9 @@ const TableTest = ({ firebaseUser }) => {
               <UploadIcon />
             </IconButton>
             <IconButton
+              onClick={() => setShowReviewView((prevState) => !prevState)}
               disabled={!isClickableShow}
-              title = "View Review"
+              title="View Review"
             >
               <VisibilityIcon />
             </IconButton>
