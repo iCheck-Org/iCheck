@@ -7,12 +7,14 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
+import { useState } from 'react';
 import { useEffect } from 'react';
 import { db } from "../config/fire-base";
 import { doc, getDoc } from 'firebase/firestore';
 import { signOut } from "firebase/auth";
 import { Link, useNavigate } from "react-router-dom";
 import { auth } from "../config/fire-base";
+import ProfileButton from "./ProfileButton"
 
 const drawerWidth = 220;
 
@@ -70,6 +72,7 @@ function ResponsiveDrawer(props) {
       });
   };
 
+  const [showProfile, setShowProfile] = useState(false);
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
@@ -90,9 +93,14 @@ function ResponsiveDrawer(props) {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div">
-          {firebaseUser && firebaseUser.name ? `Welcome, ${firebaseUser.name}!` : 'Welcome!'}
-          </Typography>
+          <button onClick={() => setShowProfile(prevState => !prevState)}>
+            <Typography variant="h6" noWrap component="div">
+            {firebaseUser && firebaseUser.name ? `Welcome, ${firebaseUser.name}!` : 'Welcome!'}
+            </Typography>
+          </button>
+          {/* Conditionally render the CreateAssignment component */}
+          {showProfile && <ProfileButton firebaseUser={firebaseUser} onClose={() => setShowProfile(false)} />}
+          
           <Box sx={{ ml: 'auto' }} />
           <button className="logout-button" onClick={handleLogout}>Log out</button>        
         </Toolbar>
