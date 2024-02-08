@@ -83,6 +83,7 @@ export default function CreateAssignment({ firebaseUser, onClose }) {
                         // Convert dueDate to a Firestore Timestamp
                         "Due Date": Timestamp.fromDate(new Date(dueDate)),
                         "Checked By": "-",
+                        "Grade": "-",
                         Status: "Unchecked",
                         "File Doc": "-",
                         "Course-ref": selectedCourse

@@ -16,9 +16,9 @@ const Input = React.forwardRef(function CustomInput(props, ref) {
   );
 });
 
-export default function TextBox() {
-  return <Input aria-label="Demo input" multiline placeholder="Comment about the assignment…" />;
-}
+  export default function TextBox({ value, onChange }) {
+    return <Input aria-label="Demo input" multiline placeholder="Comment about the assignment…" value={value} onChange={onChange} />;
+  }
 
 const blue = {
   100: '#DAECFF',
