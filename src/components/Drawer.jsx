@@ -15,6 +15,8 @@ import { signOut } from "firebase/auth";
 import { Link, useNavigate } from "react-router-dom";
 import { auth } from "../config/fire-base";
 import ProfileButton from "./ProfileButton"
+import AccountMenu from "./AccountMenu"
+
 
 const drawerWidth = 220;
 
@@ -62,16 +64,6 @@ function ResponsiveDrawer(props) {
 
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    signOut(auth)
-      .then(() => {
-        navigate("/"); // Redirect to the login page after logout
-      })
-      .catch((error) => {
-        console.error("Error during logout:", error.message);
-      });
-  };
-
   const [showProfile, setShowProfile] = useState(false);
   return (
     <Box sx={{ display: 'flex' }}>
@@ -91,18 +83,19 @@ function ResponsiveDrawer(props) {
             onClick={handleDrawerToggle}
             sx={{ mr: 2, display: { sm: 'none' } }}
           >
+            
             <MenuIcon />
           </IconButton>
-          <button onClick={() => setShowProfile(prevState => !prevState)}>
+          {/* <button onClick={() => setShowProfile(prevState => !prevState)}> */}
             <Typography variant="h6" noWrap component="div">
             {firebaseUser && firebaseUser.name ? `Welcome, ${firebaseUser.name}!` : 'Welcome!'}
             </Typography>
-          </button>
+          {/* </button> */}
           {/* Conditionally render the CreateAssignment component */}
           {showProfile && <ProfileButton firebaseUser={firebaseUser} onClose={() => setShowProfile(false)} />}
           
           <Box sx={{ ml: 'auto' }} />
-          <button className="logout-button" onClick={handleLogout}>Log out</button>        
+          <AccountMenu firebaseUser={firebaseUser}/>
         </Toolbar>
       </AppBar>
     </Box>
