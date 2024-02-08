@@ -19,6 +19,7 @@ import BackDropSample from "./BackDropSample";
 import { format } from "date-fns";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage, db } from "../config/fire-base";
+import ReviewView from "./ReviewView";
 
 const TableTest = ({ firebaseUser }) => {
   const columns = [
@@ -59,7 +60,7 @@ const TableTest = ({ firebaseUser }) => {
 
         const isClickableUpload = isPastDueDate;
         const isClickableDownload = File_doc !== null && File_doc !== undefined;
-        const isClickableShow = value.row.Status !== "Unchecked";
+        const hasGradeAndComment = value.row.Grade !== undefined && value.row.Comment !== undefined; // Check if Grade and Comment fields exist
 
         const onDownload = async (row) => {
           try {
@@ -186,6 +187,7 @@ const TableTest = ({ firebaseUser }) => {
           }
         };
 
+        const [showReviewView, setShowReviewView] = useState(false);
         return (
           <div>
             <IconButton
@@ -200,9 +202,11 @@ const TableTest = ({ firebaseUser }) => {
             >
               <UploadIcon />
             </IconButton>
-            <IconButton disabled={!isClickableShow}>
+            <IconButton onClick={() => setShowReviewView(prevState => !prevState)}>
               <VisibilityIcon />
             </IconButton>
+            {showReviewView && <ReviewView assignmentID={value.row.id} onClose={() => setShowReviewView(false)} />}
+            {/* disabled={!isClickableShow} */}
           </div>
         );
       },
