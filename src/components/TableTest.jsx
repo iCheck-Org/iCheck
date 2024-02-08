@@ -30,7 +30,7 @@ const TableTest = ({ firebaseUser }) => {
       width: 150,
       align: "center",
     },
-    { field: "Checked By", headerName: "Checked By", width: 200,},
+
     {
       field: "Due Date",
       headerName: "Due Date",
@@ -43,14 +43,12 @@ const TableTest = ({ firebaseUser }) => {
         return dueDate ? format(dueDate, "dd/MM/yyyy, HH:mm:ss") : "";
       },
     },
-    { field: "Status", headerName: "Status", width: 150, },
+    { field: "Status", headerName: "Status", width: 150 },
     {
       field: "Actions",
       headerName: "Actions",
       width: 200,
-  
-      
-      
+
       renderCell: (value) => {
         const File_doc = value.row["File_doc"]; // Access the row object and get the value of "File_doc"
         const currentDate = new Date().getTime(); // Get current timestamp
@@ -60,7 +58,7 @@ const TableTest = ({ firebaseUser }) => {
 
         const isClickableUpload = isPastDueDate;
         const isClickableDownload = File_doc !== null && File_doc !== undefined;
-        const hasGradeAndComment = value.row.Grade !== undefined && value.row.Comment !== undefined; // Check if Grade and Comment fields exist
+        const isClickableShow = value.row.Status !== 'Unchecked';
 
         const onDownload = async (row) => {
           try {
@@ -193,20 +191,29 @@ const TableTest = ({ firebaseUser }) => {
             <IconButton
               onClick={() => onDownload(value.row)}
               disabled={!isClickableDownload}
+              title="Download Assignment"
             >
               <GetAppIcon />
             </IconButton>
             <IconButton
               onClick={() => handleFileUpload(value.row.id)}
               disabled={!isClickableUpload}
+              title="Upload Assignment"
             >
               <UploadIcon />
             </IconButton>
-            <IconButton onClick={() => setShowReviewView(prevState => !prevState)}>
+            <IconButton
+              disabled={!isClickableShow}
+              title = "View Review"
+            >
               <VisibilityIcon />
             </IconButton>
-            {showReviewView && <ReviewView assignmentID={value.row.id} onClose={() => setShowReviewView(false)} />}
-            {/* disabled={!isClickableShow} */}
+            {showReviewView && (
+              <ReviewView
+                assignmentID={value.row.id}
+                onClose={() => setShowReviewView(false)}
+              />
+            )}
           </div>
         );
       },
@@ -258,7 +265,7 @@ const TableTest = ({ firebaseUser }) => {
   };
 
   return (
-    <Box height={400} width={1300} style={{ position: "relative" }}>
+    <Box height={400} width={1024} style={{ position: "relative" }}>
       <img
         src="/src/logo/icheck_logo_1.png"
         alt="Logo"

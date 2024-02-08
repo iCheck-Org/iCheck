@@ -62,7 +62,6 @@ export default function AccountMenu(props) {
       if (docSnapshot.exists()) {
         const userData = docSnapshot.data();
         const userId = userData.student_id;
-        console.log("User ID:", userId);
         setUserId(userId); // Update the userId state
       } else {
         console.log("No user found with the provided Firebase ID.");
@@ -76,7 +75,7 @@ export default function AccountMenu(props) {
   return (
     <React.Fragment>
       <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
-        <Tooltip title="Account settings">
+        <Tooltip >
           <IconButton
             onClick={handleClick}
             size="small"
