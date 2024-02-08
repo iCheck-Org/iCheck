@@ -1,5 +1,6 @@
 import ResponsiveDrawer from "../components/Drawer.jsx";
 import TableTest from "../components/TableTest";
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth, db, storage } from "../config/fire-base.jsx";
@@ -16,8 +17,6 @@ export default function StudentDashTest() {
     // Redirect to login page if user is not authenticated, stay in after refresh the page
     const unsubscribe = onAuthStateChanged(auth, (user)=>{
       if(user){
-        console.log("User is signed in 1");
-        // navigate("/StudentDashTest");
 
         //get user doc
         const fetchData = async () => {
