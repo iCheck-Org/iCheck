@@ -87,7 +87,7 @@ const TableTest = ({ firebaseUser }) => {
         const isClickableUpload = isPastDueDate;
         const isClickableDownload =
           File_doc !== null && File_doc !== undefined && File_doc !== "";
-        const isClickableShow = value.row.Status !== "Unchecked";
+        const isClickableShow = value.row.Grade !== "";
 
         const onDownload = async (row) => {
           try {
