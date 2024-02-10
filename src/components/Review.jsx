@@ -9,7 +9,7 @@
   import { getDocs, query, collection, doc, updateDoc } from 'firebase/firestore';
 
 
-  export default function Review({assignmentID , onClose  }) {
+  export default function Review({assignmentID , onClose , firebaseUser }) {
     const [open, setOpen] = useState(true);
 
     const handleClose = () => {
@@ -25,7 +25,8 @@
         // Create an object with the grade and comment data
         const data = {
           Grade: gradeInputValue, // Assume gradeInputValue is the value entered by the user in the grade input field
-          Comment: commentInputValue // Assume commentInputValue is the value entered by the user in the comment input field
+          Comment: commentInputValue, // Assume commentInputValue is the value entered by the user in the comment input field
+          Status: `Checked by ${firebaseUser.name}`
         };
     
         // Use updateDoc() method to update the document with the new data

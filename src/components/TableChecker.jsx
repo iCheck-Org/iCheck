@@ -14,11 +14,13 @@ import {
 } from "firebase/firestore";
 import GetAppIcon from "@mui/icons-material/GetApp";
 import GradingIcon from "@mui/icons-material/Grading";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import BackDropSample from "./BackDropSample";
 import { format } from "date-fns";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { db } from "../config/fire-base";
 import Review from "./Review";
+import ReviewView from "./ReviewView"
 
 const TableChecker = ({ firebaseUser }) => {
   const columns = [
@@ -28,7 +30,7 @@ const TableChecker = ({ firebaseUser }) => {
       field: "Assignment No.",
       headerName: "Assignment No.",
       width: 150,
-      align: "center",
+      align: "left",
     },
     {
       field: "Status",
@@ -74,7 +76,6 @@ const TableChecker = ({ firebaseUser }) => {
         // Format the Date object to a human-readable string
         return dueDate ? format(dueDate, "dd/MM/yyyy, HH:mm:ss") : "";
       },
-
     },
     {
       field: "Actions",
@@ -86,13 +87,15 @@ const TableChecker = ({ firebaseUser }) => {
         const dueDateTimestamp = value.row["Due Date"].toDate(); // Convert Firestore timestamp to JavaScript Date object
         const dueDate = dueDateTimestamp.getTime(); // Get timestamp from JavaScript Date object
         const isPastDueDate = dueDate <= currentDate;
+        const grade = value.row["Grade"];
 
         const isClickableDownload =
           File_doc !== null &&
           File_doc !== undefined &&
           File_doc !== "" &&
           isPastDueDate;
-        const isClickableShow = value.row.Status !== "Unchecked";
+        const isClickableGrading = isPastDueDate && grade === "";
+        const isClickableShow = grade !== null && grade !== undefined;
 
         const onDownload = async (row) => {
           try {
@@ -122,6 +125,7 @@ const TableChecker = ({ firebaseUser }) => {
         };
 
         const [showReview, setShowReview] = useState(false);
+        const [showReviewView, setShowReviewView] = useState(false);
         return (
           <div>
             <IconButton
@@ -134,17 +138,36 @@ const TableChecker = ({ firebaseUser }) => {
 
             <IconButton
               onClick={() => setShowReview((prevState) => !prevState)}
+              disabled={!isClickableGrading}
               title="Grading Assignment"
             >
               <GradingIcon />
+            </IconButton>
+            <IconButton
+              onClick={() => {
+                console.log(value.row.id),
+                  setShowReviewView((prevState) => !prevState);
+              }}
+              disabled={!isClickableShow}
+              title="View Review"
+            >
+              <VisibilityIcon />
             </IconButton>
             {/* Pass assignmentId as a prop to the Review component */}
             {showReview && (
               <Review
                 assignmentID={value.row.id}
                 onClose={() => setShowReview(false)}
+                firebaseUser={firebaseUser} 
               />
             )}
+            {showReviewView && (
+              <ReviewView
+                assignmentID={value.row.id}
+                onClose={() => setShowReviewView((prevState) => !prevState)}
+              />
+            )}
+
           </div>
         );
       },
