@@ -33,11 +33,17 @@ const TableChecker = ({ firebaseUser }) => {
       align: "left",
     },
     {
-      field: "Status",
+      field: "Checker",
       headerName: "Status",
       width: 200,
       renderCell: (params) => {
-        const status = params.value;
+        let status = params.value;
+
+        if (!status) {
+          status = "Unchecked";
+        } else {
+          status = "Checked by " + status;
+        }
 
         let backgroundColor = "";
         if (status === "Unchecked") {
@@ -94,8 +100,8 @@ const TableChecker = ({ firebaseUser }) => {
           File_doc !== undefined &&
           File_doc !== "" &&
           isPastDueDate;
-        const isClickableGrading = isPastDueDate && grade === "";
-        const isClickableShow = grade !== null && grade !== undefined;
+        const isClickableGrading = isPastDueDate && grade === "" && File_doc !== "";
+        const isClickableShow = grade !== null && grade !== undefined && grade !== "";
 
         const onDownload = async (row) => {
           try {
@@ -213,7 +219,7 @@ const TableChecker = ({ firebaseUser }) => {
           assignmentsSnapshot.docs.map(async (doc) => {
             const assignmentData = doc.data();
             
-
+            
             // Fetch corresponding user document based on the 'Owner' field
             const userQuerySnapshot = await getDocs(
               query(

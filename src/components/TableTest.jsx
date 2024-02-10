@@ -30,7 +30,7 @@ const TableTest = ({ firebaseUser }) => {
       field: "Assignment No.",
       headerName: "Assignment No.",
       width: 150,
-      align: "center",
+      align: "left",
     },
 
     {
@@ -46,11 +46,17 @@ const TableTest = ({ firebaseUser }) => {
       },
     },
     {
-      field: "Status",
+      field: "Checker",
       headerName: "Status",
       width: 200,
       renderCell: (params) => {
-        const status = params.value;
+        let status = params.value;
+
+        if (!status) {
+          status = "Unchecked";
+        } else {
+          status = "Checked by " + status;
+        }
 
         let backgroundColor = "";
         if (status === "Unchecked") {
@@ -81,7 +87,7 @@ const TableTest = ({ firebaseUser }) => {
         const isClickableUpload = isPastDueDate;
         const isClickableDownload =
           File_doc !== null && File_doc !== undefined && File_doc !== "";
-        const isClickableShow = value.row.Status !== "Unchecked";
+        const isClickableShow = value.row.Grade !== "";
 
         const onDownload = async (row) => {
           try {
@@ -115,67 +121,55 @@ const TableTest = ({ firebaseUser }) => {
           try {
             const fileInput = document.createElement("input");
             fileInput.type = "file";
-
+        
             fileInput.addEventListener("change", async (event) => {
               const file = event.target.files[0];
               if (file) {
                 const course = value.row.Course;
                 const assignmentNo = value.row["Assignment No."];
-
-                // Check if a document with the same user_id, course, and assignment no. exists
-                const querySnapshot = await getDocs(
-                  query(
-                    collection(db, "pdfs"),
-                    where("userId", "==", firebaseUser.id),
-                    where("course", "==", course),
-                    where("assignmentNo", "==", assignmentNo)
-                  )
-                );
-
-                if (!querySnapshot.empty) {
-                  const existingDocId = querySnapshot.docs[0].id;
+        
+                const assignmentRef = doc(db, "assignments", rowId);
+                const assignmentDoc = await getDoc(assignmentRef);
+                const existingDocId = assignmentDoc.data().File_doc;
+        
+                if (existingDocId) {
                   const storageRef = ref(storage, file.name);
                   await uploadBytes(storageRef, file);
-
+        
                   // Update the existing document with the new storage URL and timestamp
                   await updateDoc(doc(db, "pdfs", existingDocId), {
                     name: file.name,
                     url: await getDownloadURL(storageRef),
                     timestamp: serverTimestamp(),
                   });
-
+        
                   // Update the corresponding document in the "assignments" collection
-                  const assignmentRef = doc(db, "assignments", rowId);
                   await updateDoc(assignmentRef, { File_doc: existingDocId });
                 } else {
                   // If no document exists, create a new document
                   const storageRef = ref(storage, `pdfs/${file.name}`);
                   await uploadBytes(storageRef, file);
-
+        
                   // Get the download URL and timestamp of the uploaded file
                   const downloadURL = await getDownloadURL(storageRef);
                   const timestamp = serverTimestamp();
-
+        
                   // Create a new document in the "pdfs" collection
                   const newDocRef = await addDoc(collection(db, "pdfs"), {
                     name: file.name,
                     url: downloadURL,
-                    userId: firebaseUser.id,
-                    course: course,
-                    assignmentNo: assignmentNo,
                     timestamp: timestamp,
                   });
-
+        
                   // Update the corresponding document in the "assignments" collection
-                  const assignmentRef = doc(db, "assignments", rowId);
                   await updateDoc(assignmentRef, { File_doc: newDocRef.id });
                 }
-
+        
                 // Update the state to indicate a successful file upload
                 setFileUploaded(true);
               }
             });
-
+        
             // Trigger the file input click
             fileInput.click();
           } catch (error) {

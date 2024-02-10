@@ -78,14 +78,12 @@ export default function CreateAssignment({ firebaseUser, onClose }) {
                 courseData.students.forEach(async (student) => {
                     const assignmentData = {
                         Owner: student,
-                        Course: courseData.name,
                         "Assignment No.": assignmentNo,
                         // Convert dueDate to a Firestore Timestamp
                         "Due Date": Timestamp.fromDate(new Date(dueDate)),
-                        "Checked By": "-",
-                        "Grade": "-",
-                        Status: "Unchecked",
-                        "File Doc": "-",
+                        "Checker": "",
+                        "Grade": "",
+                        "File_doc": "",
                         "Course-ref": selectedCourse
                     };
     

@@ -35,11 +35,17 @@ const TableLecturer = ({ firebaseUser }) => {
       align: "left",
     },
     {
-      field: "Status",
+      field: "Checker",
       headerName: "Status",
       width: 200,
       renderCell: (params) => {
-        const status = params.value;
+        let status = params.value;
+
+        if (!status) {
+          status = "Unchecked";
+        } else {
+          status = "Checked by " + status;
+        }
 
         let backgroundColor = "";
         if (status === "Unchecked") {
@@ -114,22 +120,48 @@ const TableLecturer = ({ firebaseUser }) => {
 
         const [showReview, setShowReview] = useState(false);
         const [showAppeal, setShowAppeal] = useState(false);
+        const File_doc = value.row["File_doc"]; // Access the row object and get the value of "File_doc"
+        const currentDate = new Date().getTime(); // Get current timestamp
+        const dueDateTimestamp = value.row["Due Date"].toDate(); // Convert Firestore timestamp to JavaScript Date object
+        const dueDate = dueDateTimestamp.getTime(); // Get timestamp from JavaScript Date object
+        const isPastDueDate = dueDate <= currentDate;
+        const grade = value.row["Grade"];
 
+        // disable the buttons if the file is not uploaded
+        const isClickableDownload =
+        File_doc !== null &&
+        File_doc !== undefined &&
+        File_doc !== "" &&
+        isPastDueDate;
+        const isClickableShow = grade !== null && grade !== undefined && grade !== "";
+        
         return (
           <div>
-            <IconButton onClick={() => onDownload(value.row)}>
+            <IconButton 
+              onClick={() => onDownload(value.row)}
+              disabled={!isClickableDownload}
+              title="Download Assignment"
+            >
               <GetAppIcon />
             </IconButton>
 
             {/* Conditionally render the visibility icon */}
             {showAppealTable 
             ? (
-            <IconButton onClick={() => setShowAppeal((prevState) => !prevState)}>
+            <IconButton 
+              onClick={() => setShowAppeal((prevState) => !prevState)}
+              disabled={!isClickableShow}
+              title="View Review"
+              >
               <VisibilityIcon />
             </IconButton>
             ) 
             : (
-            <IconButton onClick={() => setShowReview((prevState) => !prevState)}>
+            <IconButton 
+              onClick={() => setShowReview((prevState) => !prevState)}
+              disabled={!isClickableShow}
+              title="View Review"
+              >
               <VisibilityIcon />
             </IconButton>
             )}
@@ -159,16 +191,16 @@ const TableLecturer = ({ firebaseUser }) => {
   const [showAppealTable, setShowAppealTable] = useState(false);
   const [assignmentsSnapshot, setAssignmentsSnapshot] = useState([]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (!firebaseUser) {
-          console.log("User is not defined. Aborting data fetching.");
-          return;
-        }
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          if (!firebaseUser) {
+            console.log("User is not defined. Aborting data fetching.");
+            return;
+          }
 
-        // Fetch user ID
-        const userId = firebaseUser.id;
+          // Fetch user ID
+          const userId = firebaseUser.id;
 
         // Fetch user document
         const userDoc = firebaseUser
@@ -198,74 +230,73 @@ const TableLecturer = ({ firebaseUser }) => {
             
 
 
-            // Fetch corresponding user document based on the 'Owner' field
-            const userQuerySnapshot = await getDocs(
-              query(
-                collection(db, "users"),
-                where("id", "==", assignmentData.Owner)
-              )
-            );
-            
-
-            // Check if a matching user document exists
-            if (!userQuerySnapshot.empty) {
-
-              const courseId = assignmentData["Course-ref"];
-
-              const coursesSnapshot = await getDocs(collection(db, "courses-test"));
-
-              const courseDoc = coursesSnapshot.docs.find((course) => course.id === courseId);
-
-              if (courseDoc) {
-                const courseData = courseDoc.data();
-                const courseName = courseData.name;
-              
-              
-              // Get the student_id from the user document
-              const studentId = userQuerySnapshot.docs[0].data().personal_id;
-
-              const File_doc = assignmentData["File_doc"]; // Access the assignmentData object and get the value of "File_doc"
-
-              // Fetch submission date from "pdfs" collection based on "File_doc"
-              const pdfsQuerySnapshot = await getDocs(
-                query(collection(db, "pdfs"))
+              // Fetch corresponding user document based on the 'Owner' field
+              const userQuerySnapshot = await getDocs(
+                query(
+                  collection(db, "users"),
+                  where("id", "==", assignmentData.Owner)
+                )
               );
 
-              // Check if a matching pdf document exists
-              if (!pdfsQuerySnapshot.empty) {
-                let submissionTimestamp;
+              // Check if a matching user document exists
+              if (!userQuerySnapshot.empty) {
 
-                pdfsQuerySnapshot.forEach((pdfDoc) => {
-                  // Compare the File_doc with the document ID
-                  if (pdfDoc.id === File_doc) {
-                    submissionTimestamp = pdfDoc.data().timestamp;
-                  }
-                });
+                const courseId = assignmentData["Course-ref"];
 
-                return {
-                  id: doc.id,
-                  ...assignmentData,
-                  personal_id: studentId, // Add the Student_ID field to the assignment data
-                  submission_date: submissionTimestamp, // Add the submission date to the assignment data
-                  Course: courseName
-                };
+                const coursesSnapshot = await getDocs(collection(db, "courses-test"));
+
+                const courseDoc = coursesSnapshot.docs.find((course) => course.id === courseId);
+
+                if (courseDoc) {
+                  const courseData = courseDoc.data();
+                  const courseName = courseData.name;
+                
+                
+                // Get the student_id from the user document
+                const studentId = userQuerySnapshot.docs[0].data().personal_id;
+
+                const File_doc = assignmentData["File_doc"]; // Access the assignmentData object and get the value of "File_doc"
+
+                // Fetch submission date from "pdfs" collection based on "File_doc"
+                const pdfsQuerySnapshot = await getDocs(
+                  query(collection(db, "pdfs"))
+                );
+
+                // Check if a matching pdf document exists
+                if (!pdfsQuerySnapshot.empty) {
+                  let submissionTimestamp;
+
+                  pdfsQuerySnapshot.forEach((pdfDoc) => {
+                    // Compare the File_doc with the document ID
+                    if (pdfDoc.id === File_doc) {
+                      submissionTimestamp = pdfDoc.data().timestamp;
+                    }
+                  });
+
+                  return {
+                    id: doc.id,
+                    ...assignmentData,
+                    personal_id: studentId, // Add the Student_ID field to the assignment data
+                    submission_date: submissionTimestamp, // Add the submission date to the assignment data
+                    Course: courseName
+                  };
+                }
               }
-            }
-          
-            // If no matching user document found or no matching pdf document found, return assignment data without modifying
-            return {
-              id: doc.id,
-              ...assignmentData,
-              Course: courseName
-            };
-          }})
-        );
+            
+              // If no matching user document found or no matching pdf document found, return assignment data without modifying
+              return {
+                id: doc.id,
+                ...assignmentData,
+                Course: courseName
+              };
+            }})
+          );
 
-        setRows(rows);
-      } catch (error) {
-        console.error("Error fetching data from Firestore:", error);
-      }
-    };
+          setRows(rows);
+        } catch (error) {
+          console.error("Error fetching data from Firestore:", error);
+        }
+      };
 
     console.log("Starting data fetching process...");
     fetchData();
