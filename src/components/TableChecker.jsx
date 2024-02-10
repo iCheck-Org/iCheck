@@ -100,8 +100,8 @@ const TableChecker = ({ firebaseUser }) => {
           File_doc !== undefined &&
           File_doc !== "" &&
           isPastDueDate;
-        const isClickableGrading = isPastDueDate && grade === "";
-        const isClickableShow = grade !== null && grade !== undefined;
+        const isClickableGrading = isPastDueDate && grade === "" && File_doc !== "";
+        const isClickableShow = grade !== null && grade !== undefined && grade !== "";
 
         const onDownload = async (row) => {
           try {
