@@ -14,7 +14,6 @@ import Logout from "@mui/icons-material/Logout";
 import { auth } from "../config/fire-base";
 import Collapse from "@mui/material/Collapse";
 import { collection, query, where, getDocs,getDoc,doc } from "firebase/firestore";
-import { signOut } from "firebase/auth";
 import { db } from "../config/fire-base"; // Assuming this is where your Firestore instance is initialized
 import { signOut } from "firebase/auth";
 
