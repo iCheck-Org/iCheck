@@ -120,22 +120,48 @@ const TableLecturer = ({ firebaseUser }) => {
 
         const [showReview, setShowReview] = useState(false);
         const [showAppeal, setShowAppeal] = useState(false);
+        const File_doc = value.row["File_doc"]; // Access the row object and get the value of "File_doc"
+        const currentDate = new Date().getTime(); // Get current timestamp
+        const dueDateTimestamp = value.row["Due Date"].toDate(); // Convert Firestore timestamp to JavaScript Date object
+        const dueDate = dueDateTimestamp.getTime(); // Get timestamp from JavaScript Date object
+        const isPastDueDate = dueDate <= currentDate;
+        const grade = value.row["Grade"];
 
+        // disable the buttons if the file is not uploaded
+        const isClickableDownload =
+        File_doc !== null &&
+        File_doc !== undefined &&
+        File_doc !== "" &&
+        isPastDueDate;
+        const isClickableShow = grade !== null && grade !== undefined && grade !== "";
+        
         return (
           <div>
-            <IconButton onClick={() => onDownload(value.row)}>
+            <IconButton 
+              onClick={() => onDownload(value.row)}
+              disabled={!isClickableDownload}
+              title="Download Assignment"
+            >
               <GetAppIcon />
             </IconButton>
 
             {/* Conditionally render the visibility icon */}
             {showAppealTable 
             ? (
-            <IconButton onClick={() => setShowAppeal((prevState) => !prevState)}>
+            <IconButton 
+              onClick={() => setShowAppeal((prevState) => !prevState)}
+              disabled={!isClickableShow}
+              title="View Review"
+              >
               <VisibilityIcon />
             </IconButton>
             ) 
             : (
-            <IconButton onClick={() => setShowReview((prevState) => !prevState)}>
+            <IconButton 
+              onClick={() => setShowReview((prevState) => !prevState)}
+              disabled={!isClickableShow}
+              title="View Review"
+              >
               <VisibilityIcon />
             </IconButton>
             )}
