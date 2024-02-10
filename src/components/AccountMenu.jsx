@@ -132,7 +132,7 @@ export default function AccountMenu(props) {
           vertical: "top",
           horizontal: "right",
         }}
-        getContentAnchorEl={null}
+        // getContentAnchorEl={null}
       >
         <MenuItem
           onClick={handleProfileClick}
