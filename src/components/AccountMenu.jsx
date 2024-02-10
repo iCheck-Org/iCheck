@@ -16,6 +16,8 @@ import Collapse from "@mui/material/Collapse";
 import { collection, query, where, getDocs,getDoc,doc } from "firebase/firestore";
 import { signOut } from "firebase/auth";
 import { db } from "../config/fire-base"; // Assuming this is where your Firestore instance is initialized
+import { signOut } from "firebase/auth";
+
 
 export default function AccountMenu(props) {
   const { firebaseUser } = props;
@@ -62,7 +64,7 @@ export default function AccountMenu(props) {
   
       if (docSnapshot.exists()) {
         const userData = docSnapshot.data();
-        const userId = userData.student_id;
+        const userId = userData.personal_id;
         setUserId(userId); // Update the userId state
       } else {
         console.log("No user found with the provided Firebase ID.");

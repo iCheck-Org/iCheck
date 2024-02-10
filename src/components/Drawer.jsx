@@ -1,22 +1,21 @@
-import * as React from 'react';
-import PropTypes from 'prop-types';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import CssBaseline from '@mui/material/CssBaseline';
-import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import { useState } from 'react';
-import { useEffect } from 'react';
+import * as React from "react";
+import PropTypes from "prop-types";
+import AppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+import CssBaseline from "@mui/material/CssBaseline";
+import IconButton from "@mui/material/IconButton";
+import MenuIcon from "@mui/icons-material/Menu";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import { useState } from "react";
+import { useEffect } from "react";
 import { db } from "../config/fire-base";
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc } from "firebase/firestore";
 import { signOut } from "firebase/auth";
 import { Link, useNavigate } from "react-router-dom";
 import { auth } from "../config/fire-base";
-import ProfileButton from "./ProfileButton"
-import AccountMenu from "./AccountMenu"
-
+import ProfileButton from "./ProfileButton";
+import AccountMenu from "./AccountMenu";
 
 const drawerWidth = 220;
 
@@ -25,7 +24,7 @@ function ResponsiveDrawer(props) {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [isClosing, setIsClosing] = React.useState(false);
   // const [firebaseUser,setFirebaseUser] = React.useState(null);
-  
+
   const handleDrawerClose = () => {
     setIsClosing(true);
     setMobileOpen(false);
@@ -66,13 +65,13 @@ function ResponsiveDrawer(props) {
 
   const [showProfile, setShowProfile] = useState(false);
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: "flex" }}>
       <CssBaseline />
       <AppBar
         position="fixed"
         sx={{
-          width: '100%',
-          backgroundColor: 'rgb(36, 115, 211)', // Set the color here
+          width: "100%",
+          backgroundColor: "rgb(36, 115, 211)", // Set the color here
         }}
       >
         <Toolbar>
@@ -81,21 +80,26 @@ function ResponsiveDrawer(props) {
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { sm: 'none' } }}
+            sx={{ mr: 2, display: { sm: "none" } }}
           >
-            
             <MenuIcon />
           </IconButton>
-          {/* <button onClick={() => setShowProfile(prevState => !prevState)}> */}
-            <Typography variant="h6" noWrap component="div">
-            {firebaseUser && firebaseUser.name ? `Welcome, ${firebaseUser.name}!` : 'Welcome!'}
-            </Typography>
-          {/* </button> */}
-          {/* Conditionally render the CreateAssignment component */}
-          {showProfile && <ProfileButton firebaseUser={firebaseUser} onClose={() => setShowProfile(false)} />}
-          
-          <Box sx={{ ml: 'auto' }} />
-          <AccountMenu firebaseUser={firebaseUser}/>
+
+          <Typography variant="h6" noWrap component="div">
+            {firebaseUser && firebaseUser.name
+              ? `Welcome, ${firebaseUser.name}!`
+              : "Welcome!"}
+          </Typography>
+
+          {showProfile && (
+            <ProfileButton
+              firebaseUser={firebaseUser}
+              onClose={() => setShowProfile(false)}
+            />
+          )}
+
+          <Box sx={{ ml: "auto" }} />
+          <AccountMenu firebaseUser={firebaseUser} />
         </Toolbar>
       </AppBar>
     </Box>

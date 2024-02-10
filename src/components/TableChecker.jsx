@@ -19,7 +19,7 @@
 
 
   const columns = [
-    {field: "Student_ID", headerName: "Student_ID", width: 130 },
+    {field: "personal_id", headerName: "Student_ID", width: 130 },
     {field: "Course", headerName: "Course", width: 130 },
     {field: "Assignment No.",headerName: "Assignment No.",width: 140,align: "center",},
     {field: "Checked by", headerName: "Checked by", width: 150 },
@@ -120,12 +120,12 @@
             // Check if a matching user document exists
             if (!userQuerySnapshot.empty) {
               // Get the student_id from the user document
-              const studentId = userQuerySnapshot.docs[0].data().student_id;
+              const studentId = userQuerySnapshot.docs[0].data().personal_id;
               // Return modified assignment data with the student_id
               return {
                 id: doc.id,
                 ...assignmentData,
-                Student_ID: studentId // Add the Student_ID field to the assignment data
+                personal_id: studentId // Add the Student_ID field to the assignment data
               };
             } else {
               // If no matching user document found, return assignment data without modifying

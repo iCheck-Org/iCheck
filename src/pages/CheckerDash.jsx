@@ -39,8 +39,12 @@ export default function ChckerDash() {
 
   return (
     <div>
-      {<ResponsiveDrawer firebaseUser={firebaseUser} />}
-      {<TableChecker firebaseUser={firebaseUser}/>}
+      {firebaseUser && (
+        <>
+          <ResponsiveDrawer firebaseUser={firebaseUser} />
+          <TableChecker firebaseUser={firebaseUser} />
+        </>
+      )}
     </div>
   );
 }
