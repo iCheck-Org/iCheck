@@ -25,16 +25,14 @@ const TableTest = ({ firebaseUser }) => {
   const [showReviewView, setShowReviewView] = useState(false); // Move showReviewView state to the TableTest component
 
   const columns = [
-    { field: "Course", headerName: "Course Name", width: 200 },
-    {
-      field: "Assignment No.",
+    {field: "Course", headerName: "Course Name", width: 200 },
+    {field: "Assignment No.",
       headerName: "Assignment No.",
       width: 150,
       align: "center",
     },
 
-    {
-      field: "Due Date",
+    {field: "Due Date",
       headerName: "Due Date",
       width: 200,
       valueFormatter: (params) => {
@@ -45,8 +43,7 @@ const TableTest = ({ firebaseUser }) => {
         return dueDate ? format(dueDate, "dd/MM/yyyy, HH:mm:ss") : "";
       },
     },
-    {
-      field: "Status",
+    {field: "Status",
       headerName: "Status",
       width: 200,
       renderCell: (params) => {
@@ -66,8 +63,7 @@ const TableTest = ({ firebaseUser }) => {
         );
       },
     },
-    {
-      field: "Actions",
+    {field: "Actions",
       headerName: "Actions",
       width: 200,
 
@@ -86,12 +82,12 @@ const TableTest = ({ firebaseUser }) => {
           try {
             const userId = firebaseUser.id;
             const File_doc = row["File_doc"]; // Access the row object and get the value of "File_doc"
-            console.log(File_doc);
+
             // Fetch all documents from the "pdfs" collection
             const querySnapshot = await getDocs(collection(db, "pdfs"));
             // Iterate through each document
             querySnapshot.forEach((doc) => {
-              console.log(doc.id);
+
               // Compare the File_doc with the document ID
               if (doc.id === File_doc) {
                 const downloadURL = doc.data().url;
@@ -290,7 +286,7 @@ const TableTest = ({ firebaseUser }) => {
             <BackDropSample
               rowId={
                 selectedRowId
-              } /*onClose={handleUploadClose} - didnt use it eventually*/
+              }
             />
           )}
         </Box>
