@@ -24,17 +24,37 @@ import Review from "./Review";
 
 const TableLecturer = ({ firebaseUser }) => {
   const columns = [
-    { field: "Student ID", headerName: "Student_ID", width: 150 },
-    { field: "Course", headerName: "Course", width: 200 },
+    { field: "personal_id", headerName: "Student ID", width: 130 },
+    { field: "Course", headerName: "Course Name", width: 150 },
     {
       field: "Assignment No.",
       headerName: "Assignment No.",
       width: 150,
-      align: "center",
+      align: "left",
     },
-    { field: "Status", headerName: "Status", width: 150 },
     {
-      field: "Submission Date",
+      field: "Status",
+      headerName: "Status",
+      width: 200,
+      renderCell: (params) => {
+        const status = params.value;
+
+        let backgroundColor = "";
+        if (status === "Unchecked") {
+          backgroundColor = "#FFE0B2"; // Orange color when status is 'Unchecked'
+        } else {
+          backgroundColor = "#C8E6C9"; // Green color for other statuses
+        }
+
+        return (
+          <div style={{ backgroundColor, padding: "8px", borderRadius: "4px" }}>
+            {status}
+          </div>
+        );
+      },
+    },
+    {
+      field: "submission_date",
       headerName: "Submission Date",
       width: 200,
       valueFormatter: (params) => {
@@ -42,11 +62,22 @@ const TableLecturer = ({ firebaseUser }) => {
         const dueDate = params.value && params.value.toDate();
 
         // Format the Date object to a human-readable string
-        return dueDate ? format(dueDate, "dd-MM-yyyy, HH:mm:ss") : "";
+        return dueDate ? format(dueDate, "dd/MM/yyyy, HH:mm:ss") : "";
       },
     },
     {
-      field: "Actions",
+      field: "Due Date",
+      headerName: "Due Date",
+      width: 200,
+      valueFormatter: (params) => {
+        // Convert timestamp to Date object
+        const dueDate = params.value && params.value.toDate();
+
+        // Format the Date object to a human-readable string
+        return dueDate ? format(dueDate, "dd/MM/yyyy, HH:mm:ss") : "";
+      },
+    },
+    {field: "Actions",
       headerName: "Actions",
       width: 200,
       renderCell: (value) => {
@@ -120,10 +151,15 @@ const TableLecturer = ({ firebaseUser }) => {
         const userId = firebaseUser.id;
 
         // Fetch user document
-        const userDoc = firebaseUser;
+        const userDoc = await getDoc(doc(db, "users", userId));
 
-        // Get the courses array from the user document
-        const userCourses = userDoc.courses || [];
+        if (!userDoc.exists()) {
+          console.log("User document does not exist.");
+          return;
+        }
+
+        const userData = userDoc.data();
+        const userCourses = userData.courses || [];
 
         // Fetch assignments that match the user's courses
         const assignmentsSnapshot = await getDocs(
@@ -134,9 +170,10 @@ const TableLecturer = ({ firebaseUser }) => {
         );
 
         // Map the fetched assignments data
-        const data = await Promise.all(
+        const rows = await Promise.all(
           assignmentsSnapshot.docs.map(async (doc) => {
             const assignmentData = doc.data();
+            
 
             // Fetch corresponding user document based on the 'Owner' field
             const userQuerySnapshot = await getDocs(
@@ -148,25 +185,59 @@ const TableLecturer = ({ firebaseUser }) => {
 
             // Check if a matching user document exists
             if (!userQuerySnapshot.empty) {
+
+              const courseId = assignmentData["Course-ref"];
+
+              const coursesSnapshot = await getDocs(collection(db, "courses-test"));
+
+              const courseDoc = coursesSnapshot.docs.find((course) => course.id === courseId);
+
+              if (courseDoc) {
+                const courseData = courseDoc.data();
+                const courseName = courseData.name;
+              
+              
               // Get the student_id from the user document
-              const studentId = userQuerySnapshot.docs[0].data().student_id;
-              // Return modified assignment data with the student_id
-              return {
-                id: doc.id,
-                ...assignmentData,
-                Student_ID: studentId, // Add the Student_ID field to the assignment data
-              };
-            } else {
-              // If no matching user document found, return assignment data without modifying
-              return {
-                id: doc.id,
-                ...assignmentData,
-              };
+              const studentId = userQuerySnapshot.docs[0].data().personal_id;
+
+              const File_doc = assignmentData["File_doc"]; // Access the assignmentData object and get the value of "File_doc"
+
+              // Fetch submission date from "pdfs" collection based on "File_doc"
+              const pdfsQuerySnapshot = await getDocs(
+                query(collection(db, "pdfs"))
+              );
+
+              // Check if a matching pdf document exists
+              if (!pdfsQuerySnapshot.empty) {
+                let submissionTimestamp;
+
+                pdfsQuerySnapshot.forEach((pdfDoc) => {
+                  // Compare the File_doc with the document ID
+                  if (pdfDoc.id === File_doc) {
+                    submissionTimestamp = pdfDoc.data().timestamp;
+                  }
+                });
+
+                return {
+                  id: doc.id,
+                  ...assignmentData,
+                  personal_id: studentId, // Add the Student_ID field to the assignment data
+                  submission_date: submissionTimestamp, // Add the submission date to the assignment data
+                  Course: courseName
+                };
+              }
             }
-          })
+          
+            // If no matching user document found or no matching pdf document found, return assignment data without modifying
+            return {
+              id: doc.id,
+              ...assignmentData,
+              Course: courseName
+            };
+          }})
         );
 
-        setRows(data);
+        setRows(rows);
       } catch (error) {
         console.error("Error fetching data from Firestore:", error);
       }
@@ -188,8 +259,8 @@ const TableLecturer = ({ firebaseUser }) => {
   const [showCreateAssignment, setShowCreateAssignment] = useState(false);
 
   return (
-    <Box height={500} width={1024}>
-      <Box height={80} width={1024}>
+    <Box height={500} width={1190}>
+      <Box height={80} width={1190}>
         {/* Use a function to toggle the state */}
         <button
           onClick={() => setShowCreateAssignment((prevState) => !prevState)}

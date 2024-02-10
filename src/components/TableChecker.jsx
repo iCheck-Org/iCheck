@@ -212,6 +212,7 @@ const TableChecker = ({ firebaseUser }) => {
         const rows = await Promise.all(
           assignmentsSnapshot.docs.map(async (doc) => {
             const assignmentData = doc.data();
+            
 
             // Fetch corresponding user document based on the 'Owner' field
             const userQuerySnapshot = await getDocs(
@@ -223,6 +224,18 @@ const TableChecker = ({ firebaseUser }) => {
 
             // Check if a matching user document exists
             if (!userQuerySnapshot.empty) {
+
+              const courseId = assignmentData["Course-ref"];
+
+              const coursesSnapshot = await getDocs(collection(db, "courses-test"));
+
+              const courseDoc = coursesSnapshot.docs.find((course) => course.id === courseId);
+
+              if (courseDoc) {
+                const courseData = courseDoc.data();
+                const courseName = courseData.name;
+              
+              
               // Get the student_id from the user document
               const studentId = userQuerySnapshot.docs[0].data().personal_id;
 
@@ -249,16 +262,18 @@ const TableChecker = ({ firebaseUser }) => {
                   ...assignmentData,
                   personal_id: studentId, // Add the Student_ID field to the assignment data
                   submission_date: submissionTimestamp, // Add the submission date to the assignment data
+                  Course: courseName
                 };
               }
             }
-
+          
             // If no matching user document found or no matching pdf document found, return assignment data without modifying
             return {
               id: doc.id,
               ...assignmentData,
+              Course: courseName
             };
-          })
+          }})
         );
 
         setRows(rows);

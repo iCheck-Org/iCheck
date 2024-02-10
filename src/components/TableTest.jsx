@@ -25,14 +25,16 @@ const TableTest = ({ firebaseUser }) => {
   const [showReviewView, setShowReviewView] = useState(false); // Move showReviewView state to the TableTest component
 
   const columns = [
-    {field: "Course", headerName: "Course Name", width: 200 },
-    {field: "Assignment No.",
+    { field: "Course", headerName: "Course Name", width: 200 },
+    {
+      field: "Assignment No.",
       headerName: "Assignment No.",
       width: 150,
       align: "center",
     },
 
-    {field: "Due Date",
+    {
+      field: "Due Date",
       headerName: "Due Date",
       width: 200,
       valueFormatter: (params) => {
@@ -43,7 +45,8 @@ const TableTest = ({ firebaseUser }) => {
         return dueDate ? format(dueDate, "dd/MM/yyyy, HH:mm:ss") : "";
       },
     },
-    {field: "Status",
+    {
+      field: "Status",
       headerName: "Status",
       width: 200,
       renderCell: (params) => {
@@ -63,7 +66,8 @@ const TableTest = ({ firebaseUser }) => {
         );
       },
     },
-    {field: "Actions",
+    {
+      field: "Actions",
       headerName: "Actions",
       width: 200,
 
@@ -75,7 +79,8 @@ const TableTest = ({ firebaseUser }) => {
         const isPastDueDate = dueDate >= currentDate;
 
         const isClickableUpload = isPastDueDate;
-        const isClickableDownload = File_doc !== null && File_doc !== undefined && File_doc !== "";
+        const isClickableDownload =
+          File_doc !== null && File_doc !== undefined && File_doc !== "";
         const isClickableShow = value.row.Status !== "Unchecked";
 
         const onDownload = async (row) => {
@@ -87,7 +92,6 @@ const TableTest = ({ firebaseUser }) => {
             const querySnapshot = await getDocs(collection(db, "pdfs"));
             // Iterate through each document
             querySnapshot.forEach((doc) => {
-
               // Compare the File_doc with the document ID
               if (doc.id === File_doc) {
                 const downloadURL = doc.data().url;
@@ -144,7 +148,6 @@ const TableTest = ({ firebaseUser }) => {
                   const assignmentRef = doc(db, "assignments", rowId);
                   await updateDoc(assignmentRef, { File_doc: existingDocId });
                 } else {
-
                   // If no document exists, create a new document
                   const storageRef = ref(storage, `pdfs/${file.name}`);
                   await uploadBytes(storageRef, file);
@@ -226,29 +229,55 @@ const TableTest = ({ firebaseUser }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        //TODO: this line is happend after login and refreshing the page (mabe its ok...) shachar
         if (!firebaseUser) {
           console.log("User is not defined. Aborting data fetching.");
           return;
         }
-
+    
         const assignmentsSnapshot = await getDocs(
           query(
             collection(db, "assignments"),
             where("Owner", "==", firebaseUser.id)
           )
         );
-
-        const data = assignmentsSnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-
+    
+        const data = await Promise.all(
+          assignmentsSnapshot.docs.map(async (doc) => {
+            const assignmentData = doc.data();
+            const courseId = assignmentData["Course-ref"];
+    
+            const coursesSnapshot = await getDocs(collection(db, "courses-test"));
+    
+            // Find the course document with matching courseId
+            const courseDoc = coursesSnapshot.docs.find((course) => course.id === courseId);
+    
+            if (courseDoc) {
+              const courseData = courseDoc.data();
+              const courseName = courseData.name;
+    
+              // Return the assignment data along with the course name
+              return {
+                id: doc.id,
+                ...assignmentData,
+                Course: courseName,
+              };
+            } else {
+              // If no matching course document is found, log a message and return assignment data without modifying
+              console.log(`Course document with ID ${courseId} does not exist.`);
+              return {
+                id: doc.id,
+                ...assignmentData,
+              };
+            }
+          })
+        );
+    
         setRows(data);
       } catch (error) {
         console.error("Error fetching data from Firestore:", error);
       }
     };
+    
 
     console.log("Starting data fetching process...");
     fetchData();
@@ -281,15 +310,7 @@ const TableTest = ({ firebaseUser }) => {
         open={uploadOpen}
         onClick={handleUploadClose}
       >
-        <Box>
-          {showReviewView && (
-            <BackDropSample
-              rowId={
-                selectedRowId
-              }
-            />
-          )}
-        </Box>
+        <Box>{showReviewView && <BackDropSample rowId={selectedRowId} />}</Box>
       </Backdrop>
     </Box>
   );
