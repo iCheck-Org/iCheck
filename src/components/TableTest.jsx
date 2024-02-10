@@ -79,7 +79,7 @@ const TableTest = ({ firebaseUser }) => {
         const isPastDueDate = dueDate >= currentDate;
 
         const isClickableUpload = isPastDueDate;
-        const isClickableDownload = File_doc !== null && File_doc !== undefined;
+        const isClickableDownload = File_doc !== null && File_doc !== undefined && File_doc !== "";
         const isClickableShow = value.row.Status !== "Unchecked";
 
         const onDownload = async (row) => {
@@ -134,7 +134,7 @@ const TableTest = ({ firebaseUser }) => {
 
                 if (!querySnapshot.empty) {
                   const existingDocId = querySnapshot.docs[0].id;
-                  const storageRef = ref(storage, `pdfs/${file.name}`);
+                  const storageRef = ref(storage, file.name);
                   await uploadBytes(storageRef, file);
 
                   // Update the existing document with the new storage URL and timestamp
@@ -144,23 +144,11 @@ const TableTest = ({ firebaseUser }) => {
                     timestamp: serverTimestamp(),
                   });
 
-                  // Fetch the updated timestamp from the document
-                  const updatedDoc = await getDoc(
-                    doc(db, "pdfs", existingDocId)
-                  );
-                  const updatedTimestamp = updatedDoc.data().timestamp;
-
-                  // Update the due date in the row
-                  setRows((prevRows) => {
-                    const updatedRows = prevRows.map((row) => {
-                      if (row.id === rowId) {
-                        return { ...row, "Due Date": updatedTimestamp };
-                      }
-                      return row;
-                    });
-                    return updatedRows;
-                  });
+                  // Update the corresponding document in the "assignments" collection
+                  const assignmentRef = doc(db, "assignments", rowId);
+                  await updateDoc(assignmentRef, { File_doc: existingDocId });
                 } else {
+
                   // If no document exists, create a new document
                   const storageRef = ref(storage, `pdfs/${file.name}`);
                   await uploadBytes(storageRef, file);
@@ -179,20 +167,9 @@ const TableTest = ({ firebaseUser }) => {
                     timestamp: timestamp,
                   });
 
-                  // Fetch the timestamp from the newly created document
-                  const newDoc = await getDoc(newDocRef);
-                  const newTimestamp = newDoc.data().timestamp;
-
-                  // Update the due date in the row
-                  setRows((prevRows) => {
-                    const updatedRows = prevRows.map((row) => {
-                      if (row.id === rowId) {
-                        return { ...row, "Due Date": newTimestamp };
-                      }
-                      return row;
-                    });
-                    return updatedRows;
-                  });
+                  // Update the corresponding document in the "assignments" collection
+                  const assignmentRef = doc(db, "assignments", rowId);
+                  await updateDoc(assignmentRef, { File_doc: newDocRef.id });
                 }
 
                 // Update the state to indicate a successful file upload
@@ -227,13 +204,19 @@ const TableTest = ({ firebaseUser }) => {
             <IconButton
               onClick={() => {
                 console.log(value.row.id),
-                  setShowReviewView((prevState) => !prevState);}}
+                  setShowReviewView((prevState) => !prevState);
+              }}
               disabled={!isClickableShow}
               title="View Review"
             >
               <VisibilityIcon />
             </IconButton>
-            {showReviewView && <ReviewView assignmentID={value.row.id}  onClose={()=> setShowReviewView((prevState) => !prevState)}/>}
+            {showReviewView && (
+              <ReviewView
+                assignmentID={value.row.id}
+                onClose={() => setShowReviewView((prevState) => !prevState)}
+              />
+            )}
           </div>
         );
       },
@@ -303,8 +286,12 @@ const TableTest = ({ firebaseUser }) => {
         onClick={handleUploadClose}
       >
         <Box>
-          {showReviewView  && (
-            <BackDropSample rowId={selectedRowId} /*onClose={handleUploadClose} - didnt use it eventually*/  />
+          {showReviewView && (
+            <BackDropSample
+              rowId={
+                selectedRowId
+              } /*onClose={handleUploadClose} - didnt use it eventually*/
+            />
           )}
         </Box>
       </Backdrop>

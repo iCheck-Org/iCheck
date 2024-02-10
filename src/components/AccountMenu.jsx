@@ -63,7 +63,7 @@ export default function AccountMenu(props) {
   
       if (docSnapshot.exists()) {
         const userData = docSnapshot.data();
-        const userId = userData.student_id;
+        const userId = userData.personal_id;
         setUserId(userId); // Update the userId state
       } else {
         console.log("No user found with the provided Firebase ID.");
