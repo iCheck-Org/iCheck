@@ -15,6 +15,8 @@ import { auth } from "../config/fire-base";
 import Collapse from "@mui/material/Collapse";
 import { collection, query, where, getDocs,getDoc,doc } from "firebase/firestore";
 import { db } from "../config/fire-base"; // Assuming this is where your Firestore instance is initialized
+import { signOut } from "firebase/auth";
+
 
 export default function AccountMenu(props) {
   const { firebaseUser } = props;
