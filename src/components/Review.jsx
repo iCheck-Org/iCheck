@@ -26,7 +26,7 @@
         const data = {
           Grade: gradeInputValue, // Assume gradeInputValue is the value entered by the user in the grade input field
           Comment: commentInputValue, // Assume commentInputValue is the value entered by the user in the comment input field
-          Status: `Checked by ${firebaseUser.name}`
+          Checker: '${firebaseUser.name}'
         };
     
         // Use updateDoc() method to update the document with the new data

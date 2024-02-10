@@ -46,11 +46,17 @@ const TableTest = ({ firebaseUser }) => {
       },
     },
     {
-      field: "Status",
+      field: "Checker",
       headerName: "Status",
       width: 200,
       renderCell: (params) => {
-        const status = params.value;
+        let status = params.value;
+
+        if (!status) {
+          status = "Unchecked";
+        } else {
+          status = "Checked by " + status;
+        }
 
         let backgroundColor = "";
         if (status === "Unchecked") {
@@ -81,7 +87,7 @@ const TableTest = ({ firebaseUser }) => {
         const isClickableUpload = isPastDueDate;
         const isClickableDownload =
           File_doc !== null && File_doc !== undefined && File_doc !== "";
-        const isClickableShow = value.row.Grade !== "";
+        const isClickableShow = value.row.Status !== "Unchecked";
 
         const onDownload = async (row) => {
           try {

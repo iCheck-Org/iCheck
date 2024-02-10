@@ -84,7 +84,7 @@ export default function AppealLecturer({ firebaseUser, onClose }) {
                         "Due Date": Timestamp.fromDate(new Date(dueDate)),
                         "Checked By": "-",
                         "Grade": "-",
-                        Status: "Unchecked",
+                        "Checker": "",
                         "File Doc": "-",
                         "Course-ref": selectedCourse
                     };

@@ -35,11 +35,17 @@ const TableLecturer = ({ firebaseUser }) => {
       align: "left",
     },
     {
-      field: "Status",
+      field: "Checker",
       headerName: "Status",
       width: 200,
       renderCell: (params) => {
-        const status = params.value;
+        let status = params.value;
+
+        if (!status) {
+          status = "Unchecked";
+        } else {
+          status = "Checked by " + status;
+        }
 
         let backgroundColor = "";
         if (status === "Unchecked") {
