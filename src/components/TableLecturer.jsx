@@ -157,6 +157,7 @@ const TableLecturer = ({ firebaseUser }) => {
   const [uploadOpen, setUploadOpen] = useState(false);
   const [selectedRowId, setSelectedRowId] = useState(null);
   const [showAppealTable, setShowAppealTable] = useState(false);
+  const [assignmentsSnapshot, setAssignmentsSnapshot] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -170,35 +171,32 @@ const TableLecturer = ({ firebaseUser }) => {
         const userId = firebaseUser.id;
 
         // Fetch user document
-        const userDoc = await getDoc(doc(db, "users", userId));
-
-        if (!userDoc.exists()) {
-          console.log("User document does not exist.");
-          return;
-        }
-
-        const userData = userDoc.data();
-        const userCourses = userData.courses || [];
+        const userDoc = firebaseUser
         
 
-        let assignmentsSnapshot;
-        if (showAppealTable) {
-          // Fetch assignments that have the 'Appeal' field
-          assignmentsSnapshot = await getDocs(
-            query(collection(db,"assignments"), where("Appeal", "!=", null) ,  where("Course-ref", "in", userCourses))
-          );
-        } else {
-          // Fetch assignments that match the user's courses
-          assignmentsSnapshot = await getDocs(
-            query(collection(db,"assignments"), where("Course-ref", "in", userCourses))
-          );
-        }
+        const userCourses = userDoc.courses;
+        let snapshot = assignmentsSnapshot;
+
+        // Fetch assignments only if assignmentsSnapshot is not available
+      if (assignmentsSnapshot && assignmentsSnapshot.length == 0) {
+        snapshot = await getDocs(
+          query(collection(db, "assignments"), where("Course-ref", "in", userCourses))
+        );
+        setAssignmentsSnapshot(snapshot);
+      }
+
+      // Filter assignments based on the showAppealTable flag
+      if (showAppealTable) {
+        let docs =  assignmentsSnapshot.docs.filter((doc) => doc.data().Appeal);
+        snapshot = {...snapshot,docs};
+      }
 
         // Map the fetched assignments data
         const rows = await Promise.all(
-          assignmentsSnapshot.docs.map(async (doc) => {
+          ((snapshot).docs).map(async (doc) => {
             const assignmentData = doc.data();
             
+
 
             // Fetch corresponding user document based on the 'Owner' field
             const userQuerySnapshot = await getDocs(
@@ -207,6 +205,7 @@ const TableLecturer = ({ firebaseUser }) => {
                 where("id", "==", assignmentData.Owner)
               )
             );
+            
 
             // Check if a matching user document exists
             if (!userQuerySnapshot.empty) {
@@ -270,7 +269,7 @@ const TableLecturer = ({ firebaseUser }) => {
 
     console.log("Starting data fetching process...");
     fetchData();
-  }, [firebaseUser, showAppealTable]);
+  }, [firebaseUser, showAppealTable,assignmentsSnapshot]);
 
   const handleUploadOpen = (rowId) => {
     setSelectedRowId(rowId);
@@ -319,4 +318,4 @@ const TableLecturer = ({ firebaseUser }) => {
   );
 };
 
-export default TableLecturer;
+export default TableLecturer;
