@@ -18,15 +18,16 @@ export default function StudentDashTest() {
         //get user doc
         const fetchData = async () => {
           try {
-            const userRef = doc(db, "users", user.uid);
+            const userRef = doc(db, "users", auth.currentUser.uid);
             const userSnap = await getDoc(userRef);
             const userRecord = userSnap.data();
-
+        
             setFirebaseUser(userRecord);
           } catch (error) {
             console.error("Error fetching data from Firestore:", error);
           }
         };
+        
         fetchData();
       } else {
         console.log("unsubscibed User");

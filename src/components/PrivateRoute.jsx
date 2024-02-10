@@ -1,17 +1,16 @@
 import { useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { collection, getDocs, query, where } from 'firebase/firestore'; 
+import { collection, getDocs, query, where,doc,getDoc } from 'firebase/firestore'; 
 import { auth, db } from '../config/fire-base';
 import { useNavigate } from 'react-router-dom';
 
 const fetchUserType = async (db, userUid) => {
   try {
-    const querySnapshot = await getDocs(
-      query(collection(db, "users"), where("id", "==", userUid))
-    );
+    const userRef = doc(db, "users", userUid);
+    const userDoc = await getDoc(userRef);
 
-    if (!querySnapshot.empty) {
-      const userType = querySnapshot.docs[0].data().type;
+    if (userDoc.exists()) {
+      const userType = userDoc.data().type;
       return userType;
     } else {
       return null;
@@ -21,6 +20,7 @@ const fetchUserType = async (db, userUid) => {
     return null;
   }
 };
+
 
 const PrivateRoute = ({ children, allowedTypes }) => {
   const navigate = useNavigate();
