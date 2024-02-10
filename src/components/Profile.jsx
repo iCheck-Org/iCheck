@@ -13,7 +13,7 @@ export default function Profile() {
     // Redirect to login page if user is not authenticated, stay in after refresh the page
     const unsubscribe = onAuthStateChanged(auth, (user)=>{
       if(user){
-        console.log("User is signed in 1");
+
         // navigate("/StudentDashTest");
 
         //get user doc

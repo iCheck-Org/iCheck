@@ -219,7 +219,7 @@ const TableChecker = ({ firebaseUser }) => {
           assignmentsSnapshot.docs.map(async (doc) => {
             const assignmentData = doc.data();
             
-
+            
             // Fetch corresponding user document based on the 'Owner' field
             const userQuerySnapshot = await getDocs(
               query(
