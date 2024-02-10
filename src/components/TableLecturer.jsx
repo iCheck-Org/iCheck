@@ -21,6 +21,8 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage, db } from "../config/fire-base";
 import CreateAssignment from "./CreateAssignment";
 import Review from "./Review";
+import SwitchAppeal from "./SwitchAppeal";
+import AppealLecturer from "./AppealLecturer";
 
 const TableLecturer = ({ firebaseUser }) => {
   const columns = [
@@ -111,6 +113,7 @@ const TableLecturer = ({ firebaseUser }) => {
         };
 
         const [showReview, setShowReview] = useState(false);
+        const [showAppeal, setShowAppeal] = useState(false);
 
         return (
           <div>
@@ -118,11 +121,26 @@ const TableLecturer = ({ firebaseUser }) => {
               <GetAppIcon />
             </IconButton>
 
-            <IconButton
-              onClick={() => setShowReview((prevState) => !prevState)}
-            >
+            {/* Conditionally render the visibility icon */}
+            {showAppealTable 
+            ? (
+            <IconButton onClick={() => setShowAppeal((prevState) => !prevState)}>
               <VisibilityIcon />
             </IconButton>
+            ) 
+            : (
+            <IconButton onClick={() => setShowReview((prevState) => !prevState)}>
+              <VisibilityIcon />
+            </IconButton>
+            )}
+
+            {showAppeal && (
+              <AppealLecturer
+                assignmentID={value.row.id}
+                onClose={() => setShowAppeal(false)}
+              />
+            )}
+
             {showReview && (
               <Review
                 assignmentID={value.row.id}
@@ -138,6 +156,7 @@ const TableLecturer = ({ firebaseUser }) => {
   const [rows, setRows] = useState([]);
   const [uploadOpen, setUploadOpen] = useState(false);
   const [selectedRowId, setSelectedRowId] = useState(null);
+  const [showAppealTable, setShowAppealTable] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -160,14 +179,20 @@ const TableLecturer = ({ firebaseUser }) => {
 
         const userData = userDoc.data();
         const userCourses = userData.courses || [];
+        
 
-        // Fetch assignments that match the user's courses
-        const assignmentsSnapshot = await getDocs(
-          query(
-            collection(db, "assignments"),
-            where("Course-ref", "in", userCourses)
-          )
-        );
+        let assignmentsSnapshot;
+        if (showAppealTable) {
+          // Fetch assignments that have the 'Appeal' field
+          assignmentsSnapshot = await getDocs(
+            query(collection(db,"assignments"), where("Appeal", "!=", null) ,  where("Course-ref", "in", userCourses))
+          );
+        } else {
+          // Fetch assignments that match the user's courses
+          assignmentsSnapshot = await getDocs(
+            query(collection(db,"assignments"), where("Course-ref", "in", userCourses))
+          );
+        }
 
         // Map the fetched assignments data
         const rows = await Promise.all(
@@ -245,7 +270,7 @@ const TableLecturer = ({ firebaseUser }) => {
 
     console.log("Starting data fetching process...");
     fetchData();
-  }, [firebaseUser]);
+  }, [firebaseUser, showAppealTable]);
 
   const handleUploadOpen = (rowId) => {
     setSelectedRowId(rowId);
@@ -276,7 +301,7 @@ const TableLecturer = ({ firebaseUser }) => {
           onClose={() => setShowCreateAssignment(false)}
         />
       )}
-
+      <Box display="flex" justifyContent="flex-end" height={40}><SwitchAppeal onToggle={setShowAppealTable} /></Box>
       <DataGrid columns={columns} rows={rows} />
 
       <Backdrop
