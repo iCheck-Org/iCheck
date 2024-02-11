@@ -123,7 +123,8 @@ const TableLecturer = ({ firebaseUser }) => {
           File_doc !== "" &&
           isPastDueDate;
         const isClickableShow =
-          grade !== null && grade !== undefined && grade !== "";
+          // grade !== null && grade !== undefined && grade !== "" &&
+          isPastDueDate ;
 
         return (
           <div>
@@ -147,6 +148,7 @@ const TableLecturer = ({ firebaseUser }) => {
             ) : (
               <IconButton
                 onClick={() => setShowReview((prevState) => !prevState)}
+                disabled={!isClickableShow}
                 title="View Review"
               >
                 <VisibilityIcon />
@@ -164,6 +166,7 @@ const TableLecturer = ({ firebaseUser }) => {
               <Review
                 assignmentID={value.row.id}
                 onClose={() => setShowReview(false)}
+                firebaseUser={firebaseUser}
               />
             )}
           </div>
