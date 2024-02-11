@@ -8,6 +8,7 @@ import {
   collection,
   doc,
   addDoc,
+  getDoc,
   Timestamp,
 } from "firebase/firestore";
 import { db } from "../config/fire-base";
