@@ -128,19 +128,19 @@ export default function StudentViewTabs({ assignmentID }) {
           </Tabs>
         </Box>
         <CustomTabPanel value={value} index={0}>
-          <Box width={700} height={500} sx={{ textAlign: 'center' }}>
-            <h2>Review Assignment</h2>
+          <Box width={700} height={250} sx={{ textAlign: 'center' }}>
+            <h2>Checker's Comment</h2>
             <TextBox value={comment} onChange={() => {}} />
           </Box>
-          <Box width={200} height={200} sx={{ textAlign: 'center' }}>
+          <Box width={700} height={300} sx={{ textAlign: 'center' }}>
             <h3>Grade</h3>
-            <input
+            {<input
               type="text"
               placeholder="Grade"
-              style={{ width: '30%', height: '50%', textAlign: 'start', paddingLeft: '10px' }}
+              style={{ width: '5%', height: '10%', textAlign: 'start', paddingLeft: '10px' }}
               value={grade}
               onChange={() => { }}
-            />
+            />}
           </Box>
         </CustomTabPanel>
         <CustomTabPanel value={value} index={1}>
