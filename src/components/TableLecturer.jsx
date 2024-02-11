@@ -10,6 +10,7 @@ import CreateAssignment from "./CreateAssignment";
 import Review from "./Review";
 import SwitchAppeal from "./SwitchAppeal";
 import AppealLecturer from "./AppealLecturer";
+import '../pages/styles.css';
 
 const TableLecturer = ({ firebaseUser }) => {
   const columns = [
@@ -304,6 +305,7 @@ const TableLecturer = ({ firebaseUser }) => {
       <Box height={80} width={1190}>
         {/* Use a function to toggle the state */}
         <button
+          className="upload-assigment-button"
           onClick={() => setShowCreateAssignment((prevState) => !prevState)}
         >
           Upload Assignment

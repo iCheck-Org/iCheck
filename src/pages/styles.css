@@ -111,8 +111,11 @@ body {
   z-index: 5%; /* Set z-index to ensure it's above other elements */
 }
 
-.logout-button {
-  background-color:  #fff;
-  color:rgb(36, 115, 211);
-  font-weight: bold;
+.upload-assigment-button {
+  background-color: rgb(36, 115, 211);
+  color:rgb(255, 255, 255);
+  font-weight: regular;
+  position: absolute; /* or 'fixed' or 'sticky' */
+  top: 12%;
+  right: 2%;
 }
