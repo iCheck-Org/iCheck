@@ -65,7 +65,7 @@ export default function AppealTabs({ assignmentID }) {
         console.error('Error fetching data:', error);
       }
     };
-
+  
     fetchData();
   }, [assignmentID]);
 
@@ -84,7 +84,6 @@ export default function AppealTabs({ assignmentID }) {
       
       // Update the local state 'grade' with the new value
       setGrade(newGrade);
-      userAnswer(userAnswer);
   
       // Optionally, you can perform additional actions upon successful submission
     } catch (error) {
@@ -112,26 +111,29 @@ export default function AppealTabs({ assignmentID }) {
         />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        <TextBox value={studentAppeal} onChange={() => {}} />
+  <div>
+    <TextBox value={studentAppeal} onChange={() => {}} />
+  </div>
+</CustomTabPanel>
 
-      </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
   <div style={{ marginBottom: '20px' }}> {/* Add margin bottom to create space */}
     <TextBox value={userAnswer} onChange={(event) => setUserAnswer(event.target.value)} />
   </div>
   <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-    <Typography style={{ marginRight: '10px' }}>Current Grade:</Typography>
-    <Typography>{grade}</Typography>
-  </div>
-  <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-    <Typography style={{ marginRight: '10px' }}>New Grade:</Typography>
-    <input 
-      type="text" 
-      value={newGrade} 
-      style={{ width: '5%', height: '20%', textAlign: 'start', paddingLeft: '10px' }} 
-      onChange={(event) => setNewGrade(event.target.value)}
-    />
-  </div>
+  <div style={{ marginRight: '10px' }}>Current Grade:</div>
+  <div>{grade}</div>
+</div>
+<div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+  <div style={{ marginRight: '10px' }}>New Grade:</div>
+  <input 
+    type="text" 
+    value={newGrade} 
+    style={{ width: '5%', height: '20%', textAlign: 'start', paddingLeft: '10px' }} 
+    onChange={(event) => setNewGrade(event.target.value)}
+  />
+</div>
+
   <button onClick={handleSubmit}>Submit</button>
 </CustomTabPanel>
     </Box>
