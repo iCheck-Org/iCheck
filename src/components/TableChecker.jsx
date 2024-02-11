@@ -296,7 +296,11 @@ const TableChecker = ({ firebaseUser }) => {
 
   return (
     <Box height={400} width={1190}>
-      <DataGrid columns={columns} rows={rows} autoHeight={true} />
+
+      <div style={{ height: '140%', width: '100%' }}>
+        <DataGrid columns={columns} rows={rows} />
+      </div>
+
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={uploadOpen}
