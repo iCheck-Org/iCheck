@@ -304,7 +304,7 @@ const TableTest = ({ firebaseUser }) => {
         open={uploadOpen}
         onClick={handleUploadClose}
       >
-        <Box>{showReviewView && <BackDropSample rowId={selectedRowId} />}</Box>
+        <Box>{showReviewView}</Box>
       </Backdrop>
     </Box>
   );

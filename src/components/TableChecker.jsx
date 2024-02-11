@@ -15,7 +15,6 @@ import {
 import GetAppIcon from "@mui/icons-material/GetApp";
 import GradingIcon from "@mui/icons-material/Grading";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import BackDropSample from "./BackDropSample";
 import { format } from "date-fns";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { db } from "../config/fire-base";
@@ -310,9 +309,8 @@ const TableChecker = ({ firebaseUser }) => {
         onClick={handleUploadClose}
       >
         <Box>
-          {selectedRowId && (
-            <BackDropSample rowId={selectedRowId} onClose={handleUploadClose} />
-          )}
+          {selectedRowId 
+            }
         </Box>
       </Backdrop>
     </Box>

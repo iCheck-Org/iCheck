@@ -340,9 +340,8 @@ const TableLecturer = ({ firebaseUser }) => {
         onClick={handleUploadClose}
       >
         <Box>
-          {selectedRowId && (
-            <BackDropSample rowId={selectedRowId} onClose={handleUploadClose} />
-          )}
+          {selectedRowId 
+          }
         </Box>
       </Backdrop>
     </Box>

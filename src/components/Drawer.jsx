@@ -14,7 +14,6 @@ import { doc, getDoc } from "firebase/firestore";
 import { signOut } from "firebase/auth";
 import { Link, useNavigate } from "react-router-dom";
 import { auth } from "../config/fire-base";
-import ProfileButton from "./ProfileButton";
 import AccountMenu from "./AccountMenu";
 
 const drawerWidth = 220;
