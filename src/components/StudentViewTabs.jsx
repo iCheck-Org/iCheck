@@ -151,16 +151,19 @@
               <div style={{ display: 'flex', flexDirection: 'column', marginRight: '20px', borderRight: '1px solid #ccc' }}>
                   {appealAnsFieldExists ? (
                       <>
+                      <Box width={300}>
                       <h3>Lecturer's Respond</h3>
+                      
                   <TextBox value={appealAnsValue} onChange={() => { }} disabled />
                   <h3>Grade</h3>
                   <input
                     type="text"
                     placeholder="Grade"
-                    style={{ width: '9%', height: '10%', textAlign: 'start', paddingLeft: '10px' }}
+                    style={{ width: '12%', height: '10%', textAlign: 'start', paddingLeft: '10px' }}
                     value={grade}
                     onChange={() => { }}
                   />
+                  </Box>
                       </>
                   ) : (
                       <>
@@ -184,7 +187,7 @@
                   </div>
               
               
-              <Box width={550} height={365} sx={{ textAlign: 'center' }}>
+              <Box width={500} height={365} sx={{ textAlign: 'center' }}>
                 {!appealFieldExists ? (
                   <>
                     <h3>Write appeal</h3>
