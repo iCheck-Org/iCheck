@@ -150,8 +150,8 @@ const TableLecturer = ({ firebaseUser }) => {
             ? (
             <IconButton 
               onClick={() => setShowAppeal((prevState) => !prevState)}
-              disabled={!isClickableShow}
-              title="View Review"
+              // disabled={!isClickableShow}
+              title="View Appeal"
               >
               <VisibilityIcon />
             </IconButton>
