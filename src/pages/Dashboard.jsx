@@ -1,5 +1,5 @@
 import ResponsiveDrawer from "../components/Drawer.jsx";
-import TableTest from "../components/TableTest.jsx";
+import TableStudent from "../components/TableStudent.jsx";
 import TableChecker from "../components/TableChecker.jsx";
 import TableLecturer from "../components/TableLecturer.jsx";
 import { useState, useEffect } from "react";
@@ -39,7 +39,7 @@ export default function Dashboard() {
       {firebaseUser && (
         <>
           <ResponsiveDrawer firebaseUser={firebaseUser} />
-          {firebaseUser.type === "student" && <TableTest firebaseUser={firebaseUser} />}
+          {firebaseUser.type === "student" && <TableStudent firebaseUser={firebaseUser} />}
           {firebaseUser.type === "checker" && <TableChecker firebaseUser={firebaseUser} />}
           {firebaseUser.type === "lecturer" && <TableLecturer firebaseUser={firebaseUser} />}
         </>

@@ -20,7 +20,7 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage, db } from "../config/fire-base";
 import ReviewView from "./ReviewView";
 
-const TableTest = ({ firebaseUser }) => {
+const TableStudent = ({ firebaseUser }) => {
   const columns = [
     { field: "Course", headerName: "Course Name", width: 200 },
     {
@@ -299,4 +299,4 @@ const TableTest = ({ firebaseUser }) => {
   );
 };
 
-export default TableTest;
+export default TableStudent;

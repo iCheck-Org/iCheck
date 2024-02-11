@@ -8,13 +8,10 @@ import StudentViewTabs from './StudentViewTabs';
 export default function ReviewView({ assignmentID, onClose }) {
   const [open, setOpen] = useState(true);
 
-
   const handleClose = () => {
     setOpen(false);
     onClose();
   };
-  
-
 
   return (
     <div>
