@@ -1,25 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { DataGrid } from "@mui/x-data-grid";
-import { Box, IconButton, Backdrop, Typography } from "@mui/material";
+import { Box, IconButton, Backdrop } from "@mui/material";
 import {
-  updateDoc,
   doc,
   collection,
   getDoc,
   getDocs,
   query,
   where,
-  addDoc,
-  serverTimestamp,
 } from "firebase/firestore";
 import GetAppIcon from "@mui/icons-material/GetApp";
 import GradingIcon from "@mui/icons-material/Grading";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { format } from "date-fns";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+
 import { db } from "../config/fire-base";
 import Review from "./Review";
-import ReviewView from "./ReviewView"
+import ReviewView from "./ReviewView";
 
 const TableChecker = ({ firebaseUser }) => {
   const columns = [
@@ -99,8 +96,10 @@ const TableChecker = ({ firebaseUser }) => {
           File_doc !== undefined &&
           File_doc !== "" &&
           isPastDueDate;
-        const isClickableGrading = isPastDueDate && grade === "" && File_doc !== "";
-        const isClickableShow = grade !== null && grade !== undefined && grade !== "";
+        const isClickableGrading =
+          isPastDueDate && grade === "" && File_doc !== "";
+        const isClickableShow =
+          grade !== null && grade !== undefined && grade !== "";
 
         const onDownload = async (row) => {
           try {
@@ -163,7 +162,7 @@ const TableChecker = ({ firebaseUser }) => {
               <Review
                 assignmentID={value.row.id}
                 onClose={() => setShowReview(false)}
-                firebaseUser={firebaseUser} 
+                firebaseUser={firebaseUser}
               />
             )}
             {showReviewView && (
@@ -172,7 +171,6 @@ const TableChecker = ({ firebaseUser }) => {
                 onClose={() => setShowReviewView((prevState) => !prevState)}
               />
             )}
-
           </div>
         );
       },
@@ -181,7 +179,6 @@ const TableChecker = ({ firebaseUser }) => {
 
   const [rows, setRows] = useState([]);
   const [uploadOpen, setUploadOpen] = useState(false);
-  const [selectedRowId, setSelectedRowId] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -217,8 +214,7 @@ const TableChecker = ({ firebaseUser }) => {
         const rows = await Promise.all(
           assignmentsSnapshot.docs.map(async (doc) => {
             const assignmentData = doc.data();
-            
-            
+
             // Fetch corresponding user document based on the 'Owner' field
             const userQuerySnapshot = await getDocs(
               query(
@@ -229,56 +225,59 @@ const TableChecker = ({ firebaseUser }) => {
 
             // Check if a matching user document exists
             if (!userQuerySnapshot.empty) {
-
               const courseId = assignmentData["Course-ref"];
 
-              const coursesSnapshot = await getDocs(collection(db, "courses-test"));
+              const coursesSnapshot = await getDocs(
+                collection(db, "courses-test")
+              );
 
-              const courseDoc = coursesSnapshot.docs.find((course) => course.id === courseId);
+              const courseDoc = coursesSnapshot.docs.find(
+                (course) => course.id === courseId
+              );
 
               if (courseDoc) {
                 const courseData = courseDoc.data();
                 const courseName = courseData.name;
-              
-              
-              // Get the student_id from the user document
-              const studentId = userQuerySnapshot.docs[0].data().personal_id;
 
-              const File_doc = assignmentData["File_doc"]; // Access the assignmentData object and get the value of "File_doc"
+                // Get the student_id from the user document
+                const studentId = userQuerySnapshot.docs[0].data().personal_id;
 
-              // Fetch submission date from "pdfs" collection based on "File_doc"
-              const pdfsQuerySnapshot = await getDocs(
-                query(collection(db, "pdfs"))
-              );
+                const File_doc = assignmentData["File_doc"]; // Access the assignmentData object and get the value of "File_doc"
 
-              // Check if a matching pdf document exists
-              if (!pdfsQuerySnapshot.empty) {
-                let submissionTimestamp;
+                // Fetch submission date from "pdfs" collection based on "File_doc"
+                const pdfsQuerySnapshot = await getDocs(
+                  query(collection(db, "pdfs"))
+                );
 
-                pdfsQuerySnapshot.forEach((pdfDoc) => {
-                  // Compare the File_doc with the document ID
-                  if (pdfDoc.id === File_doc) {
-                    submissionTimestamp = pdfDoc.data().timestamp;
-                  }
-                });
+                // Check if a matching pdf document exists
+                if (!pdfsQuerySnapshot.empty) {
+                  let submissionTimestamp;
 
-                return {
-                  id: doc.id,
-                  ...assignmentData,
-                  personal_id: studentId, // Add the Student_ID field to the assignment data
-                  submission_date: submissionTimestamp, // Add the submission date to the assignment data
-                  Course: courseName
-                };
+                  pdfsQuerySnapshot.forEach((pdfDoc) => {
+                    // Compare the File_doc with the document ID
+                    if (pdfDoc.id === File_doc) {
+                      submissionTimestamp = pdfDoc.data().timestamp;
+                    }
+                  });
+
+                  return {
+                    id: doc.id,
+                    ...assignmentData,
+                    personal_id: studentId, // Add the Student_ID field to the assignment data
+                    submission_date: submissionTimestamp, // Add the submission date to the assignment data
+                    Course: courseName,
+                  };
+                }
               }
+
+              // If no matching user document found or no matching pdf document found, return assignment data without modifying
+              return {
+                id: doc.id,
+                ...assignmentData,
+                Course: courseName,
+              };
             }
-          
-            // If no matching user document found or no matching pdf document found, return assignment data without modifying
-            return {
-              id: doc.id,
-              ...assignmentData,
-              Course: courseName
-            };
-          }})
+          })
         );
 
         setRows(rows);
@@ -291,11 +290,6 @@ const TableChecker = ({ firebaseUser }) => {
     fetchData();
   }, [firebaseUser]);
 
-  const handleUploadOpen = (rowId) => {
-    setSelectedRowId(rowId);
-    setUploadOpen(true);
-  };
-
   const handleUploadClose = () => {
     setUploadOpen(false);
   };
@@ -307,12 +301,7 @@ const TableChecker = ({ firebaseUser }) => {
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={uploadOpen}
         onClick={handleUploadClose}
-      >
-        <Box>
-          {selectedRowId 
-            }
-        </Box>
-      </Backdrop>
+      ></Backdrop>
     </Box>
   );
 };
