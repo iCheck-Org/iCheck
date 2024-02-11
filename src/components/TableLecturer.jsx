@@ -322,6 +322,7 @@ const TableLecturer = ({ firebaseUser }) => {
       <Box display="flex" justifyContent="flex-end" height={40}>
         <SwitchAppeal onToggle={setShowAppealTable} />
       </Box>
+
       <DataGrid columns={columns} rows={rows} />
 
       <Backdrop
