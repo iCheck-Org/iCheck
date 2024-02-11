@@ -15,7 +15,6 @@ import {
 import GetAppIcon from "@mui/icons-material/GetApp";
 import UploadIcon from "@mui/icons-material/Upload";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import BackDropSample from "./BackDropSample";
 import { format } from "date-fns";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage, db } from "../config/fire-base";
