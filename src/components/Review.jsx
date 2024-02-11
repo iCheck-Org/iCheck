@@ -1,94 +1,117 @@
-  import React, { useState } from 'react';
-  import PropTypes from 'prop-types';
-  import clsx from 'clsx';
-  import { styled, css } from '@mui/system';
-  import { Modal as BaseModal } from '@mui/base/Modal';
-  import { Box } from '@mui/material';
-  import TextBox from './TextBox';
-  import { db } from '../config/fire-base';
-  import { doc, updateDoc } from 'firebase/firestore';
+import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
+import clsx from 'clsx';
+import { styled, css } from '@mui/system';
+import { Modal as BaseModal } from '@mui/base/Modal';
+import { Box } from '@mui/material';
+import TextBox from './TextBox';
+import { db } from '../config/fire-base';
+import { doc, updateDoc, getDoc, onSnapshot } from 'firebase/firestore';
 
+export default function Review({ assignmentID, onClose, firebaseUser }) {
+  const [open, setOpen] = useState(true);
+  const [hasComment, setHasComment] = useState(false); // State to track if the assignment has a Comment
+  const [gradeInputValue, setGradeInputValue] = useState(""); // Define state for grade input value
+  const [commentInputValue, setCommentInputValue] = useState(""); // Define state for comment input value
 
-  export default function Review({assignmentID , onClose , firebaseUser }) {
-    const [open, setOpen] = useState(true);
-
-    const handleClose = () => {
-      setOpen(false);
-      onClose(); // Call the onClose function passed from the parent component
-    };
-
-    const handleSubmit = async () => {
+  useEffect(() => {
+    const fetchAssignment = async () => {
       try {
-        // Get a reference to the Firestore document
-        const documentRef = doc(db, 'assignments', assignmentID);
-    
-        // Create an object with the grade and comment data
-        const data = {
-          Grade: gradeInputValue, // Assume gradeInputValue is the value entered by the user in the grade input field
-          Comment: commentInputValue, // Assume commentInputValue is the value entered by the user in the comment input field
-          Checker: `${firebaseUser.name}`
+        const assignmentDocRef = doc(db, 'assignments', assignmentID);
+        const unsubscribe = onSnapshot(assignmentDocRef, (doc) => {
+          if (doc.exists()) {
+            const data = doc.data();
+
+            console.log('Fetched data:', data); // Add this line to log the fetched data
+            console.log(data.Comment);
+            if ('Comment' in data) {
+              setHasComment(true);
+              setCommentInputValue(data.Comment);
+            }
+            if ('Grade' in data) {
+              setGradeInputValue(data.Grade);
+            }
+          }
+        });
+        return () => {
+          unsubscribe();
         };
-    
-        // Use updateDoc() method to update the document with the new data
-        await updateDoc(documentRef, data);
-    
-        console.log('Document successfully updated!');
-        setOpen(false); // Close the modal after successful submission
-        onClose(); // Call the onClose function passed from the parent component
       } catch (error) {
-        console.error('Error updating document: ', error);
+        console.error('Error fetching assignment document:', error);
       }
     };
+    fetchAssignment();
+  }, [assignmentID]);
 
-    const [gradeInputValue, setGradeInputValue] = useState(""); // Define state for grade input value
-    const [commentInputValue, setCommentInputValue] = useState(""); // Define state for comment input value
+  const handleClose = () => {
+    setOpen(false);
+    onClose(); // Call the onClose function passed from the parent component
+  };
 
-    // Update grade input value when user types
-    const handleGradeInputChange = (event) => {
-      setGradeInputValue(event.target.value);
-    };
+  const handleSubmit = async () => {
+    try {
+      // Get a reference to the Firestore document
+      const documentRef = doc(db, 'assignments', assignmentID);
 
-    // Update comment input value when user types
-    const handleCommentInputChange = (event) => {
-      const { value } = event.target;
-      setCommentInputValue(value);
-    };
+      // Create an object with the grade and comment data
+      const data = {
+        Grade: gradeInputValue,
+        Comment: commentInputValue,
+        Checker: `${firebaseUser.name}`
+      };
 
+      // Use updateDoc() method to update the document with the new data
+      await updateDoc(documentRef, data);
 
-    return (
-      <div>
-        <Modal
-          aria-labelledby="unstyled-modal-title"
-          aria-describedby="unstyled-modal-description"
-          open={open}
-          onClose={handleClose}
-          slots={{ backdrop: StyledBackdrop }}
-        >
-  <ModalContent sx={{ width: 900, height: 500, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-    <Box width={700} height={500} sx={{ textAlign: 'center' }}>
-      <h2>Review Assignment</h2>
-      <TextBox value={commentInputValue} onChange={handleCommentInputChange} />
-      
-    </Box>
-    <Box width={200} height={200} sx={{ textAlign: 'center' }}>
-        <input
-      type="text"
-      placeholder="Grade"
-      style={{ width: '30%', height: '50%', textAlign: 'start', paddingLeft: '10px' }}
-      value={gradeInputValue}
-      onChange={handleGradeInputChange}
-    />
+      console.log('Document successfully updated!');
+      setOpen(false); // Close the modal after successful submission
+      onClose(); // Call the onClose function passed from the parent component
+    } catch (error) {
+      console.error('Error updating document: ', error);
+    }
+  };
 
-    </Box>
-    <Box width={200} height={500} sx={{ textAlign: 'center' }}>
-    <button onClick={handleSubmit}>Submit</button>
-    </Box>
-  </ModalContent>
-
-        </Modal>
-      </div>
-    );
-  }
+  return (
+    <div>
+      <Modal
+        aria-labelledby="unstyled-modal-title"
+        aria-describedby="unstyled-modal-description"
+        open={open}
+        onClose={handleClose}
+        slots={{ backdrop: StyledBackdrop }}
+      >
+        {hasComment ? (
+          <ModalContent sx={{ width: 900, height: 500, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <Box width={700} height={500} sx={{ textAlign: 'center' }}>
+              <h2>Checker's Comment</h2>
+              <TextBox value={commentInputValue} onChange={() => { }} />
+              <div>Grade: {gradeInputValue}</div>
+            </Box>
+          </ModalContent>
+        ) : (
+          <ModalContent sx={{ width: 900, height: 500, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <Box width={700} height={500} sx={{ textAlign: 'center' }}>
+              <h2>Review Assignment</h2>
+              <TextBox value={commentInputValue} onChange={(event) => setCommentInputValue(event.target.value)} />
+            </Box>
+            <Box width={200} height={200} sx={{ textAlign: 'center' }}>
+              <input
+                type="text"
+                placeholder="Grade"
+                style={{ width: '30%', height: '50%', textAlign: 'start', paddingLeft: '10px' }}
+                value={gradeInputValue}
+                onChange={(event) => setGradeInputValue(event.target.value)}
+              />
+            </Box>
+            <Box width={200} height={500} sx={{ textAlign: 'center' }}>
+              <button onClick={handleSubmit}>Submit</button>
+            </Box>
+          </ModalContent>
+        )}
+      </Modal>
+    </div>
+  );
+}
 
   Review.propTypes = {
     onClose: PropTypes.func.isRequired, // Define onClose prop as a function
