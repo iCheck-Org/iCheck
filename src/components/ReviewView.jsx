@@ -3,73 +3,18 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { styled, css } from '@mui/system';
 import { Modal as BaseModal } from '@mui/base/Modal';
-import { Box } from '@mui/material';
-import TextBox from './TextBox';
-import { db } from '../config/fire-base';
-import { getDoc, doc , updateDoc } from 'firebase/firestore';
+import StudentViewTabs from './StudentViewTabs';
 
 export default function ReviewView({ assignmentID, onClose }) {
-  const [open, setOpen] = useState(false);
-  const [comment, setComment] = useState('');
-  const [grade, setGrade] = useState('');
-  const [submitted, setSubmitted] = useState(false); // State to track if appeal is submitted
-  const [appealValue, setappealValue] = useState(""); // Define state for comment input value
+  const [open, setOpen] = useState(true);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const docRef = doc(db, 'assignments', assignmentID);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          setComment(data.Comment || '');
-          setGrade(data.Grade || '');
-          setOpen(true); // Update the state to open the modal after data fetching is complete
-        }
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
-    fetchData();
-  }, [assignmentID]);
 
   const handleClose = () => {
     setOpen(false);
     onClose();
   };
   
-  const viewAppealWindow = () => {
-    // Handle appeal submission
-    // You can add your logic here for submitting the appeal
-    setSubmitted(true); // Update state to indicate appeal is submitted
-  };
 
-  const handleAppealSubmit  = async () => {
-    try {
-      // Get a reference to the Firestore document
-      const documentRef = doc(db, 'assignments', assignmentID);
-  
-      // Create an object with the grade and comment data
-      const data = {
-        Appeal: appealValue, // Assume appealValue is the value entered by the user in the appealTextBox input field
-      };
-  
-      // Use updateDoc() method to update the document with the new data
-      await updateDoc(documentRef, data);
-  
-      console.log('Document successfully updated!');
-      setOpen(false); // Close the modal after successful submission
-      onClose(); // Call the onClose function passed from the parent component
-    } catch (error) {
-      console.error('Error updating document: ', error);
-    }
-  };
-
-  const handleAppealValue = (event) => {
-    const { value } = event.target;
-    setappealValue(value);
-  };
 
   return (
     <div>
@@ -81,54 +26,7 @@ export default function ReviewView({ assignmentID, onClose }) {
         slots={{ backdrop: StyledBackdrop }}
       >
         <ModalContent sx={{ width: 900, height: 500, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-        {submitted ? (
-  <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-    
-    {/* Container for Checker's comment */}
-    <div style={{ display: 'flex', flexDirection: 'column', marginRight: '20px', paddingRight: '20px', borderRight: '1px solid #ccc' }}>
-      <Box width={250}>
-        <h3>Checker's comment</h3>
-        <TextBox value={comment} onChange={() => {}} />
-      </Box>
-      <Box width={150} height={100} sx={{ textAlign: 'center' }}>
-        <h3>Grade</h3>
-        <input
-          type="text"
-          placeholder="Grade"
-          style={{ width: '25%', height: '30%', textAlign: 'start', paddingLeft: '10px' }}
-          value={grade}
-          onChange={() => {}}
-        />
-      </Box>
-    </div>
-    {/* Container for Your's appeal */}
-    <Box width={550} height={365} sx={{ textAlign: 'center' }}>
-      <h3>Your's appeal</h3>
-      <TextBox value={appealValue} onChange={handleAppealValue} />
-      <button onClick={handleAppealSubmit}>Send</button>
-    </Box>
-  </div>
-)
-          : (
-            <>
-              <Box width={700} height={500} sx={{ textAlign: 'center' }}>
-                <h2>Review Assignment</h2>
-                <TextBox value={comment} onChange={handleAppealValue} />
-              </Box>
-              <Box width={200} height={200} sx={{ textAlign: 'center' }}>
-                <input
-                  type="text"
-                  placeholder="Grade"
-                  style={{ width: '30%', height: '50%', textAlign: 'start', paddingLeft: '10px' }}
-                  value={grade}
-                  onChange={() => {}}
-                />
-              </Box>
-              <Box>
-                <button onClick={viewAppealWindow}>Submit an appeal</button>
-              </Box>
-            </>
-          )}
+          <StudentViewTabs assignmentID={assignmentID}/>
         </ModalContent>
       </Modal>
     </div>
