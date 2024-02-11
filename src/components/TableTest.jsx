@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { DataGrid } from "@mui/x-data-grid";
-import { Box, IconButton, Backdrop, Typography } from "@mui/material";
+import { Box, IconButton, Backdrop } from "@mui/material";
 import {
   updateDoc,
   doc,
@@ -15,15 +15,12 @@ import {
 import GetAppIcon from "@mui/icons-material/GetApp";
 import UploadIcon from "@mui/icons-material/Upload";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import BackDropSample from "./BackDropSample";
 import { format } from "date-fns";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage, db } from "../config/fire-base";
 import ReviewView from "./ReviewView";
 
 const TableTest = ({ firebaseUser }) => {
-  const [showReviewView, setShowReviewView] = useState(false); // Move showReviewView state to the TableTest component
-
   const columns = [
     { field: "Course", headerName: "Course Name", width: 200 },
     {
@@ -121,55 +118,52 @@ const TableTest = ({ firebaseUser }) => {
           try {
             const fileInput = document.createElement("input");
             fileInput.type = "file";
-        
+
             fileInput.addEventListener("change", async (event) => {
               const file = event.target.files[0];
               if (file) {
-                const course = value.row.Course;
-                const assignmentNo = value.row["Assignment No."];
-        
                 const assignmentRef = doc(db, "assignments", rowId);
                 const assignmentDoc = await getDoc(assignmentRef);
                 const existingDocId = assignmentDoc.data().File_doc;
-        
+
                 if (existingDocId) {
                   const storageRef = ref(storage, file.name);
                   await uploadBytes(storageRef, file);
-        
+
                   // Update the existing document with the new storage URL and timestamp
                   await updateDoc(doc(db, "pdfs", existingDocId), {
                     name: file.name,
                     url: await getDownloadURL(storageRef),
                     timestamp: serverTimestamp(),
                   });
-        
+
                   // Update the corresponding document in the "assignments" collection
                   await updateDoc(assignmentRef, { File_doc: existingDocId });
                 } else {
                   // If no document exists, create a new document
                   const storageRef = ref(storage, `pdfs/${file.name}`);
                   await uploadBytes(storageRef, file);
-        
+
                   // Get the download URL and timestamp of the uploaded file
                   const downloadURL = await getDownloadURL(storageRef);
                   const timestamp = serverTimestamp();
-        
+
                   // Create a new document in the "pdfs" collection
                   const newDocRef = await addDoc(collection(db, "pdfs"), {
                     name: file.name,
                     url: downloadURL,
                     timestamp: timestamp,
                   });
-        
+
                   // Update the corresponding document in the "assignments" collection
                   await updateDoc(assignmentRef, { File_doc: newDocRef.id });
                 }
-        
+
                 // Update the state to indicate a successful file upload
                 setFileUploaded(true);
               }
             });
-        
+
             // Trigger the file input click
             fileInput.click();
           } catch (error) {
@@ -218,7 +212,6 @@ const TableTest = ({ firebaseUser }) => {
 
   const [rows, setRows] = useState([]);
   const [uploadOpen, setUploadOpen] = useState(false);
-  const [selectedRowId, setSelectedRowId] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -227,28 +220,32 @@ const TableTest = ({ firebaseUser }) => {
           console.log("User is not defined. Aborting data fetching.");
           return;
         }
-    
+
         const assignmentsSnapshot = await getDocs(
           query(
             collection(db, "assignments"),
             where("Owner", "==", firebaseUser.id)
           )
         );
-    
+
         const data = await Promise.all(
           assignmentsSnapshot.docs.map(async (doc) => {
             const assignmentData = doc.data();
             const courseId = assignmentData["Course-ref"];
-    
-            const coursesSnapshot = await getDocs(collection(db, "courses-test"));
-    
+
+            const coursesSnapshot = await getDocs(
+              collection(db, "courses-test")
+            );
+
             // Find the course document with matching courseId
-            const courseDoc = coursesSnapshot.docs.find((course) => course.id === courseId);
-    
+            const courseDoc = coursesSnapshot.docs.find(
+              (course) => course.id === courseId
+            );
+
             if (courseDoc) {
               const courseData = courseDoc.data();
               const courseName = courseData.name;
-    
+
               // Return the assignment data along with the course name
               return {
                 id: doc.id,
@@ -257,7 +254,9 @@ const TableTest = ({ firebaseUser }) => {
               };
             } else {
               // If no matching course document is found, log a message and return assignment data without modifying
-              console.log(`Course document with ID ${courseId} does not exist.`);
+              console.log(
+                `Course document with ID ${courseId} does not exist.`
+              );
               return {
                 id: doc.id,
                 ...assignmentData,
@@ -265,29 +264,19 @@ const TableTest = ({ firebaseUser }) => {
             }
           })
         );
-    
+
         setRows(data);
       } catch (error) {
         console.error("Error fetching data from Firestore:", error);
       }
     };
-    
 
     console.log("Starting data fetching process...");
     fetchData();
   }, [firebaseUser]);
 
-  const handleUploadOpen = (rowId) => {
-    setSelectedRowId(rowId);
-    setUploadOpen(true);
-  };
-
   const handleUploadClose = () => {
     setUploadOpen(false);
-  };
-
-  const handleReviewViewToggle = () => {
-    setShowReviewView((prevState) => !prevState); // Toggle the showReviewView state
   };
 
   return (
@@ -303,9 +292,7 @@ const TableTest = ({ firebaseUser }) => {
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={uploadOpen}
         onClick={handleUploadClose}
-      >
-        <Box>{showReviewView && <BackDropSample rowId={selectedRowId} />}</Box>
-      </Backdrop>
+      ></Backdrop>
     </Box>
   );
 };

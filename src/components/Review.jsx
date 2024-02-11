@@ -6,7 +6,7 @@
   import { Box } from '@mui/material';
   import TextBox from './TextBox';
   import { db } from '../config/fire-base';
-  import { getDocs, query, collection, doc, updateDoc } from 'firebase/firestore';
+  import { doc, updateDoc } from 'firebase/firestore';
 
 
   export default function Review({assignmentID , onClose , firebaseUser }) {

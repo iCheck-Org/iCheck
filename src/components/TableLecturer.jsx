@@ -1,24 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { DataGrid } from "@mui/x-data-grid";
-import { Box, IconButton, Backdrop, Typography } from "@mui/material";
-import {
-  updateDoc,
-  doc,
-  collection,
-  getDoc,
-  getDocs,
-  query,
-  where,
-  addDoc,
-  serverTimestamp,
-} from "firebase/firestore";
+import { Box, IconButton, Backdrop } from "@mui/material";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import GetAppIcon from "@mui/icons-material/GetApp";
-import UploadIcon from "@mui/icons-material/Upload";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import BackDropSample from "./BackDropSample";
 import { format } from "date-fns";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { storage, db } from "../config/fire-base";
+import { db } from "../config/fire-base";
 import CreateAssignment from "./CreateAssignment";
 import Review from "./Review";
 import SwitchAppeal from "./SwitchAppeal";
@@ -85,7 +72,8 @@ const TableLecturer = ({ firebaseUser }) => {
         return dueDate ? format(dueDate, "dd/MM/yyyy, HH:mm:ss") : "";
       },
     },
-    {field: "Actions",
+    {
+      field: "Actions",
       headerName: "Actions",
       width: 200,
       renderCell: (value) => {
@@ -129,15 +117,16 @@ const TableLecturer = ({ firebaseUser }) => {
 
         // disable the buttons if the file is not uploaded
         const isClickableDownload =
-        File_doc !== null &&
-        File_doc !== undefined &&
-        File_doc !== "" &&
-        isPastDueDate;
-        const isClickableShow = grade !== null && grade !== undefined && grade !== "";
-        
+          File_doc !== null &&
+          File_doc !== undefined &&
+          File_doc !== "" &&
+          isPastDueDate;
+        const isClickableShow =
+          grade !== null && grade !== undefined && grade !== "";
+
         return (
           <div>
-            <IconButton 
+            <IconButton
               onClick={() => onDownload(value.row)}
               disabled={!isClickableDownload}
               title="Download Assignment"
@@ -146,24 +135,22 @@ const TableLecturer = ({ firebaseUser }) => {
             </IconButton>
 
             {/* Conditionally render the visibility icon */}
-            {showAppealTable 
-            ? (
-            <IconButton 
-              onClick={() => setShowAppeal((prevState) => !prevState)}
-              // disabled={!isClickableShow}
-              title="View Appeal"
+            {showAppealTable ? (
+              <IconButton
+                onClick={() => setShowAppeal((prevState) => !prevState)}
+                disabled={!isClickableShow}
+                title="View Review"
               >
-              <VisibilityIcon />
-            </IconButton>
-            ) 
-            : (
-            <IconButton 
-              onClick={() => setShowReview((prevState) => !prevState)}
-              disabled={!isClickableShow}
-              title="View Review"
+                <VisibilityIcon />
+              </IconButton>
+            ) : (
+              <IconButton
+                onClick={() => setShowReview((prevState) => !prevState)}
+                disabled={!isClickableShow}
+                title="View Review"
               >
-              <VisibilityIcon />
-            </IconButton>
+                <VisibilityIcon />
+              </IconButton>
             )}
 
             {showAppeal && (
@@ -187,71 +174,74 @@ const TableLecturer = ({ firebaseUser }) => {
 
   const [rows, setRows] = useState([]);
   const [uploadOpen, setUploadOpen] = useState(false);
-  const [selectedRowId, setSelectedRowId] = useState(null);
   const [showAppealTable, setShowAppealTable] = useState(false);
   const [assignmentsSnapshot, setAssignmentsSnapshot] = useState([]);
 
-    useEffect(() => {
-      const fetchData = async () => {
-        try {
-          if (!firebaseUser) {
-            console.log("User is not defined. Aborting data fetching.");
-            return;
-          }
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (!firebaseUser) {
+          console.log("User is not defined. Aborting data fetching.");
+          return;
+        }
 
-          // Fetch user ID
-          const userId = firebaseUser.id;
+        // Fetch user ID
+        const userId = firebaseUser.id;
 
         // Fetch user document
-        const userDoc = firebaseUser
-        
+        const userDoc = firebaseUser;
 
         const userCourses = userDoc.courses;
         let snapshot = assignmentsSnapshot;
 
         // Fetch assignments only if assignmentsSnapshot is not available
-      if (assignmentsSnapshot && assignmentsSnapshot.length == 0) {
-        snapshot = await getDocs(
-          query(collection(db, "assignments"), where("Course-ref", "in", userCourses))
-        );
-        setAssignmentsSnapshot(snapshot);
-      }
+        if (assignmentsSnapshot && assignmentsSnapshot.length == 0) {
+          snapshot = await getDocs(
+            query(
+              collection(db, "assignments"),
+              where("Course-ref", "in", userCourses)
+            )
+          );
+          setAssignmentsSnapshot(snapshot);
+        }
 
-      // Filter assignments based on the showAppealTable flag
-      if (showAppealTable) {
-        let docs =  assignmentsSnapshot.docs.filter((doc) => doc.data().Appeal);
-        snapshot = {...snapshot,docs};
-      }
+        // Filter assignments based on the showAppealTable flag
+        if (showAppealTable) {
+          let docs = assignmentsSnapshot.docs.filter(
+            (doc) => doc.data().Appeal
+          );
+          snapshot = { ...snapshot, docs };
+        }
 
         // Map the fetched assignments data
         const rows = await Promise.all(
-          ((snapshot).docs).map(async (doc) => {
+          snapshot.docs.map(async (doc) => {
             const assignmentData = doc.data();
-            
 
+            // Fetch corresponding user document based on the 'Owner' field
+            const userQuerySnapshot = await getDocs(
+              query(
+                collection(db, "users"),
+                where("id", "==", assignmentData.Owner)
+              )
+            );
 
-              // Fetch corresponding user document based on the 'Owner' field
-              const userQuerySnapshot = await getDocs(
-                query(
-                  collection(db, "users"),
-                  where("id", "==", assignmentData.Owner)
-                )
+            // Check if a matching user document exists
+            if (!userQuerySnapshot.empty) {
+              const courseId = assignmentData["Course-ref"];
+
+              const coursesSnapshot = await getDocs(
+                collection(db, "courses-test")
               );
 
-              // Check if a matching user document exists
-              if (!userQuerySnapshot.empty) {
+              const courseDoc = coursesSnapshot.docs.find(
+                (course) => course.id === courseId
+              );
 
-                const courseId = assignmentData["Course-ref"];
+              if (courseDoc) {
+                const courseData = courseDoc.data();
+                const courseName = courseData.name;
 
-                const coursesSnapshot = await getDocs(collection(db, "courses-test"));
-
-                const courseDoc = coursesSnapshot.docs.find((course) => course.id === courseId);
-
-                if (courseDoc) {
-                  const courseData = courseDoc.data();
-                  const courseName = courseData.name;
-                
-                
                 // Get the student_id from the user document
                 const studentId = userQuerySnapshot.docs[0].data().personal_id;
 
@@ -278,34 +268,30 @@ const TableLecturer = ({ firebaseUser }) => {
                     ...assignmentData,
                     personal_id: studentId, // Add the Student_ID field to the assignment data
                     submission_date: submissionTimestamp, // Add the submission date to the assignment data
-                    Course: courseName
+                    Course: courseName,
                   };
                 }
               }
-            
+
               // If no matching user document found or no matching pdf document found, return assignment data without modifying
               return {
                 id: doc.id,
                 ...assignmentData,
-                Course: courseName
+                Course: courseName,
               };
-            }})
-          );
+            }
+          })
+        );
 
-          setRows(rows);
-        } catch (error) {
-          console.error("Error fetching data from Firestore:", error);
-        }
-      };
+        setRows(rows);
+      } catch (error) {
+        console.error("Error fetching data from Firestore:", error);
+      }
+    };
 
     console.log("Starting data fetching process...");
     fetchData();
-  }, [firebaseUser, showAppealTable,assignmentsSnapshot]);
-
-  const handleUploadOpen = (rowId) => {
-    setSelectedRowId(rowId);
-    setUploadOpen(true);
-  };
+  }, [firebaseUser, showAppealTable, assignmentsSnapshot]);
 
   const handleUploadClose = () => {
     setUploadOpen(false);
@@ -331,22 +317,18 @@ const TableLecturer = ({ firebaseUser }) => {
           onClose={() => setShowCreateAssignment(false)}
         />
       )}
-      <Box display="flex" justifyContent="flex-end" height={40}><SwitchAppeal onToggle={setShowAppealTable} /></Box>
+      <Box display="flex" justifyContent="flex-end" height={40}>
+        <SwitchAppeal onToggle={setShowAppealTable} />
+      </Box>
       <DataGrid columns={columns} rows={rows} />
 
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={uploadOpen}
         onClick={handleUploadClose}
-      >
-        <Box>
-          {selectedRowId && (
-            <BackDropSample rowId={selectedRowId} onClose={handleUploadClose} />
-          )}
-        </Box>
-      </Backdrop>
+      ></Backdrop>
     </Box>
   );
 };
 
-export default TableLecturer;
+export default TableLecturer;

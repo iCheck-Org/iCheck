@@ -6,17 +6,15 @@ import MenuItem from "@mui/material/MenuItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
+
 import Tooltip from "@mui/material/Tooltip";
-import PersonAdd from "@mui/icons-material/PersonAdd";
-import Settings from "@mui/icons-material/Settings";
+
 import Logout from "@mui/icons-material/Logout";
 import { auth } from "../config/fire-base";
 import Collapse from "@mui/material/Collapse";
-import { collection, query, where, getDocs,getDoc,doc } from "firebase/firestore";
+import { getDoc, doc } from "firebase/firestore";
 import { db } from "../config/fire-base"; // Assuming this is where your Firestore instance is initialized
 import { signOut } from "firebase/auth";
-
 
 export default function AccountMenu(props) {
   const { firebaseUser } = props;
@@ -57,10 +55,10 @@ export default function AccountMenu(props) {
     try {
       // Reference to the document with firebaseUser.id as the ID
       const userDocRef = doc(db, "users", firebaseUser.id);
-  
+
       // Get the document snapshot
       const docSnapshot = await getDoc(userDocRef);
-  
+
       if (docSnapshot.exists()) {
         const userData = docSnapshot.data();
         const userId = userData.personal_id;
@@ -72,12 +70,11 @@ export default function AccountMenu(props) {
       console.error("Error fetching user ID:", error);
     }
   };
-  
 
   return (
     <React.Fragment>
       <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
-        <Tooltip >
+        <Tooltip>
           <IconButton
             onClick={handleClick}
             size="small"
@@ -97,7 +94,6 @@ export default function AccountMenu(props) {
         id="account-menu"
         open={open}
         onClose={handleClose}
-        // onClick={handleClose}
         PaperProps={{
           elevation: 0,
           sx: {
@@ -132,7 +128,6 @@ export default function AccountMenu(props) {
           vertical: "top",
           horizontal: "right",
         }}
-        // getContentAnchorEl={null}
       >
         <MenuItem
           onClick={handleProfileClick}
@@ -155,7 +150,7 @@ export default function AccountMenu(props) {
             horizontal: "right",
           }}
         >
-            <MenuItem onClick={handleClose} sx={{ fontSize: "small" }}>
+          <MenuItem onClick={handleClose} sx={{ fontSize: "small" }}>
             Name: {firebaseUser.name}
           </MenuItem>
           <MenuItem onClick={handleClose} sx={{ fontSize: "small" }}>
@@ -169,8 +164,8 @@ export default function AccountMenu(props) {
           </MenuItem>
         </Collapse>
         <Divider />
-        <MenuItem onClick={handleLogout} sx={{ color: '#ff5a4d' }}>
-          <ListItemIcon sx={{ color: '#ff5a4d' }}>
+        <MenuItem onClick={handleLogout} sx={{ color: "#ff5a4d" }}>
+          <ListItemIcon sx={{ color: "#ff5a4d" }}>
             <Logout fontSize="small" />
           </ListItemIcon>
           Logout
