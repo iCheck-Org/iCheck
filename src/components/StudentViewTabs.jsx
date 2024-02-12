@@ -41,7 +41,7 @@
     };
   }
 
-  export default function StudentViewTabs({ assignmentID }) {
+  export default function StudentViewTabs({ assignmentID, typePermision }) {
       const [comment, setComment] = useState('');
       const [grade, setGrade] = useState('');
       const [appealValue, setAppealValue] = useState(''); // Define state for appeal input value
@@ -77,6 +77,7 @@
       
               setOpen(true); // Update the state to open the modal after data fetching is complete
             }
+
           } catch (error) {
             console.error('Error fetching data:', error);
           }
@@ -126,7 +127,7 @@
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
             <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
               <Tab label="Review Assignment" {...a11yProps(0)} />
-              <Tab label="Appeal" {...a11yProps(1)} />
+              {typePermision !== "checker" && <Tab label="Appeal" {...a11yProps(1)} />}
             </Tabs>
           </Box>
           <CustomTabPanel value={value} index={0}>

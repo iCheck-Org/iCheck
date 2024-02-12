@@ -169,6 +169,7 @@ const TableChecker = ({ firebaseUser }) => {
               <ReviewView
                 assignmentID={value.row.id}
                 onClose={() => setShowReviewView((prevState) => !prevState)}
+                typePermision = {firebaseUser.type}
               />
             )}
           </div>
