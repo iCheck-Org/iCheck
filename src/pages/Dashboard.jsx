@@ -28,7 +28,7 @@ export default function Dashboard() {
         };
         fetchData();
       } else {
-        console.log("unsubscibed User");
+        navigate("/");
       }
       return () => unsubscribe();
     });

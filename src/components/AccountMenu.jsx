@@ -6,21 +6,16 @@ import MenuItem from "@mui/material/MenuItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
-
 import Tooltip from "@mui/material/Tooltip";
-
 import Logout from "@mui/icons-material/Logout";
 import { auth } from "../config/fire-base";
 import Collapse from "@mui/material/Collapse";
-import { getDoc, doc } from "firebase/firestore";
-import { db } from "../config/fire-base"; // Assuming this is where your Firestore instance is initialized
 import { signOut } from "firebase/auth";
 
 export default function AccountMenu(props) {
   const { firebaseUser } = props;
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [profileOpen, setProfileOpen] = React.useState(false);
-  const [userId, setUserId] = React.useState(null); // State to store the user's ID number
 
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -44,31 +39,6 @@ export default function AccountMenu(props) {
       .catch((error) => {
         console.error("Error during logout:", error.message);
       });
-  };
-
-  React.useEffect(() => {
-    // Call the fetchUserId function when the component mounts or when firebaseUser changes
-    fetchUserId();
-  }, [firebaseUser]);
-
-  const fetchUserId = async () => {
-    try {
-      // Reference to the document with firebaseUser.id as the ID
-      const userDocRef = doc(db, "users", firebaseUser.id);
-
-      // Get the document snapshot
-      const docSnapshot = await getDoc(userDocRef);
-
-      if (docSnapshot.exists()) {
-        const userData = docSnapshot.data();
-        const userId = userData.personal_id;
-        setUserId(userId); // Update the userId state
-      } else {
-        console.log("No user found with the provided Firebase ID.");
-      }
-    } catch (error) {
-      console.error("Error fetching user ID:", error);
-    }
   };
 
   return (
@@ -132,7 +102,7 @@ export default function AccountMenu(props) {
         <MenuItem
           onClick={handleProfileClick}
           sx={{
-            backgroundColor: profileOpen ? "#e3f2fd" : "transparent", // Change background color when profile is clicked
+            backgroundColor: profileOpen ? "#e3f2fd" : "transparent", 
           }}
         >
           <Avatar /> Profile
@@ -154,7 +124,7 @@ export default function AccountMenu(props) {
             Name: {firebaseUser.name}
           </MenuItem>
           <MenuItem onClick={handleClose} sx={{ fontSize: "small" }}>
-            ID: {userId}
+            ID: {firebaseUser.personal_id}
           </MenuItem>
           <MenuItem onClick={handleClose} sx={{ fontSize: "small" }}>
             Email: {firebaseUser.email}{" "}

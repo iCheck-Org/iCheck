@@ -29,7 +29,6 @@ const TableStudent = ({ firebaseUser }) => {
       width: 150,
       align: "left",
     },
-
     {
       field: "Due Date",
       headerName: "Due Date",
@@ -81,14 +80,14 @@ const TableStudent = ({ firebaseUser }) => {
         const dueDate = dueDateTimestamp.getTime(); // Get timestamp from JavaScript Date object
         const isPastDueDate = dueDate >= currentDate;
 
+        // Logic for displaying the icon buttons and enabling the functionality
         const isClickableUpload = isPastDueDate;
         const isClickableDownload =
           File_doc !== null && File_doc !== undefined && File_doc !== "";
         const isClickableShow = value.row.Grade !== "";
 
-        const onDownload = async (row) => {
+        const handleFileDownload = async (row) => {
           try {
-            const userId = firebaseUser.id;
             const File_doc = row["File_doc"]; // Access the row object and get the value of "File_doc"
 
             // Fetch all documents from the "pdfs" collection
@@ -175,13 +174,15 @@ const TableStudent = ({ firebaseUser }) => {
         return (
           <div>
             <IconButton
-              onClick={() => onDownload(value.row)}
+              id="Download"
+              onClick={() => handleFileDownload(value.row)}
               disabled={!isClickableDownload}
               title="Download Assignment"
             >
               <GetAppIcon />
             </IconButton>
             <IconButton
+              id="Upload"
               onClick={() => handleFileUpload(value.row.id)}
               disabled={!isClickableUpload}
               title="Upload Assignment"
@@ -189,6 +190,7 @@ const TableStudent = ({ firebaseUser }) => {
               <UploadIcon />
             </IconButton>
             <IconButton
+              id="Review"
               onClick={() => {
                 console.log(value.row.id),
                   setShowReviewView((prevState) => !prevState);
@@ -202,7 +204,7 @@ const TableStudent = ({ firebaseUser }) => {
               <ReviewView
                 assignmentID={value.row.id}
                 onClose={() => setShowReviewView((prevState) => !prevState)}
-                typePermision = {firebaseUser.type}
+                typePermision={firebaseUser.type}
               />
             )}
           </div>
@@ -225,7 +227,7 @@ const TableStudent = ({ firebaseUser }) => {
         const assignmentsSnapshot = await getDocs(
           query(
             collection(db, "assignments"),
-            where("Owner", "==", firebaseUser.id)
+            where("Owner", "==", firebaseUser.id) // TODO : id?!?!
           )
         );
 
@@ -288,7 +290,7 @@ const TableStudent = ({ firebaseUser }) => {
         className="dashboard-logo"
         style={{ marginBottom: "10px" }}
       />
-      <div style={{ height: '140%', width: '100%' }}>
+      <div style={{ height: "140%", width: "100%" }}>
         <DataGrid columns={columns} rows={rows} />
       </div>
       <Backdrop

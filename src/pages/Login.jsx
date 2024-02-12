@@ -81,11 +81,11 @@ const Login = () => {
                     </div>
                     <br />
 
-                    <div className="centered-text">
+                    {/* <div className="centered-text">
                         <span>
                             Need to sign up for an account? <Link to="./signup">Click here.</Link>
                         </span>
-                    </div>
+                    </div> */}
                 </form>
             </div>
         </div>
