@@ -4,11 +4,11 @@ import clsx from "clsx";
 import { styled, css } from "@mui/system";
 import { Modal as BaseModal } from "@mui/base/Modal";
 import { Box } from "@mui/material";
-import TextBox from "./TextBox";
-import { db } from "../config/fire-base";
+import TextBox from "../MuiComponents/TextBox";
+import { db } from "../../config/fire-base";
 import { doc, updateDoc, onSnapshot } from "firebase/firestore";
 
-export default function Review({ assignmentID, onClose, firebaseUser }) {
+export default function WriteReview({ assignmentID, onClose, firebaseUser }) {
   const [open, setOpen] = useState(true);
   const [hasComment, setHasComment] = useState(false); // State to track if the assignment has a Comment
   const [gradeInputValue, setGradeInputValue] = useState(""); // Define state for grade input value
@@ -135,7 +135,7 @@ export default function Review({ assignmentID, onClose, firebaseUser }) {
   );
 }
 
-Review.propTypes = {
+WriteReview.propTypes = {
   onClose: PropTypes.func.isRequired, // Define onClose prop as a function
 };
 

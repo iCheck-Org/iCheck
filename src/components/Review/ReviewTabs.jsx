@@ -5,8 +5,8 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import React, { useState, useEffect } from "react";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { db } from "../config/fire-base";
-import TextBox from "./TextBox";
+import { db } from "../../config/fire-base";
+import TextBox from "../MuiComponents/TextBox";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -41,7 +41,7 @@ function a11yProps(index) {
   };
 }
 
-export default function StudentViewTabs({ assignmentID, typePermision }) {
+export default function ReviewTabs({ assignmentID, typePermision }) {
   const [comment, setComment] = useState("");
   const [grade, setGrade] = useState("");
   const [appealValue, setAppealValue] = useState(""); // Define state for appeal input value
@@ -240,6 +240,6 @@ export default function StudentViewTabs({ assignmentID, typePermision }) {
   );
 }
 
-StudentViewTabs.propTypes = {
+ReviewTabs.propTypes = {
   assignmentID: PropTypes.string.isRequired,
 };

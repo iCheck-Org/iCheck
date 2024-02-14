@@ -1,4 +1,4 @@
-import ResponsiveDrawer from "../components/Drawer.jsx";
+import ResponsiveDrawer from "../components/NavigateBar/Drawer.jsx";
 import TableStudent from "../components/TableStudent.jsx";
 import TableChecker from "../components/TableChecker.jsx";
 import TableLecturer from "../components/TableLecturer.jsx";

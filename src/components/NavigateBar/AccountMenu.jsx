@@ -8,7 +8,7 @@ import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import Logout from "@mui/icons-material/Logout";
-import { auth } from "../config/fire-base";
+import { auth } from "../../config/fire-base";
 import Collapse from "@mui/material/Collapse";
 import { signOut } from "firebase/auth";
 

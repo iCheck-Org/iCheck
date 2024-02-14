@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { styled, css } from '@mui/system';
 import { Modal as BaseModal } from '@mui/base/Modal';
-import StudentViewTabs from './StudentViewTabs';
+import ReviewTabs from './ReviewTabs';
 
-export default function ReviewView({ assignmentID, onClose , typePermision }) {
+export default function ShowReview({ assignmentID, onClose , typePermision }) {
   const [open, setOpen] = useState(true);
 
   const handleClose = () => {
@@ -23,14 +23,14 @@ export default function ReviewView({ assignmentID, onClose , typePermision }) {
         slots={{ backdrop: StyledBackdrop }}
       >
         <ModalContent sx={{ width: 900, height: 500, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <StudentViewTabs assignmentID={assignmentID} typePermision={typePermision}/>
+          <ReviewTabs assignmentID={assignmentID} typePermision={typePermision}/>
         </ModalContent>
       </Modal>
     </div>
   );
 }
 
-ReviewView.propTypes = {
+ShowReview.propTypes = {
   assignmentID: PropTypes.string.isRequired,
 };
 

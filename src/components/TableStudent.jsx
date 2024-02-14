@@ -18,7 +18,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import { format } from "date-fns";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage, db } from "../config/fire-base";
-import ReviewView from "./ReviewView";
+import ShowReview from "./Review/ShowReview";
 
 const TableStudent = ({ firebaseUser }) => {
   const columns = [
@@ -201,7 +201,7 @@ const TableStudent = ({ firebaseUser }) => {
               <VisibilityIcon />
             </IconButton>
             {showReviewView && (
-              <ReviewView
+              <ShowReview
                 assignmentID={value.row.id}
                 onClose={() => setShowReviewView((prevState) => !prevState)}
                 typePermision={firebaseUser.type}

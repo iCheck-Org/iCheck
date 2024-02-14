@@ -7,9 +7,9 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import { format } from "date-fns";
 import { db } from "../config/fire-base";
 import CreateAssignment from "./CreateAssignment";
-import Review from "./Review";
-import SwitchAppeal from "./SwitchAppeal";
-import AppealLecturer from "./AppealLecturer";
+import WriteReview from "./Review/WriteReview";
+import SwitchAppeal from "./MuiComponents/SwitchAppeal";
+import AppealLecturer from "./Appeal/AppealLecturer";
 import '../pages/styles.css';
 
 const TableLecturer = ({ firebaseUser }) => {
@@ -163,7 +163,7 @@ const TableLecturer = ({ firebaseUser }) => {
             )}
 
             {showReview && (
-              <Review
+              <WriteReview
                 assignmentID={value.row.id}
                 onClose={() => setShowReview(false)}
                 firebaseUser={firebaseUser}

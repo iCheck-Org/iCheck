@@ -15,8 +15,8 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import { format } from "date-fns";
 
 import { db } from "../config/fire-base";
-import Review from "./Review";
-import ReviewView from "./ReviewView";
+import WriteReview from "./Review/WriteReview";
+import ShowReview from "./Review/ShowReview";
 
 const TableChecker = ({ firebaseUser }) => {
   const columns = [
@@ -147,6 +147,7 @@ const TableChecker = ({ firebaseUser }) => {
             >
               <GradingIcon />
             </IconButton>
+
             <IconButton
               onClick={() => {
                 console.log(value.row.id),
@@ -157,16 +158,18 @@ const TableChecker = ({ firebaseUser }) => {
             >
               <VisibilityIcon />
             </IconButton>
+
+            
             {/* Pass assignmentId as a prop to the Review component */}
             {showReview && (
-              <Review
+              <WriteReview
                 assignmentID={value.row.id}
                 onClose={() => setShowReview(false)}
                 firebaseUser={firebaseUser}
               />
             )}
             {showReviewView && (
-              <ReviewView
+              <ShowReview
                 assignmentID={value.row.id}
                 onClose={() => setShowReviewView((prevState) => !prevState)}
                 typePermision = {firebaseUser.type}

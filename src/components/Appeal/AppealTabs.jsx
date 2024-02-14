@@ -5,8 +5,8 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import React, { useState, useEffect } from 'react';
 import { doc, getDoc , updateDoc } from 'firebase/firestore';
-import { db } from '../config/fire-base';
-import TextBox from './TextBox';
+import { db } from '../../config/fire-base';
+import TextBox from '../MuiComponents/TextBox';
 
 
 function CustomTabPanel(props) {
