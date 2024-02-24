@@ -12,11 +12,23 @@ import SwitchAppeal from "./MuiComponents/SwitchAppeal";
 import AppealLecturer from "./Appeal/AppealLecturer";
 import { AssignmentDownload } from "./AssignmentDownload";
 import '../pages/styles.css';
+import AlertSnackbar from "./MuiComponents/AlertSnackbar";
 
 const TableLecturer = ({ firebaseUser }) => {
+  const [fileDownloaded, setFileDownloadedSuccessfuly] = useState(false);
+
   const columns = [
-    { field: "personal_id", headerName: "Student ID", width: 130 },
-    { field: "Course", headerName: "Course Name", width: 150 },
+    { 
+      field: "personal_id",
+      headerName: "Student ID",
+      width: 130,
+      align: "left"
+    },
+    { field: "Course",
+      headerName: "Course Name",
+      width: 150,
+      align: "left"
+    },
     {
       field: "Assignment No.",
       headerName: "Assignment No.",
@@ -24,9 +36,36 @@ const TableLecturer = ({ firebaseUser }) => {
       align: "left",
     },
     {
+      field: "submission_date",
+      headerName: "Submission Date",
+      width: 200,
+      align: "left",
+      valueFormatter: (params) => {
+        // Convert timestamp to Date object
+        const dueDate = params.value && params.value.toDate();
+
+        // Format the Date object to a human-readable string
+        return dueDate ? format(dueDate, "dd/MM/yyyy, HH:mm:ss") : "";
+      },
+    },
+    {
+      field: "Due Date",
+      headerName: "Due Date",
+      width: 200,
+      align: "left",
+      valueFormatter: (params) => {
+        // Convert timestamp to Date object
+        const dueDate = params.value && params.value.toDate();
+
+        // Format the Date object to a human-readable string
+        return dueDate ? format(dueDate, "dd/MM/yyyy, HH:mm:ss") : "";
+      },
+    },
+    {
       field: "Checker",
       headerName: "Status",
       width: 200,
+      align: "left",
       renderCell: (params) => {
         let status = params.value;
 
@@ -51,33 +90,10 @@ const TableLecturer = ({ firebaseUser }) => {
       },
     },
     {
-      field: "submission_date",
-      headerName: "Submission Date",
-      width: 200,
-      valueFormatter: (params) => {
-        // Convert timestamp to Date object
-        const dueDate = params.value && params.value.toDate();
-
-        // Format the Date object to a human-readable string
-        return dueDate ? format(dueDate, "dd/MM/yyyy, HH:mm:ss") : "";
-      },
-    },
-    {
-      field: "Due Date",
-      headerName: "Due Date",
-      width: 200,
-      valueFormatter: (params) => {
-        // Convert timestamp to Date object
-        const dueDate = params.value && params.value.toDate();
-
-        // Format the Date object to a human-readable string
-        return dueDate ? format(dueDate, "dd/MM/yyyy, HH:mm:ss") : "";
-      },
-    },
-    {
       field: "Actions",
       headerName: "Actions",
       width: 200,
+      align: "left",
       renderCell: (value) => {
         
 
@@ -283,12 +299,20 @@ const TableLecturer = ({ firebaseUser }) => {
           onClose={() => setShowCreateAssignment(false)}
         />
       )}
-      <Box display="flex" justifyContent="flex-end" height={40}>
-        <SwitchAppeal onToggle={setShowAppealTable} />
+      <Box display="flex" justifyContent="flex-end" height={40} style={{ marginTop: "-4%" }}>
+          <SwitchAppeal onToggle={setShowAppealTable} />
       </Box>
 
-      <DataGrid columns={columns} rows={rows} />
+      <div style={{ height: "105%", width: "100%"}}>
+        <DataGrid columns={columns} rows={rows} />
+      </div>
 
+      <AlertSnackbar
+        open={fileDownloaded}
+        setOpen={setFileDownloadedSuccessfuly}
+        severity="success"
+        message="File was downloaded successfully"
+      />
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={uploadOpen}

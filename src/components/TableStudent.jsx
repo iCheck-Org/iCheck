@@ -19,11 +19,25 @@ import { format } from "date-fns";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage, db } from "../config/Fire-base";
 import ShowReview from "./Review/ShowReview";
+<<<<<<< HEAD
 import { AssignmentDownload } from "./AssignmentDownload";
+=======
+import AlertSnackbar from "./MuiComponents/AlertSnackbar";
+import '../pages/styles.css';
+
+>>>>>>> 82a4756fd148f09fcde16c66b2f60cf958ad26ee
 
 const TableStudent = ({ firebaseUser }) => {
+  const [fileUploaded, setFileUploadedSuccessfuly] = useState(false);
+  const [fileDownloaded, setFileDownloadedSuccessfuly] = useState(false);
+
   const columns = [
-    { field: "Course", headerName: "Course Name", width: 200 },
+    { 
+      field: "Course",
+      headerName: "Course Name",
+      width: 200,
+      align: "left"
+    },
     {
       field: "Assignment No.",
       headerName: "Assignment No.",
@@ -34,6 +48,7 @@ const TableStudent = ({ firebaseUser }) => {
       field: "Due Date",
       headerName: "Due Date",
       width: 200,
+      align: "left",
       valueFormatter: (params) => {
         // Convert timestamp to Date object
         const dueDate = params.value && params.value.toDate();
@@ -46,6 +61,7 @@ const TableStudent = ({ firebaseUser }) => {
       field: "Checker",
       headerName: "Status",
       width: 200,
+      align: "left",
       renderCell: (params) => {
         let status = params.value;
 
@@ -73,7 +89,7 @@ const TableStudent = ({ firebaseUser }) => {
       field: "Actions",
       headerName: "Actions",
       width: 200,
-
+      align: "left",
       renderCell: (value) => {
         const File_doc = value.row["File_doc"]; // Access the row object and get the value of "File_doc"
         const currentDate = new Date().getTime(); // Get current timestamp
@@ -87,6 +103,30 @@ const TableStudent = ({ firebaseUser }) => {
           File_doc !== null && File_doc !== undefined && File_doc !== "";
         const isClickableShow = value.row.Grade !== "";
 
+<<<<<<< HEAD
+=======
+        const handleFileDownload = async (row) => {
+          try {
+            const File_doc = row["File_doc"]; // Access the row object and get the value of "File_doc"
+
+            // Fetch all documents from the "pdfs" collection
+            const querySnapshot = await getDocs(collection(db, "pdfs"));
+            // Iterate through each document
+            querySnapshot.forEach((doc) => {
+              // Compare the File_doc with the document ID
+              if (doc.id === File_doc) {
+                const downloadURL = doc.data().url;
+                // Open the file in a new tab
+                window.open(downloadURL, '_blank');
+                setFileDownloadedSuccessfuly(true);
+              }
+            });
+          } catch (error) {
+            console.error("Error fetching document for download:", error);
+          }
+        };
+
+>>>>>>> 82a4756fd148f09fcde16c66b2f60cf958ad26ee
         const handleFileUpload = async (rowId) => {
           try {
             const fileInput = document.createElement("input");
@@ -112,7 +152,8 @@ const TableStudent = ({ firebaseUser }) => {
 
                   // Update the corresponding document in the "assignments" collection
                   await updateDoc(assignmentRef, { File_doc: existingDocId });
-                } else {
+                } 
+                else {
                   // If no document exists, create a new document
                   const storageRef = ref(storage, `pdfs/${file.name}`);
                   await uploadBytes(storageRef, file);
@@ -131,8 +172,9 @@ const TableStudent = ({ firebaseUser }) => {
                   // Update the corresponding document in the "assignments" collection
                   await updateDoc(assignmentRef, { File_doc: newDocRef.id });
                 }
-
+                setFileUploadedSuccessfuly(true); // Corrected the setter function name
                 // Update the state to indicate a successful file upload
+                //TODO(IK): is there a use for this?
                 setFileUploaded(true);
               }
             });
@@ -217,6 +259,20 @@ const TableStudent = ({ firebaseUser }) => {
                 ...assignmentData,
                 Course: courseName,
               };
+<<<<<<< HEAD
+=======
+            } 
+            else {
+              // If no matching course document is found, log a message and return assignment data without modifying
+              console.log(
+                `Course document with ID ${courseId} does not exist.`
+              );
+              return {
+                id: doc.id,
+                ...assignmentData,
+              };
+            }
+>>>>>>> 82a4756fd148f09fcde16c66b2f60cf958ad26ee
           })
         );
 
@@ -236,15 +292,21 @@ const TableStudent = ({ firebaseUser }) => {
 
   return (
     <Box height={400} width={1024} style={{ position: "relative" }}>
-      <img
-        src="/src/logo/icheck_logo_1.png"
-        alt="Logo"
-        className="dashboard-logo"
-        style={{ marginBottom: "10px" }}
-      />
-      <div style={{ height: "140%", width: "100%" }}>
+      <div style={{ height: '140%', width: '100%' }}>
         <DataGrid columns={columns} rows={rows} />
       </div>
+      <AlertSnackbar
+        open={fileUploaded}
+        setOpen={setFileUploadedSuccessfuly}
+        severity="success"
+        message="File was uploaded successfully"
+      />
+      <AlertSnackbar
+        open={fileDownloaded}
+        setOpen={setFileDownloadedSuccessfuly}
+        severity="success"
+        message="File was downloaded successfully"
+      />
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={uploadOpen}

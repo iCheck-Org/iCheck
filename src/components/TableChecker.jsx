@@ -13,26 +13,73 @@ import GetAppIcon from "@mui/icons-material/GetApp";
 import GradingIcon from "@mui/icons-material/Grading";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { format } from "date-fns";
+<<<<<<< HEAD
 
 import { db } from "../config/Fire-base";
 import WriteReview from "./Review/WriteReview";
 import ShowReview from "./Review/ShowReview";
 import { AssignmentDownload } from "./AssignmentDownload";
+=======
+import { db } from "../config/fire-base";
+import WriteReview from "./Review/WriteReview";
+import ShowReview from "./Review/ShowReview";
+import AlertSnackbar from "./MuiComponents/AlertSnackbar";
+
+>>>>>>> 82a4756fd148f09fcde16c66b2f60cf958ad26ee
 
 const TableChecker = ({ firebaseUser }) => {
+  const [fileDownloaded, setFileDownloadedSuccessfuly] = useState(false);
+
   const columns = [
-    { field: "personal_id", headerName: "Student ID", width: 130 },
-    { field: "Course", headerName: "Course Name", width: 150 },
+    { 
+      field: "personal_id",
+      headerName: "Student ID",
+      width: 130,
+      align: "left"
+    },
+    { 
+      field: "Course",
+      headerName: "Course Name",
+      width: 150,
+      align: "left"
+    },
     {
       field: "Assignment No.",
       headerName: "Assignment No.",
       width: 150,
+      align: "left"
+    },
+    {
+      field: "submission_date",
+      headerName: "Submission Date",
+      width: 200,
       align: "left",
+      valueFormatter: (params) => {
+        // Convert timestamp to Date object
+        const dueDate = params.value && params.value.toDate();
+
+        // Format the Date object to a human-readable string
+        return dueDate ? format(dueDate, "dd/MM/yyyy, HH:mm:ss") : "";
+      },
+    },
+    {
+      field: "Due Date",
+      headerName: "Due Date",
+      width: 200,
+      align: "left",
+      valueFormatter: (params) => {
+        // Convert timestamp to Date object
+        const dueDate = params.value && params.value.toDate();
+
+        // Format the Date object to a human-readable string
+        return dueDate ? format(dueDate, "dd/MM/yyyy, HH:mm:ss") : "";
+      },
     },
     {
       field: "Checker",
       headerName: "Status",
       width: 200,
+      align: "left",
       renderCell: (params) => {
         let status = params.value;
 
@@ -57,33 +104,10 @@ const TableChecker = ({ firebaseUser }) => {
       },
     },
     {
-      field: "submission_date",
-      headerName: "Submission Date",
-      width: 200,
-      valueFormatter: (params) => {
-        // Convert timestamp to Date object
-        const dueDate = params.value && params.value.toDate();
-
-        // Format the Date object to a human-readable string
-        return dueDate ? format(dueDate, "dd/MM/yyyy, HH:mm:ss") : "";
-      },
-    },
-    {
-      field: "Due Date",
-      headerName: "Due Date",
-      width: 200,
-      valueFormatter: (params) => {
-        // Convert timestamp to Date object
-        const dueDate = params.value && params.value.toDate();
-
-        // Format the Date object to a human-readable string
-        return dueDate ? format(dueDate, "dd/MM/yyyy, HH:mm:ss") : "";
-      },
-    },
-    {
       field: "Actions",
       headerName: "Actions",
       width: 150,
+      align: "left",
       renderCell: (value) => {
         const File_doc = value.row["File_doc"]; // Access the row object and get the value of "File_doc"
         const currentDate = new Date().getTime(); // Get current timestamp
@@ -102,6 +126,30 @@ const TableChecker = ({ firebaseUser }) => {
         const isClickableShow =
           grade !== null && grade !== undefined && grade !== "";
 
+<<<<<<< HEAD
+=======
+        const onDownload = async (row) => {
+          try {
+            const userId = firebaseUser.id;
+            const File_doc = row["File_doc"]; // Access the row object and get the value of "File_doc"
+            // Fetch all documents from the "pdfs" collection
+            const querySnapshot = await getDocs(collection(db, "pdfs"));
+            // Iterate through each document
+            querySnapshot.forEach((doc) => {
+              // Compare the File_doc with the document ID
+              if (doc.id === File_doc) {
+                const downloadURL = doc.data().url;
+                // Open the file in a new tab
+                window.open(downloadURL, '_blank');
+                setFileDownloadedSuccessfuly(true);
+              }
+            });
+          } catch (error) {
+            console.error("Error fetching document for download:", error);
+          }
+        };
+
+>>>>>>> 82a4756fd148f09fcde16c66b2f60cf958ad26ee
         const [showReview, setShowReview] = useState(false);
         const [showWriteReview, setShowWriteReview] = useState(false);
         return (
@@ -266,7 +314,12 @@ const TableChecker = ({ firebaseUser }) => {
       <div style={{ height: '140%', width: '100%' }}>
         <DataGrid columns={columns} rows={rows} />
       </div>
-
+      <AlertSnackbar
+        open={fileDownloaded}
+        setOpen={setFileDownloadedSuccessfuly}
+        severity="success"
+        message="File was downloaded successfully"
+      />
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={uploadOpen}
