@@ -4,6 +4,7 @@ import { Box, IconButton, Backdrop } from "@mui/material";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import GetAppIcon from "@mui/icons-material/GetApp";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import GradingIcon from "@mui/icons-material/Grading";
 import { format } from "date-fns";
 import { db } from "../config/Fire-base";
 import CreateAssignment from "./CreateAssignment";
@@ -97,8 +98,6 @@ const TableLecturer = ({ firebaseUser }) => {
       renderCell: (value) => {
         
 
-        const [showReview, setShowReview] = useState(false);
-        const [showAppeal, setShowAppeal] = useState(false);
         const File_doc = value.row["File_doc"]; // Access the row object and get the value of "File_doc"
         const currentDate = new Date().getTime(); // Get current timestamp
         const dueDateTimestamp = value.row["Due Date"].toDate(); // Convert Firestore timestamp to JavaScript Date object
@@ -112,10 +111,14 @@ const TableLecturer = ({ firebaseUser }) => {
           File_doc !== undefined &&
           File_doc !== "" &&
           isPastDueDate;
+        const isClickableGrading =
+          isPastDueDate && grade === "" && File_doc !== "";
         const isClickableShow =
-          // grade !== null && grade !== undefined && grade !== "" &&
-      isPastDueDate ;
+          grade !== null && grade !== undefined && grade !== "";
 
+      const [showReview, setShowReview] = useState(false);
+      const [showWriteReview, setShowWriteReview] = useState(false);
+      const [showAppeal, setShowAppeal] = useState(false);
         return (
           <div>
             <IconButton
@@ -124,6 +127,14 @@ const TableLecturer = ({ firebaseUser }) => {
               title="Download Assignment"
             >
               <GetAppIcon />
+            </IconButton>
+
+            <IconButton
+              onClick={() => setShowWriteReview((prevState) => !prevState)}
+              disabled={!isClickableGrading}
+              title="Grading Assignment"
+            >
+              <GradingIcon />
             </IconButton>
 
             {/* Conditionally render the visibility icon */}
@@ -149,6 +160,14 @@ const TableLecturer = ({ firebaseUser }) => {
               <AppealLecturer
                 assignmentID={value.row.id}
                 onClose={() => setShowAppeal(false)}
+              />
+            )}
+
+            {showWriteReview && (
+              <WriteReview
+                assignment={value.row}
+                onClose={() => setShowWriteReview(false)}
+                firebaseUser={firebaseUser}
               />
             )}
 

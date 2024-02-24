@@ -1,10 +1,8 @@
 import PropTypes from "prop-types";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import React, { useState, useEffect } from "react";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, updateDoc } from "firebase/firestore";
 import TextBox from "../MuiComponents/TextBox";
 import { db } from "../../config/Fire-base";
 
@@ -34,14 +32,8 @@ CustomTabPanel.propTypes = {
   value: PropTypes.number.isRequired,
 };
 
-function a11yProps(index) {
-  return {
-    id: `simple-tab-${index}`,
-    "aria-controls": `simple-tabpanel-${index}`,
-  };
-}
 
-export default function ReviewTabs({ assignment, typePermision }) {
+export default function AppealStudent({ assignment, typePermision }) {
   const [comment, setComment] = useState("");
   const [grade, setGrade] = useState("");
   const [appealValue, setAppealValue] = useState(""); // Define state for appeal input value
@@ -57,7 +49,6 @@ export default function ReviewTabs({ assignment, typePermision }) {
           const data = assignment
           setComment(data.Comment || "");
           setGrade(data.Grade || "");
-
           // Check if "Appeal" field exists
           if ("Appeal" in data) {
             setAppealFieldExists(true);
@@ -115,43 +106,6 @@ export default function ReviewTabs({ assignment, typePermision }) {
   };
 
   return (
-    <Box sx={{ width: "100%", height: "100%" }}>
-      <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-        <Tabs
-          value={value}
-          onChange={handleChange}
-          aria-label="basic tabs example"
-        >
-          <Tab label="Review Assignment" {...a11yProps(0)} />
-          {typePermision !== "checker" && (
-            <Tab label="Appeal" {...a11yProps(1)} />
-          )}
-        </Tabs>
-      </Box>
-      <CustomTabPanel value={value} index={0}>
-        <Box width={700} height={250} sx={{ textAlign: "center" }}>
-          <h2>Checker's Comment</h2>
-          <TextBox value={comment} onChange={() => {}} />
-        </Box>
-        <Box width={700} height={300} sx={{ textAlign: "center" }}>
-          <h3>Grade</h3>
-          {
-            <input
-              type="text"
-              placeholder="Grade"
-              style={{
-                width: "5%",
-                height: "10%",
-                textAlign: "start",
-                paddingLeft: "10px",
-              }}
-              value={grade}
-              onChange={() => {}}
-            />
-          }
-        </Box>
-      </CustomTabPanel>
-      <CustomTabPanel value={value} index={1}>
         <div style={{ display: "flex", alignItems: "center", width: "100%" }}>
           {/* Container for Checker's comment */}
           <div
@@ -228,11 +182,9 @@ export default function ReviewTabs({ assignment, typePermision }) {
             )}
           </Box>
         </div>
-      </CustomTabPanel>
-    </Box>
   );
 }
 
-ReviewTabs.propTypes = {
-  assignment: PropTypes.string.isRequired,
+AppealStudent.propTypes = {
+  assignment: PropTypes.object.isRequired,
 };

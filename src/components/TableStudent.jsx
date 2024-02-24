@@ -18,7 +18,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import { format } from "date-fns";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage, db } from "../config/Fire-base";
-import ShowReview from "./Review/ShowReview";
+import Tabs from "./Tabs/TabsMenu";
 import { AssignmentDownload } from "./AssignmentDownload";
 import AlertSnackbar from "./MuiComponents/AlertSnackbar";
 import '../pages/styles.css';
@@ -158,7 +158,7 @@ const TableStudent = ({ firebaseUser }) => {
           }
         };
 
-        const [showReviewView, setShowReviewView] = useState(false);
+        const [showTabs, setShowTabs] = useState(false);
         return (
           <div>
             <IconButton
@@ -181,17 +181,17 @@ const TableStudent = ({ firebaseUser }) => {
               id="Review"
               onClick={() => {
                 console.log(value.row.id),
-                  setShowReviewView((prevState) => !prevState);
+                  setShowTabs((prevState) => !prevState);
               }}
               disabled={!isClickableShow}
               title="View Review"
             >
               <VisibilityIcon />
             </IconButton>
-            {showReviewView && (
-              <ShowReview
+            {showTabs && (
+              <Tabs
                 assignment={value.row}
-                onClose={() => setShowReviewView((prevState) => !prevState)}
+                onClose={() => setShowTabs((prevState) => !prevState)}
                 typePermision={firebaseUser.type}
               />
             )}
