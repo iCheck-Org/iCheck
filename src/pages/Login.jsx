@@ -2,7 +2,7 @@ import { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigate, Link } from "react-router-dom";
 import { doc, getDoc } from 'firebase/firestore';
-import { auth, db } from "../config/fire-base";
+import { auth, db } from "../config/Fire-base";
 import logo from '../logo/icheck_logo_1.png';
 
 const Login = () => {

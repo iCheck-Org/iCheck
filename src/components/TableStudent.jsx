@@ -17,8 +17,9 @@ import UploadIcon from "@mui/icons-material/Upload";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { format } from "date-fns";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { storage, db } from "../config/fire-base";
+import { storage, db } from "../config/Fire-base";
 import ShowReview from "./Review/ShowReview";
+import { AssignmentDownload } from "./AssignmentDownload";
 
 const TableStudent = ({ firebaseUser }) => {
   const columns = [
@@ -86,33 +87,6 @@ const TableStudent = ({ firebaseUser }) => {
           File_doc !== null && File_doc !== undefined && File_doc !== "";
         const isClickableShow = value.row.Grade !== "";
 
-        const handleFileDownload = async (row) => {
-          try {
-            const File_doc = row["File_doc"]; // Access the row object and get the value of "File_doc"
-
-            // Fetch all documents from the "pdfs" collection
-            const querySnapshot = await getDocs(collection(db, "pdfs"));
-            // Iterate through each document
-            querySnapshot.forEach((doc) => {
-              // Compare the File_doc with the document ID
-              if (doc.id === File_doc) {
-                const downloadURL = doc.data().url;
-
-                // Trigger the file download
-                const filename = downloadURL.split("/").pop();
-                const link = document.createElement("a");
-                link.href = downloadURL;
-                link.setAttribute("download", filename); // Set the download attribute
-                document.body.appendChild(link);
-                link.click();
-                link.remove();
-              }
-            });
-          } catch (error) {
-            console.error("Error fetching document for download:", error);
-          }
-        };
-
         const handleFileUpload = async (rowId) => {
           try {
             const fileInput = document.createElement("input");
@@ -175,7 +149,7 @@ const TableStudent = ({ firebaseUser }) => {
           <div>
             <IconButton
               id="Download"
-              onClick={() => handleFileDownload(value.row)}
+              onClick={() => AssignmentDownload(value.row , firebaseUser)}
               disabled={!isClickableDownload}
               title="Download Assignment"
             >
@@ -202,7 +176,7 @@ const TableStudent = ({ firebaseUser }) => {
             </IconButton>
             {showReviewView && (
               <ShowReview
-                assignmentID={value.row.id}
+                assignment={value.row}
                 onClose={() => setShowReviewView((prevState) => !prevState)}
                 typePermision={firebaseUser.type}
               />
@@ -234,20 +208,8 @@ const TableStudent = ({ firebaseUser }) => {
         const data = await Promise.all(
           assignmentsSnapshot.docs.map(async (doc) => {
             const assignmentData = doc.data();
-            const courseId = assignmentData["Course-ref"];
 
-            const coursesSnapshot = await getDocs(
-              collection(db, "courses-test")
-            );
-
-            // Find the course document with matching courseId
-            const courseDoc = coursesSnapshot.docs.find(
-              (course) => course.id === courseId
-            );
-
-            if (courseDoc) {
-              const courseData = courseDoc.data();
-              const courseName = courseData.name;
+              const courseName = assignmentData.Course_name;
 
               // Return the assignment data along with the course name
               return {
@@ -255,16 +217,6 @@ const TableStudent = ({ firebaseUser }) => {
                 ...assignmentData,
                 Course: courseName,
               };
-            } else {
-              // If no matching course document is found, log a message and return assignment data without modifying
-              console.log(
-                `Course document with ID ${courseId} does not exist.`
-              );
-              return {
-                id: doc.id,
-                ...assignmentData,
-              };
-            }
           })
         );
 

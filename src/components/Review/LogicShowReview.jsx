@@ -5,8 +5,8 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import React, { useState, useEffect } from "react";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { db } from "../../config/fire-base";
 import TextBox from "../MuiComponents/TextBox";
+import { db } from "../../config/Fire-base";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -41,7 +41,7 @@ function a11yProps(index) {
   };
 }
 
-export default function ReviewTabs({ assignmentID, typePermision }) {
+export default function ReviewTabs({ assignment, typePermision }) {
   const [comment, setComment] = useState("");
   const [grade, setGrade] = useState("");
   const [appealValue, setAppealValue] = useState(""); // Define state for appeal input value
@@ -54,10 +54,7 @@ export default function ReviewTabs({ assignmentID, typePermision }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const docRef = doc(db, "assignments", assignmentID);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          const data = docSnap.data();
+          const data = assignment
           setComment(data.Comment || "");
           setGrade(data.Grade || "");
 
@@ -76,19 +73,18 @@ export default function ReviewTabs({ assignmentID, typePermision }) {
           }
 
           setOpen(true); // Update the state to open the modal after data fetching is complete
-        }
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
 
     fetchData();
-  }, [assignmentID, appealValue, appealAnsValue]);
+  }, [appealValue, appealAnsValue]);
 
   const handleAppealSubmit = async () => {
     try {
       // Get a reference to the Firestore document
-      const documentRef = doc(db, "assignments", assignmentID);
+      const documentRef = doc(db, "assignments", assignment.id);
 
       // Create an object with the grade and comment data
       const data = {
@@ -101,9 +97,6 @@ export default function ReviewTabs({ assignmentID, typePermision }) {
       console.log("Document successfully updated!");
       setOpen(false); // Close the modal after successful submission
       onClose(); // Call the onClose function passed from the parent component
-      // if (!appealFieldExists) { // If "Appeal" field didn't exist before, set it to true
-      //   setAppealFieldExists(true);
-      // }
       // Reset appealValue after submission
       setAppealValue(""); // or setAppealValue(null);
       setAppealAnsValue("");
@@ -241,5 +234,5 @@ export default function ReviewTabs({ assignmentID, typePermision }) {
 }
 
 ReviewTabs.propTypes = {
-  assignmentID: PropTypes.string.isRequired,
+  assignment: PropTypes.string.isRequired,
 };

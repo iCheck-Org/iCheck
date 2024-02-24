@@ -4,7 +4,7 @@ import TableChecker from "../components/TableChecker.jsx";
 import TableLecturer from "../components/TableLecturer.jsx";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { auth, db } from "../config/fire-base.jsx";
+import { auth, db } from "../config/Fire-base.jsx";
 import { doc, getDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 

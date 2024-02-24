@@ -5,41 +5,24 @@ import { styled, css } from "@mui/system";
 import { Modal as BaseModal } from "@mui/base/Modal";
 import { Box } from "@mui/material";
 import TextBox from "../MuiComponents/TextBox";
-import { db } from "../../config/fire-base";
+import { db } from "../../config/Fire-base";
 import { doc, updateDoc, onSnapshot } from "firebase/firestore";
 
-export default function WriteReview({ assignmentID, onClose, firebaseUser }) {
+export default function WriteReview({ assignment, onClose, firebaseUser }) {
   const [open, setOpen] = useState(true);
   const [hasComment, setHasComment] = useState(false); // State to track if the assignment has a Comment
   const [gradeInputValue, setGradeInputValue] = useState(""); // Define state for grade input value
   const [commentInputValue, setCommentInputValue] = useState(""); // Define state for comment input value
 
   useEffect(() => {
-    const fetchAssignment = async () => {
-      try {
-        const assignmentDocRef = doc(db, "assignments", assignmentID);
-        const unsubscribe = onSnapshot(assignmentDocRef, (doc) => {
-          if (doc.exists()) {
-            const data = doc.data();
-
-            if ("Comment" in data) {
-              setHasComment(true);
-              setCommentInputValue(data.Comment);
-            }
-            if ("Grade" in data) {
-              setGradeInputValue(data.Grade);
-            }
-          }
-        });
-        return () => {
-          unsubscribe();
-        };
-      } catch (error) {
-        console.error("Error fetching assignment document:", error);
-      }
-    };
-    fetchAssignment();
-  }, [assignmentID]);
+        if ("Comment" in assignment) {
+          setHasComment(true);
+          setCommentInputValue(assignment.Comment);
+        }
+        if ("Grade" in assignment) {
+          setGradeInputValue(assignment.Grade);
+        }
+  }, [assignment]);
 
   const handleClose = () => {
     setOpen(false);
@@ -49,8 +32,7 @@ export default function WriteReview({ assignmentID, onClose, firebaseUser }) {
   const handleSubmit = async () => {
     try {
       // Get a reference to the Firestore document
-      const documentRef = doc(db, "assignments", assignmentID);
-
+      const documentRef = doc(db, "assignments", assignment.id);
       // Create an object with the grade and comment data
       const data = {
         Grade: gradeInputValue,

@@ -11,7 +11,7 @@ import {
   getDoc,
   Timestamp,
 } from "firebase/firestore";
-import { db } from "../config/fire-base";
+import { db } from "../config/Fire-base";
 
 export default function CreateAssignment({ firebaseUser, onClose }) {
   const [open, setOpen] = useState(true);
@@ -93,6 +93,7 @@ export default function CreateAssignment({ firebaseUser, onClose }) {
             Grade: "",
             File_doc: "",
             "Course-ref": selectedCourse,
+            Course_name: courseData.name,
           };
 
           // Add the assignment document to the "assignments" collection

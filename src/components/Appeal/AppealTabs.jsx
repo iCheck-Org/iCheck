@@ -5,11 +5,11 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import React, { useState, useEffect } from 'react';
 import { doc, getDoc , updateDoc } from 'firebase/firestore';
-import { db } from '../../config/fire-base';
+import { db } from '../../config/Fire-base';
 import TextBox from '../MuiComponents/TextBox';
 
 
-function CustomTabPanel(props) {
+function ReviewTabs(props) {
   const { children, value, index, ...other } = props;
 
   return (
@@ -29,7 +29,7 @@ function CustomTabPanel(props) {
   );
 }
 
-CustomTabPanel.propTypes = {
+ReviewTabs.propTypes = {
   children: PropTypes.node,
   index: PropTypes.number.isRequired,
   value: PropTypes.number.isRequired,
@@ -100,7 +100,7 @@ export default function AppealTabs({ assignmentID }) {
           <Tab label="Your answer" {...a11yProps(2)} />
         </Tabs>
       </Box>
-      <CustomTabPanel value={value} index={0}>
+      <ReviewTabs value={value} index={0}>
         <TextBox value={checkerComment} onChange={() => {}} />
         <label>Grade: </label>
         <input
@@ -109,14 +109,14 @@ export default function AppealTabs({ assignmentID }) {
           value={grade}
           onChange={() => {}}
         />
-      </CustomTabPanel>
-      <CustomTabPanel value={value} index={1}>
+      </ReviewTabs>
+      <ReviewTabs value={value} index={1}>
   <div>
     <TextBox value={studentAppeal} onChange={() => {}} />
   </div>
-</CustomTabPanel>
+</ReviewTabs>
 
-      <CustomTabPanel value={value} index={2}>
+      <ReviewTabs value={value} index={2}>
   <div style={{ marginBottom: '20px' }}> {/* Add margin bottom to create space */}
     <TextBox value={userAnswer} onChange={(event) => setUserAnswer(event.target.value)} />
   </div>
@@ -135,7 +135,7 @@ export default function AppealTabs({ assignmentID }) {
 </div>
 
   <button onClick={handleSubmit}>Submit</button>
-</CustomTabPanel>
+</ReviewTabs>
     </Box>
   );
 }
