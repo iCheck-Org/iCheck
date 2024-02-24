@@ -154,7 +154,7 @@ const TableLecturer = ({ firebaseUser }) => {
 
             {showReview && (
               <WriteReview
-                assignmentID={value.row.id}
+                assignment={value.row}
                 onClose={() => setShowReview(false)}
                 firebaseUser={firebaseUser}
               />

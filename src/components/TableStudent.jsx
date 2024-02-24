@@ -19,13 +19,9 @@ import { format } from "date-fns";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage, db } from "../config/Fire-base";
 import ShowReview from "./Review/ShowReview";
-<<<<<<< HEAD
 import { AssignmentDownload } from "./AssignmentDownload";
-=======
 import AlertSnackbar from "./MuiComponents/AlertSnackbar";
 import '../pages/styles.css';
-
->>>>>>> 82a4756fd148f09fcde16c66b2f60cf958ad26ee
 
 const TableStudent = ({ firebaseUser }) => {
   const [fileUploaded, setFileUploadedSuccessfuly] = useState(false);
@@ -103,30 +99,6 @@ const TableStudent = ({ firebaseUser }) => {
           File_doc !== null && File_doc !== undefined && File_doc !== "";
         const isClickableShow = value.row.Grade !== "";
 
-<<<<<<< HEAD
-=======
-        const handleFileDownload = async (row) => {
-          try {
-            const File_doc = row["File_doc"]; // Access the row object and get the value of "File_doc"
-
-            // Fetch all documents from the "pdfs" collection
-            const querySnapshot = await getDocs(collection(db, "pdfs"));
-            // Iterate through each document
-            querySnapshot.forEach((doc) => {
-              // Compare the File_doc with the document ID
-              if (doc.id === File_doc) {
-                const downloadURL = doc.data().url;
-                // Open the file in a new tab
-                window.open(downloadURL, '_blank');
-                setFileDownloadedSuccessfuly(true);
-              }
-            });
-          } catch (error) {
-            console.error("Error fetching document for download:", error);
-          }
-        };
-
->>>>>>> 82a4756fd148f09fcde16c66b2f60cf958ad26ee
         const handleFileUpload = async (rowId) => {
           try {
             const fileInput = document.createElement("input");
@@ -250,8 +222,7 @@ const TableStudent = ({ firebaseUser }) => {
         const data = await Promise.all(
           assignmentsSnapshot.docs.map(async (doc) => {
             const assignmentData = doc.data();
-
-              const courseName = assignmentData.Course_name;
+            const courseName = assignmentData.Course_name;
 
               // Return the assignment data along with the course name
               return {
@@ -259,20 +230,6 @@ const TableStudent = ({ firebaseUser }) => {
                 ...assignmentData,
                 Course: courseName,
               };
-<<<<<<< HEAD
-=======
-            } 
-            else {
-              // If no matching course document is found, log a message and return assignment data without modifying
-              console.log(
-                `Course document with ID ${courseId} does not exist.`
-              );
-              return {
-                id: doc.id,
-                ...assignmentData,
-              };
-            }
->>>>>>> 82a4756fd148f09fcde16c66b2f60cf958ad26ee
           })
         );
 

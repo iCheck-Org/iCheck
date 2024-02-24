@@ -13,20 +13,10 @@ import GetAppIcon from "@mui/icons-material/GetApp";
 import GradingIcon from "@mui/icons-material/Grading";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { format } from "date-fns";
-<<<<<<< HEAD
-
 import { db } from "../config/Fire-base";
 import WriteReview from "./Review/WriteReview";
 import ShowReview from "./Review/ShowReview";
-import { AssignmentDownload } from "./AssignmentDownload";
-=======
-import { db } from "../config/fire-base";
-import WriteReview from "./Review/WriteReview";
-import ShowReview from "./Review/ShowReview";
 import AlertSnackbar from "./MuiComponents/AlertSnackbar";
-
->>>>>>> 82a4756fd148f09fcde16c66b2f60cf958ad26ee
-
 const TableChecker = ({ firebaseUser }) => {
   const [fileDownloaded, setFileDownloadedSuccessfuly] = useState(false);
 
@@ -126,8 +116,6 @@ const TableChecker = ({ firebaseUser }) => {
         const isClickableShow =
           grade !== null && grade !== undefined && grade !== "";
 
-<<<<<<< HEAD
-=======
         const onDownload = async (row) => {
           try {
             const userId = firebaseUser.id;
@@ -148,8 +136,6 @@ const TableChecker = ({ firebaseUser }) => {
             console.error("Error fetching document for download:", error);
           }
         };
-
->>>>>>> 82a4756fd148f09fcde16c66b2f60cf958ad26ee
         const [showReview, setShowReview] = useState(false);
         const [showWriteReview, setShowWriteReview] = useState(false);
         return (
