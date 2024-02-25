@@ -191,36 +191,25 @@ const TableChecker = ({ firebaseUser }) => {
 
         // Map the fetched assignments data
         const rows = await Promise.all(
-          assignmentsSnapshot.docs.map(async (doc) => {
-          const assignmentData = doc.data();
+            assignmentsSnapshot.docs.map(async (doc) => {
+            const assignmentData = doc.data();
 
-          // Fetch corresponding user document based on the 'Owner' field
-          const userQuerySnapshot = await getDocs(
-            query(
-              collection(db, "users"),
-              where("id", "==", assignmentData.Owner)
-            )
-          );
-
-          // Check if a matching user document exists
-          if (!userQuerySnapshot.empty) {
 
             const courseName = assignmentData.Course_name;
 
               // Get the student_id from the user document
-              const studentId = assignmentData.Student_id;
+            const studentId = assignmentData.Student_id;
 
-              const submissionTimestamp = assignmentData.submissionDate;
+            const submissionTimestamp = assignmentData.submissionDate;
 
-              // If no matching user document found or no matching pdf document found, return assignment data without modifying
-              return {
-                id: doc.id,
-                ...assignmentData,
-                Course: courseName,
-                personal_id : studentId,
-                submission_date: submissionTimestamp,
-              };
-            }
+            // If no matching user document found or no matching pdf document found, return assignment data without modifying
+            return {
+              id: doc.id,
+              ...assignmentData,
+              Course: courseName,
+              personal_id : studentId,
+              submission_date: submissionTimestamp,
+            };
           })
         );
 

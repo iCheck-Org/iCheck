@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import React, { useState, useEffect } from 'react';
 import { doc , updateDoc } from 'firebase/firestore';
 import { db } from '../../config/Fire-base';
@@ -37,39 +36,35 @@ export default function AppealTabs({ assignment }) {
 
   return (
       <div>
-  <div style={{ marginBottom: '20px' }}> {/* Add margin bottom to create space */}
-    {!('AppealAns' in assignment) ? (
-      <TextBox value={lecturerAnswer} onChange={(event) => setLecturerAnswer(event.target.value)} />
-    ) : (
-      <TextBox value={assignment.AppealAns} onChange={() => {}} disabled />
+        <div style={{ marginBottom: '20px' }}> {/* Add margin bottom to create space */}
+          {!('AppealAns' in assignment) ? (
+            <TextBox value={lecturerAnswer} onChange={(event) => setLecturerAnswer(event.target.value)} />
+          ) : (
+            <TextBox value={assignment.AppealAns} onChange={() => {}} disabled />
+          )}
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+        <div style={{ marginRight: '10px' }}>Current Grade:</div>
+        <div>{grade}</div>
+      </div>
+        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+          {!('AppealAns' in assignment) && !submitClicked && (
+            <>
+        <div style={{ marginRight: '10px' }}>New Grade:</div>
+    <input 
+      type="text" 
+      value={newGrade} 
+      style={{ width: '5%', height: '20%', textAlign: 'start', paddingLeft: '10px' }} 
+      onChange={(event) => setNewGrade(event.target.value)}
+    />
+      </>
     )}
   </div>
-  <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-  <div style={{ marginRight: '10px' }}>Current Grade:</div>
-  <div>{grade}</div>
-</div>
-<div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-  {!('AppealAns' in assignment) && !submitClicked && (
-    <>
-  <div style={{ marginRight: '10px' }}>New Grade:</div>
-  <input 
-    type="text" 
-    value={newGrade} 
-    style={{ width: '5%', height: '20%', textAlign: 'start', paddingLeft: '10px' }} 
-    onChange={(event) => setNewGrade(event.target.value)}
-  />
-    </>
-  )}
-</div>
-    <>
-    {!('AppealAns' in assignment) && !submitClicked && (
-      <button onClick={handleSubmit}>Submit</button>
-    )}
-    </>
-</div>
-  );
-}
-
-AppealTabs.propTypes = {
-  assignment: PropTypes.object.isRequired,
-};
+      <>
+      {!('AppealAns' in assignment) && !submitClicked && (
+        <button onClick={handleSubmit}>Submit</button>
+      )}
+      </>
+  </div>
+    );
+  }

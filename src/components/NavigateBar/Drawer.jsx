@@ -6,8 +6,23 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import AccountMenu from "./AccountMenu";
 
+const getCurrentTimeOfDay = () => {
+  const now = new Date();
+  const hour = now.getHours();
+  if (hour >= 22 || hour < 5) {
+    return "night";
+  } else if (hour >= 5 && hour < 12) {
+    return "morning";
+  } else if (hour >= 12 && hour < 17) {
+    return "afternoon";
+  } else {
+    return "evening";
+  }
+};
+
 function ResponsiveDrawer(props) {
   const { firebaseUser } = props;
+  const timeOfDay = getCurrentTimeOfDay();
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -22,8 +37,8 @@ function ResponsiveDrawer(props) {
         <Toolbar>
           <Typography id="welcomeMessage" variant="h6" noWrap component="div">
             {firebaseUser && firebaseUser.name
-              ? `Welcome, ${firebaseUser.name}!`
-              : "Welcome!"}
+            ? `Good ${timeOfDay.charAt(0).toUpperCase() + timeOfDay.slice(1)}, ${firebaseUser.name}!`
+            : `Good ${timeOfDay.charAt(0).toUpperCase() + timeOfDay.slice(1)}!`}
           </Typography>
 
           <Box sx={{ ml: "auto" }} />
