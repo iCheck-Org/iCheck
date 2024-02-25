@@ -200,13 +200,7 @@ const TableLecturer = ({ firebaseUser }) => {
           return;
         }
 
-        // Fetch user ID
-        const userId = firebaseUser.id;
-
-        // Fetch user document
-        const userDoc = firebaseUser;
-
-        const LecturerCourses = userDoc.courses;
+        const LecturerCourses = firebaseUser.courses;
         let snapshot = assignmentsSnapshot;
 
         // Fetch assignments only if assignmentsSnapshot is not available
@@ -232,57 +226,22 @@ const TableLecturer = ({ firebaseUser }) => {
         const rows = await Promise.all(
           snapshot.docs.map(async (doc) => {
             const assignmentData = doc.data();
-
-            // Fetch corresponding user document based on the 'Owner' field
-            const userQuerySnapshot = await getDocs(
-              query(
-                collection(db, "users"),
-                where("id", "==", assignmentData.Owner)
-              )
-            );
-
-            // Check if a matching user document exists
-            if (!userQuerySnapshot.empty) {
-
+            
               const courseName = assignmentData.Course_name;
 
               // Get the student_id from the user document
-              const studentId = userQuerySnapshot.docs[0].data().personal_id;
+              const studentId = assignmentData.Student_id;
 
-              const File_doc = assignmentData["File_doc"]; // Access the assignmentData object and get the value of "File_doc"
-
-              // Fetch submission date from "pdfs" collection based on "File_doc"
-              const pdfsQuerySnapshot = await getDocs(
-                query(collection(db, "pdfs"))
-              );
-
-              // Check if a matching pdf document exists
-              if (!pdfsQuerySnapshot.empty) {
-                let submissionTimestamp;
-
-                pdfsQuerySnapshot.forEach((pdfDoc) => {
-                  // Compare the File_doc with the document ID
-                  if (pdfDoc.id === File_doc) {
-                    submissionTimestamp = pdfDoc.data().timestamp;
-                  }
-                });
-
-                return {
-                  id: doc.id,
-                  ...assignmentData,
-                  personal_id: studentId, // Add the Student_ID field to the assignment data
-                  submission_date: submissionTimestamp, // Add the submission date to the assignment data
-                  Course: courseName,
-                };
-              }
-
+              const submissionTimestamp = assignmentData.submissionDate;
               // If no matching user document found or no matching pdf document found, return assignment data without modifying
               return {
                 id: doc.id,
                 ...assignmentData,
                 Course: courseName,
+                personal_id : studentId,
+                submission_date: submissionTimestamp,
               };
-            }
+            // }
           })
         );
 

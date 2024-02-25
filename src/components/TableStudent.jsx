@@ -122,8 +122,10 @@ const TableStudent = ({ firebaseUser }) => {
                     timestamp: serverTimestamp(),
                   });
 
-                  // Update the corresponding document in the "assignments" collection
-                  await updateDoc(assignmentRef, { File_doc: existingDocId });
+                  await updateDoc(assignmentRef, {
+                    submissionDate: serverTimestamp(),
+                    File_doc: existingDocId,
+                  });
                 } 
                 else {
                   // If no document exists, create a new document
@@ -141,8 +143,11 @@ const TableStudent = ({ firebaseUser }) => {
                     timestamp: timestamp,
                   });
 
+                  await updateDoc(assignmentRef, {
+                    submissionDate: serverTimestamp(),
+                    File_doc: newDocRef.id,
+                  });
                   // Update the corresponding document in the "assignments" collection
-                  await updateDoc(assignmentRef, { File_doc: newDocRef.id });
                 }
                 setFileUploadedSuccessfuly(true); // Corrected the setter function name
                 // Update the state to indicate a successful file upload
@@ -215,7 +220,7 @@ const TableStudent = ({ firebaseUser }) => {
         const assignmentsSnapshot = await getDocs(
           query(
             collection(db, "assignments"),
-            where("Owner", "==", firebaseUser.id) // TODO : id?!?!
+            where("Owner", "==", firebaseUser.id) // TODO : id?!?! Respond:Yes.
           )
         );
 

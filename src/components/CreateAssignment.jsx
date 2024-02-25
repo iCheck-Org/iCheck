@@ -23,9 +23,6 @@ export default function CreateAssignment({ firebaseUser, onClose }) {
   useEffect(() => {
     const fetchCourseOptions = async () => {
       try {
-        // Get the user document from the "users" collection
-        // const userDocRef = doc(db, 'users', user.uid);
-        // const userDocSnapshot = await getDoc(userDocRef);
 
         if (firebaseUser) {
           const userData = firebaseUser;
@@ -78,28 +75,38 @@ export default function CreateAssignment({ firebaseUser, onClose }) {
     try {
       const courseDocRef = doc(db, "courses-test", selectedCourse);
       const courseDocSnapshot = await getDoc(courseDocRef);
-
+  
       if (courseDocSnapshot.exists()) {
         const courseData = courseDocSnapshot.data();
-
+  
         // Create an assignment for each student in the course
-        courseData.students.forEach(async (student) => {
-          const assignmentData = {
-            Owner: student,
-            "Assignment No.": assignmentNo,
-            // Convert dueDate to a Firestore Timestamp
-            "Due Date": Timestamp.fromDate(new Date(dueDate)),
-            Checker: "",
-            Grade: "",
-            File_doc: "",
-            "Course-ref": selectedCourse,
-            Course_name: courseData.name,
-          };
-
-          // Add the assignment document to the "assignments" collection
-          await addDoc(collection(db, "assignments"), assignmentData);
-        });
-
+        await Promise.all(courseData.students.map(async (student) => {
+          const studentDocRef = doc(db, "users", student);
+          const studentDocSnap = await getDoc(studentDocRef);
+  
+          if (!studentDocSnap.empty) {
+            const studentData = studentDocSnap.data();
+            console.log(studentData.personal_id);
+            const studentID = studentData.personal_id; // Set studentID here
+  
+            const assignmentData = {
+              Owner: student,
+              "Assignment No.": assignmentNo,
+              // Convert dueDate to a Firestore Timestamp
+              "Due Date": Timestamp.fromDate(new Date(dueDate)),
+              Checker: "",
+              Grade: "",
+              File_doc: "",
+              "Course-ref": selectedCourse,
+              Course_name: courseData.name,
+              Student_id: studentID, // Use studentID here
+            };
+  
+            // Add the assignment document to the "assignments" collection
+            await addDoc(collection(db, "assignments"), assignmentData);
+          }
+        }));
+  
         // Close the modal after creating assignments
         handleClose();
       } else {
@@ -109,6 +116,7 @@ export default function CreateAssignment({ firebaseUser, onClose }) {
       console.error("Error creating assignments:", error);
     }
   };
+  
 
   return (
     <div>

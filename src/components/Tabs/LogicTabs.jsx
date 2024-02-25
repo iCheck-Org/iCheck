@@ -3,7 +3,7 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import React, { useState, useEffect } from "react";
+import React, { useState} from "react";
 import ShowReview from "../Review/ShowReview";
 import AppealStudent from "../Appeal/AppealStudent";
 import AppealTabs from "../Appeal/AppealLecturer";
@@ -54,10 +54,13 @@ export default function LogicTabs({ assignment, typePermision }) {
     <Box sx={{ width: "100%", height: "100%" }}>
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-          {(typePermision === "student" || typePermision === "checker") && (
+          {typePermision === "checker" && (
             <Tab label="Review Assignment" {...a11yProps(0)} />
           )}
-          {typePermision === "student" && <Tab label="Appeal" {...a11yProps(1)} />}
+          {typePermision === "student" && [
+          <Tab label="Review Assignment" {...a11yProps(0)} />,
+          <Tab label="Appeal" {...a11yProps(1)} />
+          ]}
           {typePermision === "lecturer" && [
             <Tab key={0} label="Checker's comment" {...a11yProps(0)} />,
             <Tab key={1} label="Student's respond" {...a11yProps(1)} />,

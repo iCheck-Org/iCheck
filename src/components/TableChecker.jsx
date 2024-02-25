@@ -2,9 +2,7 @@ import React, { useState, useEffect } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import { Box, IconButton, Backdrop } from "@mui/material";
 import {
-  doc,
   collection,
-  getDoc,
   getDocs,
   query,
   where,
@@ -180,19 +178,7 @@ const TableChecker = ({ firebaseUser }) => {
           return;
         }
 
-        // Fetch user ID
-        const userId = firebaseUser.id;
-
-        // Fetch user document
-        const userDoc = await getDoc(doc(db, "users", userId));
-
-        if (!userDoc.exists()) {
-          console.log("User document does not exist.");
-          return;
-        }
-
-        const userData = userDoc.data();
-        const userCourses = userData.courses || [];
+        const userCourses = firebaseUser.courses || [];
 
         // Fetch assignments that match the user's courses
         const assignmentsSnapshot = await getDocs(
@@ -221,40 +207,17 @@ const TableChecker = ({ firebaseUser }) => {
             const courseName = assignmentData.Course_name;
 
               // Get the student_id from the user document
-              const studentId = userQuerySnapshot.docs[0].data().personal_id;
+              const studentId = assignmentData.Student_id;
 
-              const File_doc = assignmentData["File_doc"]; // Access the assignmentData object and get the value of "File_doc"
-
-              // Fetch submission date from "pdfs" collection based on "File_doc"
-              const pdfsQuerySnapshot = await getDocs(
-                query(collection(db, "pdfs"))
-              );
-
-              // Check if a matching pdf document exists
-              if (!pdfsQuerySnapshot.empty) {
-                let submissionTimestamp;
-
-                pdfsQuerySnapshot.forEach((pdfDoc) => {
-                  // Compare the File_doc with the document ID
-                  if (pdfDoc.id === File_doc) {
-                    submissionTimestamp = pdfDoc.data().timestamp;
-                  }
-                });
-
-                return {
-                  id: doc.id,
-                  ...assignmentData,
-                  personal_id: studentId, // Add the Student_ID field to the assignment data
-                  submission_date: submissionTimestamp, // Add the submission date to the assignment data
-                  Course: courseName,
-                };
-              }
+              const submissionTimestamp = assignmentData.submissionDate;
 
               // If no matching user document found or no matching pdf document found, return assignment data without modifying
               return {
                 id: doc.id,
                 ...assignmentData,
                 Course: courseName,
+                personal_id : studentId,
+                submission_date: submissionTimestamp,
               };
             }
           })
