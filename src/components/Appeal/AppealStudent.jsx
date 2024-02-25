@@ -33,12 +33,11 @@ CustomTabPanel.propTypes = {
 };
 
 
-export default function AppealStudent({ assignment, typePermision }) {
+export default function AppealStudent({ assignment}) {
   const [comment, setComment] = useState("");
   const [grade, setGrade] = useState("");
   const [appealValue, setAppealValue] = useState(""); // Define state for appeal input value
   const [appealAnsValue, setAppealAnsValue] = useState(""); // Define state for appeal input value
-  const [value, setValue] = useState(0); // Initialize value state
   const [appealFieldExists, setAppealFieldExists] = useState(false); // State to track if "Appeal" field exists
   const [appealAnsFieldExists, setAppealAnsFieldExists] = useState(false); // State to track if lecturer ans the appeal
   const [open, setOpen] = useState(true);
@@ -94,10 +93,6 @@ export default function AppealStudent({ assignment, typePermision }) {
     } catch (error) {
       console.error("Error updating document: ", error);
     }
-  };
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
   };
 
   const handleAppealValue = (event) => {

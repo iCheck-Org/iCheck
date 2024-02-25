@@ -10,10 +10,10 @@ import { db } from "../config/Fire-base";
 import CreateAssignment from "./CreateAssignment";
 import WriteReview from "./Review/WriteReview";
 import SwitchAppeal from "./MuiComponents/SwitchAppeal";
-import AppealLecturer from "./Appeal/AppealLecturer";
 import { AssignmentDownload } from "./AssignmentDownload";
 import '../pages/styles.css';
 import AlertSnackbar from "./MuiComponents/AlertSnackbar";
+import Tabs from "./Tabs/TabsMenu";
 
 const TableLecturer = ({ firebaseUser }) => {
   const [fileDownloaded, setFileDownloadedSuccessfuly] = useState(false);
@@ -157,8 +157,9 @@ const TableLecturer = ({ firebaseUser }) => {
             )}
 
             {showAppeal && (
-              <AppealLecturer
-                assignmentID={value.row.id}
+              <Tabs
+                assignment={value.row}
+                typePermision={firebaseUser.type}
                 onClose={() => setShowAppeal(false)}
               />
             )}

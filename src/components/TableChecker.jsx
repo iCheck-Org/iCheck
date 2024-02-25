@@ -15,7 +15,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import { format } from "date-fns";
 import { db } from "../config/Fire-base";
 import WriteReview from "./Review/WriteReview";
-import Tabs from "./Tabs/TabsMenu";
+import Tabs from "./Tabs/Tabs";
 import AlertSnackbar from "./MuiComponents/AlertSnackbar";
 const TableChecker = ({ firebaseUser }) => {
   const [fileDownloaded, setFileDownloadedSuccessfuly] = useState(false);

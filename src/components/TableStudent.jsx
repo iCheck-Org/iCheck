@@ -18,7 +18,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import { format } from "date-fns";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage, db } from "../config/Fire-base";
-import Tabs from "./Tabs/TabsMenu";
+import Tabs from "./Tabs/Tabs";
 import { AssignmentDownload } from "./AssignmentDownload";
 import AlertSnackbar from "./MuiComponents/AlertSnackbar";
 import '../pages/styles.css';

@@ -6,6 +6,7 @@ import Box from "@mui/material/Box";
 import React, { useState, useEffect } from "react";
 import ShowReview from "../Review/ShowReview";
 import AppealStudent from "../Appeal/AppealStudent";
+import AppealTabs from "../Appeal/AppealLecturer";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -52,22 +53,26 @@ export default function LogicTabs({ assignment, typePermision }) {
   return (
     <Box sx={{ width: "100%", height: "100%" }}>
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-        <Tabs
-          value={value}
-          onChange={handleChange}
-          aria-label="basic tabs example"
-        >
-          <Tab label="Review Assignment" {...a11yProps(0)} />
-          {typePermision !== "checker" && (
-            <Tab label="Appeal" {...a11yProps(1)} />
+        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+          {(typePermision === "student" || typePermision === "checker") && (
+            <Tab label="Review Assignment" {...a11yProps(0)} />
           )}
+          {typePermision === "student" && <Tab label="Appeal" {...a11yProps(1)} />}
+          {typePermision === "lecturer" && [
+            <Tab key={0} label="Checker's comment" {...a11yProps(0)} />,
+            <Tab key={1} label="Student's respond" {...a11yProps(1)} />,
+            <Tab key={2} label="Lecturer's respond" {...a11yProps(2)} />
+          ]}
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
-        <ShowReview assignment = {assignment}/>
+        <ShowReview assignment={assignment} />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        <AppealStudent assignment={assignment} typePermision={typePermision}/>
+        <AppealStudent assignment={assignment} />
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={2}>
+        <AppealTabs assignment={assignment} />
       </CustomTabPanel>
     </Box>
   );
