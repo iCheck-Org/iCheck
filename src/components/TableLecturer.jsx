@@ -127,7 +127,7 @@ const TableLecturer = ({ firebaseUser }) => {
               disabled={!isClickableDownload}
             >
               <Tooltip title="Download Assignment" followCursor>
-                <AssignmentDownload row={value.row} firebaseUser={firebaseUser}  disabled={!isClickableDownload} />
+                <AssignmentDownload row={value.row} disabled={!isClickableDownload} />
               </Tooltip>
             </IconButton>
 

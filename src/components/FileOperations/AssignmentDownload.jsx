@@ -6,8 +6,9 @@ import CheckIcon from '@mui/icons-material/Check';
 import GetAppIcon from "@mui/icons-material/GetApp";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from '../../config/Fire-base';
+import Tooltip from '@mui/material/Tooltip';
 
-const AssignmentDownload = ({ row, firebaseUser, disabled }) => {
+const AssignmentDownload = ({ row, disabled }) => {
   const [loading, setLoading] = React.useState(false);
   const [success, setSuccess] = React.useState(false);
   const timer = React.useRef();
@@ -52,6 +53,7 @@ const AssignmentDownload = ({ row, firebaseUser, disabled }) => {
   }, []);
 
   return (
+    <Tooltip title="Download Assignment" followCursor>
     <IconButton
       aria-label="save"
       sx={{
@@ -87,6 +89,7 @@ const AssignmentDownload = ({ row, firebaseUser, disabled }) => {
         />
       )}
     </IconButton>
+    </Tooltip>
   );
 };
 

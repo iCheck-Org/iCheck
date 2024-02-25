@@ -107,9 +107,7 @@ const TableStudent = ({ firebaseUser }) => {
               style={{ height: "100%" }} // Set the height of the IconButton container
               disabled={!isClickableDownload}
             >
-              <Tooltip title="Download Assignment" followCursor>
-                <AssignmentDownload row={value.row} firebaseUser={firebaseUser}  disabled={!isClickableDownload} />
-              </Tooltip>
+              <AssignmentDownload row={value.row} disabled={!isClickableDownload} />
             </IconButton>
             
             <IconButton
