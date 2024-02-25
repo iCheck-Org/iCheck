@@ -7,7 +7,6 @@ import {
   query,
   where,
 } from "firebase/firestore";
-import GetAppIcon from "@mui/icons-material/GetApp";
 import GradingIcon from "@mui/icons-material/Grading";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { format } from "date-fns";
@@ -15,7 +14,7 @@ import { db } from "../config/Fire-base";
 import WriteReview from "./Review/WriteReview";
 import Tabs from "./Tabs/Tabs";
 import AlertSnackbar from "./MuiComponents/AlertSnackbar";
-import { handleFileDownload } from "./FileOperations/AssignmentDownload";
+import AssignmentDownload from "./FileOperations/AssignmentDownload";
 import Tooltip from '@mui/material/Tooltip';
 
 const TableChecker = ({ firebaseUser }) => {
@@ -122,11 +121,12 @@ const TableChecker = ({ firebaseUser }) => {
         return (
           <div>
             <IconButton
-              onClick={() => handleFileDownload(value.row , firebaseUser)}
+              id="Download"
+              style={{ height: "100%" }} // Set the height of the IconButton container
               disabled={!isClickableDownload}
             >
               <Tooltip title="Download Assignment" followCursor>
-              <GetAppIcon />
+                <AssignmentDownload row={value.row} firebaseUser={firebaseUser}  disabled={!isClickableDownload} />
               </Tooltip>
             </IconButton>
 

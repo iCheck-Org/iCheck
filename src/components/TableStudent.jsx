@@ -2,28 +2,23 @@ import React, { useState, useEffect } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import { Box, IconButton, Backdrop } from "@mui/material";
 import {
-  updateDoc,
-  doc,
   collection,
-  getDoc,
   getDocs,
   query,
   where,
-  addDoc,
-  serverTimestamp,
 } from "firebase/firestore";
-import GetAppIcon from "@mui/icons-material/GetApp";
 import UploadIcon from "@mui/icons-material/Upload";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { format } from "date-fns";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { storage, db } from "../config/Fire-base";
 import Tabs from "./Tabs/Tabs";
-import { handleFileDownload } from "./FileOperations/AssignmentDownload";
 import { handleFileUpload } from "./FileOperations/AssignmentUpload";
+import AssignmentDownload from "./FileOperations/AssignmentDownload";
 import AlertSnackbar from "./MuiComponents/AlertSnackbar";
 import '../pages/styles.css';
 import Tooltip from '@mui/material/Tooltip';
+import { db } from "../config/Fire-base";
+
+
 
 const TableStudent = ({ firebaseUser }) => {
   const [fileUploaded, setFileUploadedSuccessfuly] = useState(false);
@@ -105,16 +100,18 @@ const TableStudent = ({ firebaseUser }) => {
         return (
           <div>
             
+            
+
             <IconButton
               id="Download"
-              onClick={() => handleFileDownload(value.row , firebaseUser)}
+              style={{ height: "100%" }} // Set the height of the IconButton container
               disabled={!isClickableDownload}
-              
             >
               <Tooltip title="Download Assignment" followCursor>
-              <GetAppIcon />
+                <AssignmentDownload row={value.row} firebaseUser={firebaseUser}  disabled={!isClickableDownload} />
               </Tooltip>
             </IconButton>
+            
             <IconButton
               id="Upload"
               onClick={() => handleFileUpload(value.row.id)}

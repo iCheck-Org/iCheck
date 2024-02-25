@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import { Box, IconButton, Backdrop } from "@mui/material";
 import { collection, getDocs, query, where } from "firebase/firestore";
-import GetAppIcon from "@mui/icons-material/GetApp";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import GradingIcon from "@mui/icons-material/Grading";
 import { format } from "date-fns";
@@ -10,7 +9,7 @@ import { db } from "../config/Fire-base";
 import CreateAssignment from "./CreateAssignment";
 import WriteReview from "./Review/WriteReview";
 import SwitchAppeal from "./MuiComponents/SwitchAppeal";
-import { handleFileDownload } from "./FileOperations/AssignmentDownload";
+import AssignmentDownload from "./FileOperations/AssignmentDownload";
 import '../pages/styles.css';
 import AlertSnackbar from "./MuiComponents/AlertSnackbar";
 import Tabs from "./Tabs/Tabs";
@@ -123,11 +122,12 @@ const TableLecturer = ({ firebaseUser }) => {
         return (
           <div>
             <IconButton
-              onClick={() => handleFileDownload(value.row , firebaseUser)}
+              id="Download"
+              style={{ height: "100%" }} // Set the height of the IconButton container
               disabled={!isClickableDownload}
             >
               <Tooltip title="Download Assignment" followCursor>
-              <GetAppIcon />
+                <AssignmentDownload row={value.row} firebaseUser={firebaseUser}  disabled={!isClickableDownload} />
               </Tooltip>
             </IconButton>
 
