@@ -10,7 +10,7 @@ import { db } from "../config/Fire-base";
 import CreateAssignment from "./CreateAssignment";
 import WriteReview from "./Review/WriteReview";
 import SwitchAppeal from "./MuiComponents/SwitchAppeal";
-import { handleDownload } from "./FileOperations/AssignmentDownload";
+import { handleFileDownload } from "./FileOperations/AssignmentDownload";
 import '../pages/styles.css';
 import AlertSnackbar from "./MuiComponents/AlertSnackbar";
 import Tabs from "./Tabs/Tabs";
@@ -122,7 +122,7 @@ const TableLecturer = ({ firebaseUser }) => {
         return (
           <div>
             <IconButton
-              onClick={() => handleDownload(value.row , firebaseUser)}
+              onClick={() => handleFileDownload(value.row , firebaseUser)}
               disabled={!isClickableDownload}
               title="Download Assignment"
             >

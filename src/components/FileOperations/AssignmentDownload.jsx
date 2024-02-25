@@ -2,7 +2,7 @@
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../config/Fire-base";
 
-export const handleDownload = async (row , firebaseUser) => {
+export const handleFileDownload = async (row , firebaseUser) => {
     try {
       const userId = firebaseUser.id;
       const File_doc = row["File_doc"]; // Access the row object and get the value of "File_doc"

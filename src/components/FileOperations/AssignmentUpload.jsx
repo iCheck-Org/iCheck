@@ -8,7 +8,7 @@ import {
 } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage, db } from "../../config/Fire-base";
-import '../pages/styles.css';
+import '../../pages/styles.css';
 
 export const handleFileUpload = async (rowId) => {
     try {

@@ -19,7 +19,7 @@ import { format } from "date-fns";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage, db } from "../config/Fire-base";
 import Tabs from "./Tabs/Tabs";
-import { handleDownload } from "./FileOperations/AssignmentDownload";
+import { handleFileDownload } from "./FileOperations/AssignmentDownload";
 import { handleFileUpload } from "./FileOperations/AssignmentUpload";
 import AlertSnackbar from "./MuiComponents/AlertSnackbar";
 import '../pages/styles.css';
@@ -105,7 +105,7 @@ const TableStudent = ({ firebaseUser }) => {
           <div>
             <IconButton
               id="Download"
-              onClick={() => handleDownload(value.row , firebaseUser)}
+              onClick={() => handleFileDownload(value.row , firebaseUser)}
               disabled={!isClickableDownload}
               title="Download Assignment"
             >
