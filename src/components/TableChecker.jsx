@@ -16,6 +16,8 @@ import WriteReview from "./Review/WriteReview";
 import Tabs from "./Tabs/Tabs";
 import AlertSnackbar from "./MuiComponents/AlertSnackbar";
 import { handleFileDownload } from "./FileOperations/AssignmentDownload";
+import Tooltip from '@mui/material/Tooltip';
+
 const TableChecker = ({ firebaseUser }) => {
   const [fileDownloaded, setFileDownloadedSuccessfuly] = useState(false);
 
@@ -122,17 +124,19 @@ const TableChecker = ({ firebaseUser }) => {
             <IconButton
               onClick={() => handleFileDownload(value.row , firebaseUser)}
               disabled={!isClickableDownload}
-              title="Download Assignment"
             >
+              <Tooltip title="Download Assignment" followCursor>
               <GetAppIcon />
+              </Tooltip>
             </IconButton>
 
             <IconButton
               onClick={() => setShowWriteReview((prevState) => !prevState)}
               disabled={!isClickableGrading}
-              title="Grading Assignment"
             >
+              <Tooltip title="Write Review" followCursor>
               <GradingIcon />
+              </Tooltip>
             </IconButton>
 
             <IconButton
@@ -141,9 +145,10 @@ const TableChecker = ({ firebaseUser }) => {
                   setShowTabs((prevState) => !prevState);
               }}
               disabled={!isClickableShow}
-              title="View Review"
             >
+              <Tooltip title="Show Review" followCursor>
               <VisibilityIcon />
+              </Tooltip>
             </IconButton>
 
             

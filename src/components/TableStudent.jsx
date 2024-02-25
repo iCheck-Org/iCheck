@@ -23,6 +23,7 @@ import { handleFileDownload } from "./FileOperations/AssignmentDownload";
 import { handleFileUpload } from "./FileOperations/AssignmentUpload";
 import AlertSnackbar from "./MuiComponents/AlertSnackbar";
 import '../pages/styles.css';
+import Tooltip from '@mui/material/Tooltip';
 
 const TableStudent = ({ firebaseUser }) => {
   const [fileUploaded, setFileUploadedSuccessfuly] = useState(false);
@@ -103,21 +104,25 @@ const TableStudent = ({ firebaseUser }) => {
         const [showTabs, setShowTabs] = useState(false);
         return (
           <div>
+            
             <IconButton
               id="Download"
               onClick={() => handleFileDownload(value.row , firebaseUser)}
               disabled={!isClickableDownload}
-              title="Download Assignment"
+              
             >
+              <Tooltip title="Download Assignment" followCursor>
               <GetAppIcon />
+              </Tooltip>
             </IconButton>
             <IconButton
               id="Upload"
               onClick={() => handleFileUpload(value.row.id)}
               disabled={!isClickableUpload}
-              title="Upload Assignment"
             >
+              <Tooltip title="Upload Assignment" followCursor>
               <UploadIcon />
+              </Tooltip>
             </IconButton>
             <IconButton
               id="Review"
@@ -126,9 +131,10 @@ const TableStudent = ({ firebaseUser }) => {
                   setShowTabs((prevState) => !prevState);
               }}
               disabled={!isClickableShow}
-              title="View Review"
             >
+              <Tooltip title="View Review" followCursor>
               <VisibilityIcon />
+              </Tooltip>
             </IconButton>
             {showTabs && (
               <Tabs

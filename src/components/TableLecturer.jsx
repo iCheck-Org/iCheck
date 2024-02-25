@@ -14,6 +14,7 @@ import { handleFileDownload } from "./FileOperations/AssignmentDownload";
 import '../pages/styles.css';
 import AlertSnackbar from "./MuiComponents/AlertSnackbar";
 import Tabs from "./Tabs/Tabs";
+import Tooltip from '@mui/material/Tooltip';
 
 const TableLecturer = ({ firebaseUser }) => {
   const [fileDownloaded, setFileDownloadedSuccessfuly] = useState(false);
@@ -124,9 +125,10 @@ const TableLecturer = ({ firebaseUser }) => {
             <IconButton
               onClick={() => handleFileDownload(value.row , firebaseUser)}
               disabled={!isClickableDownload}
-              title="Download Assignment"
             >
+              <Tooltip title="Download Assignment" followCursor>
               <GetAppIcon />
+              </Tooltip>
             </IconButton>
 
             {/* Conditionally render the visibility icon */}
@@ -134,18 +136,20 @@ const TableLecturer = ({ firebaseUser }) => {
               <IconButton
                 onClick={() => setShowAppeal((prevState) => !prevState)}
                 disabled={!isClickableShow}
-                title="View Review"
               >
+                <Tooltip title="Show Appeal" followCursor>
                 <VisibilityIcon />
+                </Tooltip>
               </IconButton>
             ) : (
               <>
                 <IconButton
                   onClick={() => setShowWriteReview((prevState) => !prevState)}
                   disabled={!isClickableGrading}
-                  title="Grading Assignment"
                 >
+                  <Tooltip title="Write Review" followCursor>
                   <GradingIcon />
+                  </Tooltip>
                 </IconButton>
 
                 <IconButton
@@ -153,7 +157,9 @@ const TableLecturer = ({ firebaseUser }) => {
                   disabled={!isClickableShow}
                   title="View Review"
                 >
+                  <Tooltip title="Show Review" followCursor>
                   <VisibilityIcon />
+                  </Tooltip>
                 </IconButton>
               </>
             )}
@@ -269,7 +275,9 @@ const TableLecturer = ({ firebaseUser }) => {
           className="upload-assigment-button"
           onClick={() => setShowCreateAssignment((prevState) => !prevState)}
         >
+          <Tooltip title="Create Assignment" followCursor>
           Upload Assignment
+          </Tooltip>
         </button>
       </Box>
 
