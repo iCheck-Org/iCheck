@@ -15,6 +15,7 @@ import { db } from "../config/Fire-base";
 import WriteReview from "./Review/WriteReview";
 import Tabs from "./Tabs/Tabs";
 import AlertSnackbar from "./MuiComponents/AlertSnackbar";
+import { handleDownload } from "./FileOperations/AssignmentDownload";
 const TableChecker = ({ firebaseUser }) => {
   const [fileDownloaded, setFileDownloadedSuccessfuly] = useState(false);
 
@@ -119,7 +120,7 @@ const TableChecker = ({ firebaseUser }) => {
         return (
           <div>
             <IconButton
-              onClick={() => AssignmentDownload(value.row , firebaseUser)}
+              onClick={() => handleDownload(value.row , firebaseUser)}
               disabled={!isClickableDownload}
               title="Download Assignment"
             >
