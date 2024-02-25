@@ -13,7 +13,7 @@ import SwitchAppeal from "./MuiComponents/SwitchAppeal";
 import { AssignmentDownload } from "./AssignmentDownload";
 import '../pages/styles.css';
 import AlertSnackbar from "./MuiComponents/AlertSnackbar";
-import Tabs from "./Tabs/TabsMenu";
+import Tabs from "./Tabs/Tabs";
 
 const TableLecturer = ({ firebaseUser }) => {
   const [fileDownloaded, setFileDownloadedSuccessfuly] = useState(false);
@@ -129,14 +129,6 @@ const TableLecturer = ({ firebaseUser }) => {
               <GetAppIcon />
             </IconButton>
 
-            <IconButton
-              onClick={() => setShowWriteReview((prevState) => !prevState)}
-              disabled={!isClickableGrading}
-              title="Grading Assignment"
-            >
-              <GradingIcon />
-            </IconButton>
-
             {/* Conditionally render the visibility icon */}
             {showAppealTable ? (
               <IconButton
@@ -147,13 +139,23 @@ const TableLecturer = ({ firebaseUser }) => {
                 <VisibilityIcon />
               </IconButton>
             ) : (
-              <IconButton
-                onClick={() => setShowReview((prevState) => !prevState)}
-                disabled={!isClickableShow}
-                title="View Review"
-              >
-                <VisibilityIcon />
-              </IconButton>
+              <>
+                <IconButton
+                  onClick={() => setShowWriteReview((prevState) => !prevState)}
+                  disabled={!isClickableGrading}
+                  title="Grading Assignment"
+                >
+                  <GradingIcon />
+                </IconButton>
+
+                <IconButton
+                  onClick={() => setShowReview((prevState) => !prevState)}
+                  disabled={!isClickableShow}
+                  title="View Review"
+                >
+                  <VisibilityIcon />
+                </IconButton>
+              </>
             )}
 
             {showAppeal && (

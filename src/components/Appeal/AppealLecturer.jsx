@@ -8,7 +8,8 @@ import TextBox from '../MuiComponents/TextBox';
 export default function AppealTabs({ assignment }) {
   const [grade, setGrade] = useState('');
   const [newGrade, setNewGrade] = useState('');
-  const [userAnswer, setUserAnswer] = useState('');
+  const [lecturerAnswer, setLecturerAnswer] = useState('');
+  const [submitClicked, setSubmitClicked] = useState(false);
 
   useEffect(() => {
           setGrade(assignment.Grade || ''); // Set the current grade from the Firestore document
@@ -20,12 +21,13 @@ export default function AppealTabs({ assignment }) {
       const assignmentDocRef = doc(db, 'assignments', assignment.id);
       await updateDoc(assignmentDocRef, {
         Grade: newGrade, // Update the grade with the new value
-        AppealAns: userAnswer
+        AppealAns: lecturerAnswer
       });
       console.log('Document successfully updated!');
       
       // Update the local state 'grade' with the new value
       setGrade(newGrade);
+      setSubmitClicked(true);
   
       // Optionally, you can perform additional actions upon successful submission
     } catch (error) {
@@ -36,13 +38,19 @@ export default function AppealTabs({ assignment }) {
   return (
       <div>
   <div style={{ marginBottom: '20px' }}> {/* Add margin bottom to create space */}
-    <TextBox value={userAnswer} onChange={(event) => setUserAnswer(event.target.value)} />
+    {!('AppealAns' in assignment) ? (
+      <TextBox value={lecturerAnswer} onChange={(event) => setLecturerAnswer(event.target.value)} />
+    ) : (
+      <TextBox value={assignment.AppealAns} onChange={() => {}} disabled />
+    )}
   </div>
   <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
   <div style={{ marginRight: '10px' }}>Current Grade:</div>
   <div>{grade}</div>
 </div>
 <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+  {!('AppealAns' in assignment) && !submitClicked && (
+    <>
   <div style={{ marginRight: '10px' }}>New Grade:</div>
   <input 
     type="text" 
@@ -50,9 +58,14 @@ export default function AppealTabs({ assignment }) {
     style={{ width: '5%', height: '20%', textAlign: 'start', paddingLeft: '10px' }} 
     onChange={(event) => setNewGrade(event.target.value)}
   />
+    </>
+  )}
 </div>
-
-  <button onClick={handleSubmit}>Submit</button>
+    <>
+    {!('AppealAns' in assignment) && !submitClicked && (
+      <button onClick={handleSubmit}>Submit</button>
+    )}
+    </>
 </div>
   );
 }
