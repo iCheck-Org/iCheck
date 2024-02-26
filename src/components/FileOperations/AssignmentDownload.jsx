@@ -65,42 +65,49 @@ const AssignmentDownload = ({ row, disabled }) => {
   }, [fileDownloaded]);
 
   return (
-    <Tooltip title="Download Assignment" followCursor>
-      <span>
-        <IconButton
-          aria-label="save"
-          sx={{
-            bgcolor: disabled ? "transparent" : success ? green[500] : "transparent",
-            color: disabled ? grey[500] : success ? "#FFF" : grey[550],
-            width: 40,
-            height: 40,
-            boxShadow: disabled ? "none" : "none",
-            opacity: disabled ? 0.5 : 1,
-            "&:hover": {
-              bgcolor: disabled ? "transparent" : success ? green[700] : "transparent",
-            },
-          }}
-          onClick={handleClick}
-          disabled={disabled || loading} // Disable button when loading
-        >
-          {loading ? (
-            <CircularProgress color="success" />
-          ) : success ? (
-            <div>
-            <CheckIcon />
-            <AlertSnackbar
-              open={fileDownloaded} // Adjust this according to your Snackbar component
-              setOpen={setFileDownloadedSuccessfully} // Adjust this according to your Snackbar component
-              severity="success" // Adjust this according to your Snackbar component
-              message="File was download successfully" // Adjust this according to your Snackbar component
-            />
-            </div>
-          ) : (
-            <GetAppIcon />
-          )}
-        </IconButton>
-      </span>
-    </Tooltip>
+    <div>
+      <Tooltip title="Download Assignment" followCursor>
+        <span>
+          <div style={{ position: 'relative', display: 'inline-block' }}>
+            <IconButton
+              aria-label="save"
+              sx={{
+                bgcolor: disabled ? "transparent" : success ? green[500] : "transparent",
+                color: disabled ? grey[500] : success ? "#FFF" : grey[550],
+                width: 40,
+                height: 40,
+                boxShadow: disabled ? "none" : "none",
+                opacity: disabled ? 0.5 : 1,
+                "&:hover": {
+                  bgcolor: disabled ? "transparent" : success ? green[700] : "transparent",
+                },
+              }}
+              onClick={handleClick}
+              disabled={disabled || loading} // Disable button when loading
+            >
+              {success ? <CheckIcon /> : <GetAppIcon />}
+            </IconButton>
+            {loading && (
+              <CircularProgress
+                size={40}
+                sx={{
+                  color: green[500],
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                }}
+              />
+            )}
+          </div>
+        </span>
+      </Tooltip>
+      <AlertSnackbar
+        open={fileDownloaded} // Adjust this according to your Snackbar component
+        setOpen={setFileDownloadedSuccessfully} // Adjust this according to your Snackbar component
+        severity="success" // Adjust this according to your Snackbar component
+        message="File was downloaded successfully" // Adjust this according to your Snackbar component
+      />
+    </div>
   );
 };
 
