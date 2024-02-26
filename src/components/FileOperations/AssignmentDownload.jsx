@@ -54,6 +54,7 @@ const AssignmentDownload = ({ row, disabled }) => {
 
   return (
     <Tooltip title="Download Assignment" followCursor>
+    <span>
     <IconButton
       aria-label="save"
       sx={{
@@ -89,6 +90,7 @@ const AssignmentDownload = ({ row, disabled }) => {
         />
       )}
     </IconButton>
+    </span>
     </Tooltip>
   );
 };

@@ -7,12 +7,11 @@ import {
   query,
   where,
 } from "firebase/firestore";
-import UploadIcon from "@mui/icons-material/Upload";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { format } from "date-fns";
 import Tabs from "./Tabs/Tabs";
-import { handleFileUpload } from "./FileOperations/AssignmentUpload";
 import AssignmentDownload from "./FileOperations/AssignmentDownload";
+import AssignmentUpload from "./FileOperations/AssignmentUpload";
 import AlertSnackbar from "./MuiComponents/AlertSnackbar";
 import '../pages/styles.css';
 import Tooltip from '@mui/material/Tooltip';
@@ -99,26 +98,24 @@ const TableStudent = ({ firebaseUser }) => {
         const [showTabs, setShowTabs] = useState(false);
         return (
           <div>
-            
-            
+            <div style={{ display: 'inline-block', marginRight: '8px' }}>
+              <IconButton
+                id="Download"
+                disabled={!isClickableDownload}
+              >
+                <AssignmentDownload row={value.row} disabled={!isClickableDownload} />
+              </IconButton>
+            </div>
+      
+            <div style={{ display: 'inline-block', marginRight: '8px' }}>
+              <IconButton
+                id="Upload"
+                disabled={!isClickableUpload}
+              >
+                <AssignmentUpload rowId={value.row.id} disabled={!isClickableUpload} />
+              </IconButton>
+            </div>
 
-            <IconButton
-              id="Download"
-              style={{ height: "100%" }} // Set the height of the IconButton container
-              disabled={!isClickableDownload}
-            >
-              <AssignmentDownload row={value.row} disabled={!isClickableDownload} />
-            </IconButton>
-            
-            <IconButton
-              id="Upload"
-              onClick={() => handleFileUpload(value.row.id)}
-              disabled={!isClickableUpload}
-            >
-              <Tooltip title="Upload Assignment" followCursor>
-              <UploadIcon />
-              </Tooltip>
-            </IconButton>
             <IconButton
               id="Review"
               onClick={() => {
