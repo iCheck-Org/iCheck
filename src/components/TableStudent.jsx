@@ -12,16 +12,14 @@ import { format } from "date-fns";
 import Tabs from "./Tabs/Tabs";
 import AssignmentDownload from "./FileOperations/AssignmentDownload";
 import AssignmentUpload from "./FileOperations/AssignmentUpload";
-import AlertSnackbar from "./MuiComponents/AlertSnackbar";
+
 import '../pages/styles.css';
 import Tooltip from '@mui/material/Tooltip';
 import { db } from "../config/Fire-base";
 
 
-
 const TableStudent = ({ firebaseUser }) => {
-  const [fileUploaded, setFileUploadedSuccessfuly] = useState(false);
-  const [fileDownloaded, setFileDownloadedSuccessfuly] = useState(false);
+  
 
   const columns = [
     { 
@@ -75,6 +73,8 @@ const TableStudent = ({ firebaseUser }) => {
             {status}
           </div>
         );
+
+        
       },
     },
     {
@@ -192,18 +192,7 @@ const TableStudent = ({ firebaseUser }) => {
       <div style={{ height: '140%', width: '100%' }}>
         <DataGrid columns={columns} rows={rows} />
       </div>
-      <AlertSnackbar
-        open={fileUploaded}
-        setOpen={setFileUploadedSuccessfuly}
-        severity="success"
-        message="File was uploaded successfully"
-      />
-      <AlertSnackbar
-        open={fileDownloaded}
-        setOpen={setFileDownloadedSuccessfuly}
-        severity="success"
-        message="File was downloaded successfully"
-      />
+
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={uploadOpen}

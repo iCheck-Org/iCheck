@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useState } from 'react';
 import {IconButton} from "@mui/material";
 import CircularProgress from '@mui/material/CircularProgress';
 import { green, grey } from '@mui/material/colors';
@@ -15,11 +16,14 @@ import {
   import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
   import { storage, db } from '../../config/Fire-base';
   import Tooltip from '@mui/material/Tooltip';
+  import AlertSnackbar from '../MuiComponents/AlertSnackbar';
   import '../../pages/styles.css';
+
 
   export default function AssignmentUpload({ rowId, disabled }) {
     const [loading, setLoading] = React.useState(false);
     const [success, setSuccess] = React.useState(false);
+    const [fileUploaded, setFileUploadedSuccessfuly] = useState(false);
     
     const timer = React.useRef();
   
@@ -32,6 +36,7 @@ import {
           const file = event.target.files[0];
           if (file) {
             await handleSucessClick();
+            setFileUploadedSuccessfuly(true);
             const assignmentRef = doc(db, "assignments", rowId);
             const assignmentDoc = await getDoc(assignmentRef);
             const existingDocId = assignmentDoc.data().File_doc;
@@ -39,7 +44,7 @@ import {
             if (existingDocId) {
               const storageRef = ref(storage, file.name);
               await uploadBytes(storageRef, file);
-  
+              
               // Update the existing document with the new storage URL and timestamp
               await updateDoc(doc(db, "pdfs", existingDocId), {
                 name: file.name,
@@ -67,12 +72,14 @@ import {
                 url: downloadURL,
                 timestamp: timestamp,
               });
-  
+              
+              console.log("hello");
+
               await updateDoc(assignmentRef, {
                 submissionDate: serverTimestamp(),
                 File_doc: newDocRef.id,
               });
-              // Update the corresponding document in the "assignments" collection
+              
             }
           }
         });
@@ -97,7 +104,11 @@ import {
         timer.current = setTimeout(async () => {
           setSuccess(true);
           setLoading(false);
-        }, 2000);
+        }, 1000);
+        timer.current = setTimeout(async () => {
+          setSuccess(false);
+          setLoading(true);
+        }, 4000);
       }
     };
   
@@ -121,7 +132,15 @@ import {
           disabled={disabled}
         >
           {success ? (
+            <div>
             <CheckIcon />
+            <AlertSnackbar
+              open={fileUploaded}
+              setOpen={setFileUploadedSuccessfuly}
+              severity="success"
+              message="File was uploaded successfully"
+            />
+            </div>
           ) : (
             <UploadIcon />
           )}

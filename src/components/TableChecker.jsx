@@ -21,7 +21,7 @@ const TableChecker = ({ firebaseUser }) => {
   const [fileDownloaded, setFileDownloadedSuccessfuly] = useState(false);
 
   const columns = [
-    { 
+    {
       field: "personal_id",
       headerName: "Student ID",
       width: 130,

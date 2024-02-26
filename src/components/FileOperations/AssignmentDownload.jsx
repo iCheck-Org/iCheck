@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { IconButton } from "@mui/material";
 import CircularProgress from '@mui/material/CircularProgress';
 import { green, grey } from '@mui/material/colors';
@@ -7,19 +7,19 @@ import GetAppIcon from "@mui/icons-material/GetApp";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from '../../config/Fire-base';
 import Tooltip from '@mui/material/Tooltip';
+import AlertSnackbar from '../MuiComponents/AlertSnackbar';
 
 const AssignmentDownload = ({ row, disabled }) => {
-  const [loading, setLoading] = React.useState(false);
-  const [success, setSuccess] = React.useState(false);
-  const timer = React.useRef();
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [fileDownloaded, setFileDownloadedSuccessfully] = useState(false);
+  const timer = useRef(null);
 
   const handleClick = async () => {
     if (!loading && !disabled) {
-      setSuccess(false);
       setLoading(true);
       timer.current = setTimeout(async () => {
         await handleFileDownload();
-        setSuccess(true);
         setLoading(false);
       }, 1000);
     }
@@ -39,6 +39,8 @@ const AssignmentDownload = ({ row, disabled }) => {
           document.body.appendChild(link);
           link.click();
           link.remove();
+          setFileDownloadedSuccessfully(true);
+          setSuccess(true); // Set success state
         }
       });
     } catch (error) {
@@ -46,51 +48,58 @@ const AssignmentDownload = ({ row, disabled }) => {
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     return () => {
       clearTimeout(timer.current);
     };
   }, []);
 
+  useEffect(() => {
+    if (fileDownloaded) {
+      // Reset states after successful download
+      timer.current = setTimeout(() => {
+        setSuccess(false);
+        setFileDownloadedSuccessfully(false);
+      }, 2000);
+    }
+  }, [fileDownloaded]);
+
   return (
     <Tooltip title="Download Assignment" followCursor>
-    <span>
-    <IconButton
-      aria-label="save"
-      sx={{
-        bgcolor: disabled ? "transparent" : success ? green[500] : "transparent",
-        color: disabled ? grey[500] : success ? "#FFF" : grey[550], // Changed to grey for GetAppIcon
-        width: 40,
-        height: 40,
-        boxShadow: disabled ? "none" : "none",
-        opacity: disabled ? 0.5 : 1,
-        "&:hover": {
-          bgcolor: disabled ? "transparent" : success ? green[700] : "transparent",
-        },
-      }}
-      onClick={handleClick}
-      disabled={disabled}
-    >
-      {success ? (
-        <CheckIcon />
-      ) : (
-        <GetAppIcon />
-      )}
-      {loading && (
-        <CircularProgress
-          size={20}
+      <span>
+        <IconButton
+          aria-label="save"
           sx={{
-            color: green[500],
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            marginTop: -10,
-            marginLeft: -10,
+            bgcolor: disabled ? "transparent" : success ? green[500] : "transparent",
+            color: disabled ? grey[500] : success ? "#FFF" : grey[550],
+            width: 40,
+            height: 40,
+            boxShadow: disabled ? "none" : "none",
+            opacity: disabled ? 0.5 : 1,
+            "&:hover": {
+              bgcolor: disabled ? "transparent" : success ? green[700] : "transparent",
+            },
           }}
-        />
-      )}
-    </IconButton>
-    </span>
+          onClick={handleClick}
+          disabled={disabled || loading} // Disable button when loading
+        >
+          {loading ? (
+            <CircularProgress color="success" />
+          ) : success ? (
+            <div>
+            <CheckIcon />
+            <AlertSnackbar
+              open={fileDownloaded} // Adjust this according to your Snackbar component
+              setOpen={setFileDownloadedSuccessfully} // Adjust this according to your Snackbar component
+              severity="success" // Adjust this according to your Snackbar component
+              message="File was download successfully" // Adjust this according to your Snackbar component
+            />
+            </div>
+          ) : (
+            <GetAppIcon />
+          )}
+        </IconButton>
+      </span>
     </Tooltip>
   );
 };
