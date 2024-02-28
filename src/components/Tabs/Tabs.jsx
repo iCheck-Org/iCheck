@@ -4,7 +4,7 @@ import clsx from "clsx";
 import { styled, css } from "@mui/system";
 import { Modal as BaseModal } from "@mui/base/Modal";
 import LogicTabs from "./LogicTabs";
-import HighlightOffIcon from "@mui/icons-material/HighlightOff";
+import ClearIcon from '@mui/icons-material/Clear'; //close icon
 import { IconButton } from "@mui/material";
 
 export default function Tabs({ assignment, onClose, typePermision }) {
@@ -26,10 +26,23 @@ export default function Tabs({ assignment, onClose, typePermision }) {
     >
       <ModalContent sx={{display:"inline-block", position: "relative", width: 900, height: 500 }}>
         <IconButton
-          style={{position: "absolute", top: 0, right: 0, margin: "12px" }} onClick={handleClose}
-        >
-          <HighlightOffIcon style={{fontSize: 39}} />
+            style={{ 
+              position: "absolute", 
+              top: 0, 
+              right: 0, 
+              margin: "12px", 
+              zIndex: 999, 
+              boxShadow: '0px 0px 0px rgba(0, 0, 0, 0.5)',
+              borderRadius: '5px'
+            }} 
+            onClick={handleClose}
+            onMouseOver={(e) => e.stopPropagation()}
+            onFocus={(e) => e.stopPropagation()} 
+          >
+            <ClearIcon style={{ fontSize: 30 }} />
         </IconButton>
+
+
         <LogicTabs assignment={assignment} typePermision={typePermision} />
       </ModalContent>
     </Modal>
