@@ -201,7 +201,10 @@ const TableChecker = ({ firebaseUser }) => {
 
         // Map the fetched assignments data
         const rows = await Promise.all(
-          assignmentsSnapshot.docs.map(async (doc) => {
+            assignmentsSnapshot.docs
+            .filter(doc => (doc.data().Checker === firebaseUser.name || doc.data().Checker === ""))
+            .map(async (doc) => {
+
             const assignmentData = doc.data();
 
             const courseName = assignmentData.Course_name;
