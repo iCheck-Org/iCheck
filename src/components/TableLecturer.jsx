@@ -185,15 +185,14 @@ const TableLecturer = ({ firebaseUser }) => {
                 assignment={value.row}
                 onClose={() => setShowWriteReview(false)}
                 firebaseUser={firebaseUser}
-                onSuccessGrade={handleRowUpdate}
               />
             )}
 
             {showReview && (
-              <WriteReview
+              <Tabs
                 assignment={value.row}
+                typePermision={"checker"}
                 onClose={() => setShowReview(false)}
-                firebaseUser={firebaseUser}
               />
             )}
           </div>
