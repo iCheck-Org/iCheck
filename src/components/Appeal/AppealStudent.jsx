@@ -2,7 +2,7 @@ import Box from "@mui/material/Box";
 import React, { useState, useEffect } from "react";
 import { doc, updateDoc } from "firebase/firestore";
 import TextBox from "../MuiComponents/TextBox";
-import { db } from "../../config/Fire-base";
+import { db } from "../../config/fire-base";
 
 
 export default function AppealStudent({ assignment}) {

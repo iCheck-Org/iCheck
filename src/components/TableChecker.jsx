@@ -6,16 +6,18 @@ import {
   getDocs,
   query,
   where,
+  getDoc,
+  doc,
 } from "firebase/firestore";
 import GradingIcon from "@mui/icons-material/Grading";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { format } from "date-fns";
-import { db } from "../config/Fire-base";
+import { db } from "../config/fire-base";
 import WriteReview from "./Review/WriteReview";
 import Tabs from "./Tabs/Tabs";
 import AlertSnackbar from "./MuiComponents/AlertSnackbar";
 import AssignmentDownload from "./FileOperations/AssignmentDownload";
-import Tooltip from '@mui/material/Tooltip';
+import Tooltip from "@mui/material/Tooltip";
 
 const TableChecker = ({ firebaseUser }) => {
   const [fileDownloaded, setFileDownloadedSuccessfuly] = useState(false);
@@ -24,25 +26,25 @@ const TableChecker = ({ firebaseUser }) => {
     {
       field: "personal_id",
       headerName: "Student ID",
-      width: 130,
-      align: "left"
+      width: 150,
+      align: "left",
     },
-    { 
+    {
       field: "Course",
       headerName: "Course Name",
       width: 150,
-      align: "left"
+      align: "left",
     },
     {
       field: "Assignment No.",
       headerName: "Assignment No.",
-      width: 150,
-      align: "left"
+      width: 100,
+      align: "left",
     },
     {
       field: "submission_date",
       headerName: "Submission Date",
-      width: 200,
+      width: 150,
       align: "left",
       valueFormatter: (params) => {
         // Convert timestamp to Date object
@@ -55,7 +57,7 @@ const TableChecker = ({ firebaseUser }) => {
     {
       field: "Due Date",
       headerName: "Due Date",
-      width: 200,
+      width: 150,
       align: "left",
       valueFormatter: (params) => {
         // Convert timestamp to Date object
@@ -126,7 +128,10 @@ const TableChecker = ({ firebaseUser }) => {
               disabled={!isClickableDownload}
             >
               <Tooltip title="Download Assignment" followCursor>
-                <AssignmentDownload row={value.row}  disabled={!isClickableDownload} />
+                <AssignmentDownload
+                  row={value.row}
+                  disabled={!isClickableDownload}
+                />
               </Tooltip>
             </IconButton>
 
@@ -135,7 +140,7 @@ const TableChecker = ({ firebaseUser }) => {
               disabled={!isClickableGrading}
             >
               <Tooltip title="Write Review" followCursor>
-              <GradingIcon />
+                <GradingIcon />
               </Tooltip>
             </IconButton>
 
@@ -147,24 +152,24 @@ const TableChecker = ({ firebaseUser }) => {
               disabled={!isClickableShow}
             >
               <Tooltip title="Show Review" followCursor>
-              <VisibilityIcon />
+                <VisibilityIcon />
               </Tooltip>
             </IconButton>
 
-            
             {/* Pass assignmentId as a prop to the Review component */}
             {showWriteReview && (
               <WriteReview
                 assignment={value.row}
                 onClose={() => setShowWriteReview(false)}
                 firebaseUser={firebaseUser}
+                onGradingSuccess={handleRowUpdate}
               />
             )}
             {showTabs && (
               <Tabs
                 assignment={value.row}
                 onClose={() => setShowTabs((prevState) => !prevState)}
-                typePermision = {firebaseUser.type}
+                typePermision={firebaseUser.type}
               />
             )}
           </div>
@@ -196,23 +201,23 @@ const TableChecker = ({ firebaseUser }) => {
 
         // Map the fetched assignments data
         const rows = await Promise.all(
-            assignmentsSnapshot.docs.map(async (doc) => {
+          assignmentsSnapshot.docs.map(async (doc) => {
             const assignmentData = doc.data();
-
 
             const courseName = assignmentData.Course_name;
 
-              // Get the student_id from the user document
+            // Get the student_id from the user document
             const studentId = assignmentData.Student_id;
 
             const submissionTimestamp = assignmentData.submissionDate;
+
 
             // If no matching user document found or no matching pdf document found, return assignment data without modifying
             return {
               id: doc.id,
               ...assignmentData,
               Course: courseName,
-              personal_id : studentId,
+              personal_id: studentId,
               submission_date: submissionTimestamp,
             };
           })
@@ -232,11 +237,77 @@ const TableChecker = ({ firebaseUser }) => {
     setUploadOpen(false);
   };
 
+  const fetchUpdatedRowDataFromFirebase = async (updatedRowId) => {
+    try {
+      // Get the document snapshot for the updated row from Firestore
+      const assignmentDoc = await getDoc(doc(db, "assignments", value.row));
+
+      // Check if the document exists
+      if (assignmentDoc.exists()) {
+        // Extract the data from the document
+        const assignmentData = assignmentDoc.data();
+
+        // Construct the updated row object
+        const updatedRow = {
+          id: value.row,
+          ...assignmentData,
+          Course: assignmentData.Course_name, // Assuming Course_name is the correct field name
+        };
+
+        // Return the updated row
+        return updatedRow;
+      } else {
+        console.error("Document does not exist");
+        return null;
+      }
+    } catch (error) {
+      console.error("Error fetching updated row data from Firestore:", error);
+      return null;
+    }
+  };
+
+  const handleRowUpdate = async (updatedRowId) => {
+    try {
+      // Fetch the updated row data from Firebase based on the updatedRowId
+      const updatedRow = await fetchUpdatedRowDataFromFirebase(value.row);
+
+      // Update the rows state with the fetched data
+      if (updatedRow) {
+        setRows((prevRows) => {
+          // Find the index of the updated row in the rows array
+          const rowIndex = prevRows.findIndex((row) => row.id === value.row);
+
+          // Replace the updated row at the corresponding index
+          if (rowIndex !== -1) {
+            const updatedRows = [...prevRows];
+            updatedRows[rowIndex] = updatedRow;
+            return updatedRows;
+          } else {
+            console.error("Row not found in rows state");
+            return prevRows;
+          }
+        });
+      }
+    } catch (error) {
+      console.error("Error handling row update:", error);
+    }
+  };
+
   return (
     <Box height={400} width={1190}>
-
-      <div style={{ height: '140%', width: '100%' }}>
-        <DataGrid columns={columns} rows={rows} />
+      <div style={{ height: "140%", width: "100%" }}>
+        <DataGrid
+          autoHeight
+          initialState={{
+            pagination: { paginationModel: { pageSize: 8 } },
+          }}
+          pageSizeOptions={[8, 16, 32]}
+          columns={columns.map((column) => ({
+            ...column,
+            flex: 1, // Allow cells to stretch to fill the column width
+          }))}
+          rows={rows}
+        />
       </div>
       <AlertSnackbar
         open={fileDownloaded}

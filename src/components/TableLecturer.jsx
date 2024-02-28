@@ -5,31 +5,27 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import GradingIcon from "@mui/icons-material/Grading";
 import { format } from "date-fns";
-import { db } from "../config/Fire-base";
+import { db } from "../config/fire-base";
 import CreateAssignment from "./CreateAssignment";
 import WriteReview from "./Review/WriteReview";
 import SwitchAppeal from "./MuiComponents/SwitchAppeal";
 import AssignmentDownload from "./FileOperations/AssignmentDownload";
-import '../pages/styles.css';
+import "../pages/styles.css";
 import AlertSnackbar from "./MuiComponents/AlertSnackbar";
 import Tabs from "./Tabs/Tabs";
-import Tooltip from '@mui/material/Tooltip';
+import Tooltip from "@mui/material/Tooltip";
 
 const TableLecturer = ({ firebaseUser }) => {
   const [fileDownloaded, setFileDownloadedSuccessfuly] = useState(false);
 
   const columns = [
-    { 
+    {
       field: "personal_id",
       headerName: "Student ID",
-      width: 130,
-      align: "left"
-    },
-    { field: "Course",
-      headerName: "Course Name",
       width: 150,
-      align: "left"
+      align: "left",
     },
+    { field: "Course", headerName: "Course Name", width: 150, align: "left" },
     {
       field: "Assignment No.",
       headerName: "Assignment No.",
@@ -39,8 +35,9 @@ const TableLecturer = ({ firebaseUser }) => {
     {
       field: "submission_date",
       headerName: "Submission Date",
-      width: 200,
+      width: 150,
       align: "left",
+      flex:1,
       valueFormatter: (params) => {
         // Convert timestamp to Date object
         const dueDate = params.value && params.value.toDate();
@@ -52,8 +49,10 @@ const TableLecturer = ({ firebaseUser }) => {
     {
       field: "Due Date",
       headerName: "Due Date",
-      width: 200,
+      width: 150,
       align: "left",
+      flex:1,
+      
       valueFormatter: (params) => {
         // Convert timestamp to Date object
         const dueDate = params.value && params.value.toDate();
@@ -67,6 +66,7 @@ const TableLecturer = ({ firebaseUser }) => {
       headerName: "Status",
       width: 200,
       align: "left",
+      flex:1,
       renderCell: (params) => {
         let status = params.value;
 
@@ -93,11 +93,9 @@ const TableLecturer = ({ firebaseUser }) => {
     {
       field: "Actions",
       headerName: "Actions",
-      width: 200,
+      width: 150,
       align: "left",
       renderCell: (value) => {
-        
-
         const File_doc = value.row["File_doc"]; // Access the row object and get the value of "File_doc"
         const currentDate = new Date().getTime(); // Get current timestamp
         const dueDateTimestamp = value.row["Due Date"].toDate(); // Convert Firestore timestamp to JavaScript Date object
@@ -116,9 +114,9 @@ const TableLecturer = ({ firebaseUser }) => {
         const isClickableShow =
           grade !== null && grade !== undefined && grade !== "";
 
-      const [showReview, setShowReview] = useState(false);
-      const [showWriteReview, setShowWriteReview] = useState(false);
-      const [showAppeal, setShowAppeal] = useState(false);
+        const [showReview, setShowReview] = useState(false);
+        const [showWriteReview, setShowWriteReview] = useState(false);
+        const [showAppeal, setShowAppeal] = useState(false);
         return (
           <div>
             <IconButton
@@ -127,7 +125,10 @@ const TableLecturer = ({ firebaseUser }) => {
               disabled={!isClickableDownload}
             >
               <Tooltip title="Download Assignment" followCursor>
-                <AssignmentDownload row={value.row} disabled={!isClickableDownload} />
+                <AssignmentDownload
+                  row={value.row}
+                  disabled={!isClickableDownload}
+                />
               </Tooltip>
             </IconButton>
 
@@ -138,7 +139,7 @@ const TableLecturer = ({ firebaseUser }) => {
                 disabled={!isClickableShow}
               >
                 <Tooltip title="Show Appeal" followCursor>
-                <VisibilityIcon />
+                  <VisibilityIcon />
                 </Tooltip>
               </IconButton>
             ) : (
@@ -148,7 +149,7 @@ const TableLecturer = ({ firebaseUser }) => {
                   disabled={!isClickableGrading}
                 >
                   <Tooltip title="Write Review" followCursor>
-                  <GradingIcon />
+                    <GradingIcon />
                   </Tooltip>
                 </IconButton>
 
@@ -158,7 +159,7 @@ const TableLecturer = ({ firebaseUser }) => {
                   title="View Review"
                 >
                   <Tooltip title="Show Review" followCursor>
-                  <VisibilityIcon />
+                    <VisibilityIcon />
                   </Tooltip>
                 </IconButton>
               </>
@@ -233,20 +234,20 @@ const TableLecturer = ({ firebaseUser }) => {
           snapshot.docs.map(async (doc) => {
             const assignmentData = doc.data();
 
-              const courseName = assignmentData.Course_name;
+            const courseName = assignmentData.Course_name;
 
-              // Get the student_id from the user document
-              const studentId = assignmentData.Student_id;
+            // Get the student_id from the user document
+            const studentId = assignmentData.Student_id;
 
-              const submissionTimestamp = assignmentData.submissionDate;
-              // If no matching user document found or no matching pdf document found, return assignment data without modifying
-              return {
-                id: doc.id,
-                ...assignmentData,
-                Course: courseName,
-                personal_id : studentId,
-                submission_date: submissionTimestamp,
-              };
+            const submissionTimestamp = assignmentData.submissionDate;
+            // If no matching user document found or no matching pdf document found, return assignment data without modifying
+            return {
+              id: doc.id,
+              ...assignmentData,
+              Course: courseName,
+              personal_id: studentId,
+              submission_date: submissionTimestamp,
+            };
             // }
           })
         );
@@ -276,7 +277,7 @@ const TableLecturer = ({ firebaseUser }) => {
           onClick={() => setShowCreateAssignment((prevState) => !prevState)}
         >
           <Tooltip title="Create Assignment" followCursor>
-          Upload Assignment
+            Upload Assignment
           </Tooltip>
         </button>
       </Box>
@@ -288,12 +289,28 @@ const TableLecturer = ({ firebaseUser }) => {
           onClose={() => setShowCreateAssignment(false)}
         />
       )}
-      <Box display="flex" justifyContent="flex-end" height={40} style={{ marginTop: "-4%" }}>
-          <SwitchAppeal onToggle={setShowAppealTable} />
+      <Box
+        display="flex"
+        justifyContent="flex-end"
+        height={40}
+        style={{ marginTop: "-4%" }}
+      >
+        <SwitchAppeal onToggle={setShowAppealTable} />
       </Box>
 
-      <div style={{ height: "105%", width: "100%"}}>
-        <DataGrid columns={columns} rows={rows} />
+      <div style={{ height: "105%", width: "100%" }}>
+        <DataGrid
+          autoHeight
+          initialState={{
+            pagination: { paginationModel: { pageSize: 8 } },
+          }}
+          pageSizeOptions={[8, 16, 32]}
+          columns={columns.map((column) => ({
+            ...column,
+            // flex: 1, // Allow cells to stretch to fill the column width
+          }))}
+          rows={rows}
+        />
       </div>
 
       <AlertSnackbar

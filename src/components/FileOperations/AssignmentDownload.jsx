@@ -5,7 +5,7 @@ import { green, grey } from '@mui/material/colors';
 import CheckIcon from '@mui/icons-material/Check';
 import GetAppIcon from "@mui/icons-material/GetApp";
 import { collection, getDocs } from "firebase/firestore";
-import { db } from '../../config/Fire-base';
+import { db } from "../../config/fire-base"
 import Tooltip from '@mui/material/Tooltip';
 import AlertSnackbar from '../MuiComponents/AlertSnackbar';
 

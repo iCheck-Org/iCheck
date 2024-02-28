@@ -43,8 +43,6 @@ function a11yProps(index) {
 
 export default function LogicTabs({ assignment, typePermision }) {
   const [value, setValue] = useState(0); // Initialize value state
-  const [open, setOpen] = useState(true);
-
 
   const handleChange = (event, newValue) => {
     setValue(newValue);

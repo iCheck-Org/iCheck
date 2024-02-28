@@ -6,6 +6,8 @@ import {
   getDocs,
   query,
   where,
+  getDoc,
+  doc,
 } from "firebase/firestore";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { format } from "date-fns";
@@ -13,20 +15,17 @@ import Tabs from "./Tabs/Tabs";
 import AssignmentDownload from "./FileOperations/AssignmentDownload";
 import AssignmentUpload from "./FileOperations/AssignmentUpload";
 
-import '../pages/styles.css';
-import Tooltip from '@mui/material/Tooltip';
-import { db } from "../config/Fire-base";
-
+import "../pages/styles.css";
+import Tooltip from "@mui/material/Tooltip";
+import { db } from "../config/fire-base";
 
 const TableStudent = ({ firebaseUser }) => {
-  
-
   const columns = [
-    { 
+    {
       field: "Course",
       headerName: "Course Name",
-      width: 200,
-      align: "left"
+      width: 150,
+      align: "left",
     },
     {
       field: "Assignment No.",
@@ -37,8 +36,24 @@ const TableStudent = ({ firebaseUser }) => {
     {
       field: "Due Date",
       headerName: "Due Date",
-      width: 200,
+      width: 150,
       align: "left",
+      flex:1,
+      valueFormatter: (params) => {
+        // Convert timestamp to Date object
+        const dueDate = params.value && params.value.toDate();
+
+        // Format the Date object to a human-readable string
+        return dueDate ? format(dueDate, "dd/MM/yyyy, HH:mm:ss") : "";
+      },
+    },
+    {
+      field: "submission_date",
+      headerName: "Submission Date",
+      width: 150,
+      align: "left",
+      flex:1,
+      
       valueFormatter: (params) => {
         // Convert timestamp to Date object
         const dueDate = params.value && params.value.toDate();
@@ -52,6 +67,7 @@ const TableStudent = ({ firebaseUser }) => {
       headerName: "Status",
       width: 200,
       align: "left",
+      
       renderCell: (params) => {
         let status = params.value;
 
@@ -73,15 +89,20 @@ const TableStudent = ({ firebaseUser }) => {
             {status}
           </div>
         );
-
-        
       },
+    },
+    {
+      field: "Grade",
+      headerName: "Grade",
+      width: 80,
+      align: "center",
     },
     {
       field: "Actions",
       headerName: "Actions",
-      width: 200,
+      width: 150,
       align: "left",
+      flex:1,
       renderCell: (value) => {
         const File_doc = value.row["File_doc"]; // Access the row object and get the value of "File_doc"
         const currentDate = new Date().getTime(); // Get current timestamp
@@ -98,21 +119,22 @@ const TableStudent = ({ firebaseUser }) => {
         const [showTabs, setShowTabs] = useState(false);
         return (
           <div>
-            <div style={{ display: 'inline-block', marginRight: '8px' }}>
-              <IconButton
-                id="Download"
-                disabled={!isClickableDownload}
-              >
-                <AssignmentDownload row={value.row} disabled={!isClickableDownload} />
+            <div style={{ display: "inline-block", marginRight: "8px" }}>
+              <IconButton id="Download" disabled={!isClickableDownload}>
+                <AssignmentDownload
+                  row={value.row}
+                  disabled={!isClickableDownload}
+                />
               </IconButton>
             </div>
-      
-            <div style={{ display: 'inline-block', marginRight: '8px' }}>
-              <IconButton
-                id="Upload"
-                disabled={!isClickableUpload}
-              >
-                <AssignmentUpload rowId={value.row.id} disabled={!isClickableUpload} />
+
+            <div style={{ display: "inline-block", marginRight: "8px" }}>
+              <IconButton id="Upload" disabled={!isClickableUpload}>
+                <AssignmentUpload
+                  rowId={value.row.id}
+                  disabled={!isClickableUpload}
+                  onUploadSuccess={handleRowUpdate}
+                />
               </IconButton>
             </div>
 
@@ -125,7 +147,7 @@ const TableStudent = ({ firebaseUser }) => {
               disabled={!isClickableShow}
             >
               <Tooltip title="View Review" followCursor>
-              <VisibilityIcon />
+                <VisibilityIcon />
               </Tooltip>
             </IconButton>
             {showTabs && (
@@ -163,13 +185,18 @@ const TableStudent = ({ firebaseUser }) => {
           assignmentsSnapshot.docs.map(async (doc) => {
             const assignmentData = doc.data();
             const courseName = assignmentData.Course_name;
+            const submissionTimestamp = assignmentData.submissionDate;
+            const grade = assignmentData.Grade;
 
-              // Return the assignment data along with the course name
-              return {
-                id: doc.id,
-                ...assignmentData,
-                Course: courseName,
-              };
+            // Return the assignment data along with the course name
+            return {
+              id: doc.id,
+              ...assignmentData,
+              Course: courseName,
+              submission_date: submissionTimestamp,
+              Grade: grade,
+
+            };
           })
         );
 
@@ -187,10 +214,76 @@ const TableStudent = ({ firebaseUser }) => {
     setUploadOpen(false);
   };
 
+  const fetchUpdatedRowDataFromFirebase = async (updatedRowId) => {
+    try {
+      // Get the document snapshot for the updated row from Firestore
+      const assignmentDoc = await getDoc(doc(db, "assignments", updatedRowId));
+
+      // Check if the document exists
+      if (assignmentDoc.exists()) {
+        // Extract the data from the document
+        const assignmentData = assignmentDoc.data();
+
+        // Construct the updated row object
+        const updatedRow = {
+          id: updatedRowId,
+          ...assignmentData,
+          Course: assignmentData.Course_name, // Assuming Course_name is the correct field name
+        };
+
+        // Return the updated row
+        return updatedRow;
+      } else {
+        console.error("Document does not exist");
+        return null;
+      }
+    } catch (error) {
+      console.error("Error fetching updated row data from Firestore:", error);
+      return null;
+    }
+  };
+
+  const handleRowUpdate = async (updatedRowId) => {
+    try {
+      // Fetch the updated row data from Firebase based on the updatedRowId
+      const updatedRow = await fetchUpdatedRowDataFromFirebase(updatedRowId);
+
+      // Update the rows state with the fetched data
+      if (updatedRow) {
+        setRows((prevRows) => {
+          // Find the index of the updated row in the rows array
+          const rowIndex = prevRows.findIndex((row) => row.id === updatedRowId);
+
+          // Replace the updated row at the corresponding index
+          if (rowIndex !== -1) {
+            const updatedRows = [...prevRows];
+            updatedRows[rowIndex] = updatedRow;
+            return updatedRows;
+          } else {
+            console.error("Row not found in rows state");
+            return prevRows;
+          }
+        });
+      }
+    } catch (error) {
+      console.error("Error handling row update:", error);
+    }
+  };
+
   return (
-    <Box height={400} width={1024} style={{ position: "relative" }}>
-      <div style={{ height: '140%', width: '100%' }}>
-        <DataGrid columns={columns} rows={rows} />
+    <Box height={400} width={1190} style={{ position: "relative" }}>
+      <div style={{ height: "140%", width: "100%" }}>
+        <DataGrid
+          autoHeight
+          initialState={{
+            pagination: { paginationModel: { pageSize: 8 } },
+          }}
+          pageSizeOptions={[8, 16, 32]}
+          columns={columns.map((column) => ({
+            ...column,
+          }))}
+          rows={rows}
+        />
       </div>
 
       <Backdrop

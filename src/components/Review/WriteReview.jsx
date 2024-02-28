@@ -5,10 +5,10 @@ import { styled, css } from "@mui/system";
 import { Modal as BaseModal } from "@mui/base/Modal";
 import { Box } from "@mui/material";
 import TextBox from "../MuiComponents/TextBox";
-import { db } from "../../config/Fire-base";
+import { db } from "../../config/fire-base";
 import { doc, updateDoc, onSnapshot } from "firebase/firestore";
 
-export default function WriteReview({ assignment, onClose, firebaseUser }) {
+export default function WriteReview({ assignment, onClose, firebaseUser, onGradingSuccess }) {
   const [open, setOpen] = useState(true);
   const [hasComment, setHasComment] = useState(false); // State to track if the assignment has a Comment
   const [gradeInputValue, setGradeInputValue] = useState(""); // Define state for grade input value
@@ -42,6 +42,8 @@ export default function WriteReview({ assignment, onClose, firebaseUser }) {
 
       // Use updateDoc() method to update the document with the new data
       await updateDoc(documentRef, data);
+
+      onGradingSuccess(1);
 
       console.log("Document successfully updated!");
       setOpen(false); // Close the modal after successful submission
