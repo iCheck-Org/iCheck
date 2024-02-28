@@ -37,29 +37,21 @@ const Login = () => {
     setLoading(true);
     setSuccess(false);
     setShowFailIcon(false);
-
+  
     try {
       await signInWithEmailAndPassword(auth, email, password);
       const userRef = doc(db, "users", auth.currentUser.uid);
       const userSnap = await getDoc(userRef);
       const userRecord = userSnap.data();
-
+  
       if (!userRecord.empty) {
         setSuccess(true);
         navigate("/dashboard");
-      } else {
-        setNotice("No matching document found.");
-        setShowFailIcon(true);
-        setBackgroundColor(red[500]);
-        setTimeout(() => {
-          setShowFailIcon(false);
-          setBackgroundColor(null);
-        }, 4000);
       }
     } catch (error) {
       setNotice("Invalid email or password.");
       setShowFailIcon(true);
-      setBackgroundColor(red[500]);
+      setBackgroundColor(red[400]);
       setTimeout(() => {
         setShowFailIcon(false);
         setBackgroundColor(null);
@@ -70,6 +62,7 @@ const Login = () => {
       }, 500);
     }
   };
+  
 
   const isFormValid = email.trim() !== "" && password.trim() !== "";
 
@@ -124,24 +117,25 @@ const Login = () => {
               }}
             >
               <Box sx={{ m: 1, position: "relative" }}>
-                <Button
-                  type="button"
-                  className="inputButton"
-                  variant="contained"
-                  sx={{ ...buttonSx, backgroundColor: backgroundColor }}
-                  disabled={!isFormValid || loading}
-                  onClick={handleLogin}
-                >
-                  {loading ? (
-                    <CircularProgress size={24} sx={{ color: green[500] }} />
-                  ) : success ? (
-                    <CheckIcon />
-                  ) : showFailIcon ? (
-                    <ClearIcon />
-                  ) : (
-                    "Login"
-                  )}
-                </Button>
+              <button
+                type="button"
+                className="inputButton"
+                variant="contained"
+                style={{ ...buttonSx, backgroundColor: backgroundColor }} // Change sx to style
+                disabled={!isFormValid || loading}
+                onClick={handleLogin}
+              >
+                {loading ? (
+                  <CircularProgress size={24} sx={{ color: green[500] }} />
+                ) : success ? (
+                  <CheckIcon />
+                ) : showFailIcon ? (
+                  <ClearIcon />
+                ) : (
+                  "Login"
+                )}
+              </button>
+
                 {notice && <div className="text-red-500 mb-2">{notice}</div>}
               </Box>
             </Box>
