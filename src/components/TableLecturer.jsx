@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import { Box, IconButton, Backdrop } from "@mui/material";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  query,
+  where,
+  getDoc,
+  doc,
+} from "firebase/firestore";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import GradingIcon from "@mui/icons-material/Grading";
 import { format } from "date-fns";
@@ -37,7 +44,7 @@ const TableLecturer = ({ firebaseUser }) => {
       headerName: "Submission Date",
       width: 150,
       align: "left",
-      flex:1,
+      flex: 1,
       valueFormatter: (params) => {
         // Convert timestamp to Date object
         const dueDate = params.value && params.value.toDate();
@@ -51,8 +58,8 @@ const TableLecturer = ({ firebaseUser }) => {
       headerName: "Due Date",
       width: 150,
       align: "left",
-      flex:1,
-      
+      flex: 1,
+
       valueFormatter: (params) => {
         // Convert timestamp to Date object
         const dueDate = params.value && params.value.toDate();
@@ -66,7 +73,7 @@ const TableLecturer = ({ firebaseUser }) => {
       headerName: "Status",
       width: 200,
       align: "left",
-      flex:1,
+      flex: 1,
       renderCell: (params) => {
         let status = params.value;
 
@@ -178,6 +185,7 @@ const TableLecturer = ({ firebaseUser }) => {
                 assignment={value.row}
                 onClose={() => setShowWriteReview(false)}
                 firebaseUser={firebaseUser}
+                onSuccessGrade={handleRowUpdate}
               />
             )}
 
@@ -264,6 +272,70 @@ const TableLecturer = ({ firebaseUser }) => {
 
   const handleUploadClose = () => {
     setUploadOpen(false);
+  };
+
+  const fetchUpdatedRowDataFromFirebase = async (updatedRowId) => {
+    try {
+      // Get the document snapshot for the updated row from Firestore
+      const assignmentDoc = await getDoc(doc(db, "assignments", updatedRowId));
+
+      // Check if the document exists
+      if (assignmentDoc.exists()) {
+        // Extract the data from the document
+        const assignmentData = assignmentDoc.data();
+        const courseName = assignmentData.Course_name;
+
+        // Get the student_id from the user document
+        const studentId = assignmentData.Student_id;
+
+        const submissionTimestamp = assignmentData.submissionDate;
+
+        // Construct the updated row object
+        const updatedRow = {
+          id: updatedRowId,
+          ...assignmentData,
+          Course: courseName,
+          personal_id: studentId,
+          submission_date: submissionTimestamp,
+        };
+
+        // Return the updated row
+        return updatedRow;
+      } else {
+        console.error("Document does not exist");
+        return null;
+      }
+    } catch (error) {
+      console.error("Error fetching updated row data from Firestore:", error);
+      return null;
+    }
+  };
+
+  const handleRowUpdate = async (updatedRowId) => {
+    try {
+      // Fetch the updated row data from Firebase based on the updatedRowId
+      const updatedRow = await fetchUpdatedRowDataFromFirebase(updatedRowId);
+
+      // Update the rows state with the fetched data
+      if (updatedRow) {
+        setRows((prevRows) => {
+          // Find the index of the updated row in the rows array
+          const rowIndex = prevRows.findIndex((row) => row.id === updatedRowId);
+
+          // Replace the updated row at the corresponding index
+          if (rowIndex !== -1) {
+            const updatedRows = [...prevRows];
+            updatedRows[rowIndex] = updatedRow;
+            return updatedRows;
+          } else {
+            console.error("Row not found in rows state");
+            return prevRows;
+          }
+        });
+      }
+    } catch (error) {
+      console.error("Error handling row update:", error);
+    }
   };
 
   const [showCreateAssignment, setShowCreateAssignment] = useState(false);

@@ -38,7 +38,7 @@ const TableChecker = ({ firebaseUser }) => {
     {
       field: "Assignment No.",
       headerName: "Assignment No.",
-      width: 100,
+      width: 150,
       align: "left",
     },
     {
@@ -46,6 +46,7 @@ const TableChecker = ({ firebaseUser }) => {
       headerName: "Submission Date",
       width: 150,
       align: "left",
+      flex: 1,
       valueFormatter: (params) => {
         // Convert timestamp to Date object
         const dueDate = params.value && params.value.toDate();
@@ -59,6 +60,7 @@ const TableChecker = ({ firebaseUser }) => {
       headerName: "Due Date",
       width: 150,
       align: "left",
+      flex: 1,
       valueFormatter: (params) => {
         // Convert timestamp to Date object
         const dueDate = params.value && params.value.toDate();
@@ -160,15 +162,19 @@ const TableChecker = ({ firebaseUser }) => {
             {showWriteReview && (
               <WriteReview
                 assignment={value.row}
-                onClose={() => setShowWriteReview(false)}
+                onClose={() => {
+                  setShowWriteReview(false);
+                }}
                 firebaseUser={firebaseUser}
-                onGradingSuccess={handleRowUpdate}
+                onSuccessGrade={handleRowUpdate}
               />
             )}
             {showTabs && (
               <Tabs
                 assignment={value.row}
-                onClose={() => setShowTabs((prevState) => !prevState)}
+                onClose={() => {
+                  setShowTabs((prevState) => !prevState);
+                }}
                 typePermision={firebaseUser.type}
               />
             )}
@@ -201,29 +207,31 @@ const TableChecker = ({ firebaseUser }) => {
 
         // Map the fetched assignments data
         const rows = await Promise.all(
-            assignmentsSnapshot.docs
-            .filter(doc => (doc.data().Checker === firebaseUser.name || doc.data().Checker === ""))
+          assignmentsSnapshot.docs
+            .filter(
+              (doc) =>
+                doc.data().Checker === firebaseUser.name ||
+                doc.data().Checker === ""
+            )
             .map(async (doc) => {
+              const assignmentData = doc.data();
 
-            const assignmentData = doc.data();
+              const courseName = assignmentData.Course_name;
 
-            const courseName = assignmentData.Course_name;
+              // Get the student_id from the user document
+              const studentId = assignmentData.Student_id;
 
-            // Get the student_id from the user document
-            const studentId = assignmentData.Student_id;
+              const submissionTimestamp = assignmentData.submissionDate;
 
-            const submissionTimestamp = assignmentData.submissionDate;
-
-
-            // If no matching user document found or no matching pdf document found, return assignment data without modifying
-            return {
-              id: doc.id,
-              ...assignmentData,
-              Course: courseName,
-              personal_id: studentId,
-              submission_date: submissionTimestamp,
-            };
-          })
+              // If no matching user document found or no matching pdf document found, return assignment data without modifying
+              return {
+                id: doc.id,
+                ...assignmentData,
+                Course: courseName,
+                personal_id: studentId,
+                submission_date: submissionTimestamp,
+              };
+            })
         );
 
         setRows(rows);
@@ -243,18 +251,26 @@ const TableChecker = ({ firebaseUser }) => {
   const fetchUpdatedRowDataFromFirebase = async (updatedRowId) => {
     try {
       // Get the document snapshot for the updated row from Firestore
-      const assignmentDoc = await getDoc(doc(db, "assignments", value.row));
+      const assignmentDoc = await getDoc(doc(db, "assignments", updatedRowId));
 
       // Check if the document exists
       if (assignmentDoc.exists()) {
         // Extract the data from the document
         const assignmentData = assignmentDoc.data();
+        const courseName = assignmentData.Course_name;
+
+        // Get the student_id from the user document
+        const studentId = assignmentData.Student_id;
+
+        const submissionTimestamp = assignmentData.submissionDate;
 
         // Construct the updated row object
         const updatedRow = {
-          id: value.row,
+          id: updatedRowId,
           ...assignmentData,
-          Course: assignmentData.Course_name, // Assuming Course_name is the correct field name
+          Course: courseName,
+          personal_id: studentId,
+          submission_date: submissionTimestamp,
         };
 
         // Return the updated row
@@ -272,13 +288,13 @@ const TableChecker = ({ firebaseUser }) => {
   const handleRowUpdate = async (updatedRowId) => {
     try {
       // Fetch the updated row data from Firebase based on the updatedRowId
-      const updatedRow = await fetchUpdatedRowDataFromFirebase(value.row);
+      const updatedRow = await fetchUpdatedRowDataFromFirebase(updatedRowId);
 
       // Update the rows state with the fetched data
       if (updatedRow) {
         setRows((prevRows) => {
           // Find the index of the updated row in the rows array
-          const rowIndex = prevRows.findIndex((row) => row.id === value.row);
+          const rowIndex = prevRows.findIndex((row) => row.id === updatedRowId);
 
           // Replace the updated row at the corresponding index
           if (rowIndex !== -1) {
@@ -307,7 +323,6 @@ const TableChecker = ({ firebaseUser }) => {
           pageSizeOptions={[8, 16, 32]}
           columns={columns.map((column) => ({
             ...column,
-            flex: 1, // Allow cells to stretch to fill the column width
           }))}
           rows={rows}
         />
