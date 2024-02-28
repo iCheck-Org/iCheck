@@ -8,20 +8,25 @@ import TextBox from "../MuiComponents/TextBox";
 import { db } from "../../config/fire-base";
 import { doc, updateDoc, onSnapshot } from "firebase/firestore";
 
-export default function WriteReview({ assignment, onClose, firebaseUser, onGradingSuccess }) {
+export default function WriteReview({
+  assignment,
+  onClose,
+  firebaseUser,
+  onSuccessGrade,
+}) {
   const [open, setOpen] = useState(true);
   const [hasComment, setHasComment] = useState(false); // State to track if the assignment has a Comment
   const [gradeInputValue, setGradeInputValue] = useState(""); // Define state for grade input value
   const [commentInputValue, setCommentInputValue] = useState(""); // Define state for comment input value
 
   useEffect(() => {
-        if ("Comment" in assignment) {
-          setHasComment(true);
-          setCommentInputValue(assignment.Comment);
-        }
-        if ("Grade" in assignment) {
-          setGradeInputValue(assignment.Grade);
-        }
+    if ("Comment" in assignment) {
+      setHasComment(true);
+      setCommentInputValue(assignment.Comment);
+    }
+    if ("Grade" in assignment) {
+      setGradeInputValue(assignment.Grade);
+    }
   }, [assignment]);
 
   const handleClose = () => {
@@ -43,11 +48,10 @@ export default function WriteReview({ assignment, onClose, firebaseUser, onGradi
       // Use updateDoc() method to update the document with the new data
       await updateDoc(documentRef, data);
 
-      onGradingSuccess(1);
-
       console.log("Document successfully updated!");
       setOpen(false); // Close the modal after successful submission
       onClose(); // Call the onClose function passed from the parent component
+      onSuccessGrade(assignment.id);
     } catch (error) {
       console.error("Error updating document: ", error);
     }
