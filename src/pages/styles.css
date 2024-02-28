@@ -70,6 +70,11 @@ body {
   text-align: center; /* Center the text */
 }
 
+.clicked {
+    opacity: 0.3; /* Adjust the opacity value to make the button more transparent */
+    background-color: grey; /* Change the background color to grey */
+}
+
 .inputButton:hover {
   background-color: rgb(36, 115, 211);
 

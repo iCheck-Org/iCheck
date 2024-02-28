@@ -1,34 +1,75 @@
-import { useState } from "react";
+import * as React from 'react';
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { doc, getDoc } from 'firebase/firestore';
 import { auth, db } from "../config/Fire-base";
 import logo from '../logo/icheck_logo_1.png';
+import { Box } from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
+import { green, red } from '@mui/material/colors';
+import Button from '@mui/material/Button';
+import CheckIcon from '@mui/icons-material/Check'; // success icon
+import ClearIcon from '@mui/icons-material/Clear'; // fail icon
 
 const Login = () => {
     const navigate = useNavigate();
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [notice, setNotice] = useState("");
+    const [email, setEmail] = React.useState("");
+    const [password, setPassword] = React.useState("");
+    const [notice, setNotice] = React.useState("");
+    const [loading, setLoading] = React.useState(false);
+    const [success, setSuccess] = React.useState(false);
+    const [showFailIcon, setShowFailIcon] = React.useState(false);
+    const [backgroundColor, setBackgroundColor] = React.useState(null);
 
-    const loginWithUsernameAndPassword = async (e) => {
-        e.preventDefault();
-    
+    const buttonSx = {
+        ...(success && {
+            bgcolor: green[500],
+            '&:hover': {
+                bgcolor: green[700],
+            },
+        }),
+    };
+
+    const handleLogin = async () => {
+        setLoading(true);
+        setSuccess(false);
+        setShowFailIcon(false);
+
         try {
             await signInWithEmailAndPassword(auth, email, password);
-            const userRef = doc(db,"users",auth.currentUser.uid);
+            const userRef = doc(db, "users", auth.currentUser.uid);
             const userSnap = await getDoc(userRef);
             const userRecord = userSnap.data();
-            
+
             if (!userRecord.empty) {
+                setSuccess(true);
                 navigate("/dashboard");
             } else {
                 setNotice("No matching document found.");
+                setShowFailIcon(true);
+                setBackgroundColor(red[500]);
+                setTimeout(() => {
+                    setShowFailIcon(false);
+                    setBackgroundColor(null);
+                }, 4000);
             }
-        } catch {
+        } catch (error) {
+            console.error("Login failed:", error.message);
             setNotice("Invalid email or password.");
+            setShowFailIcon(true);
+            setBackgroundColor(red[500]);
+            setTimeout(() => {
+                setShowFailIcon(false);
+                setBackgroundColor(null);
+            }, 2000);
+        } finally {
+            setTimeout(() => {
+                setLoading(false);
+            }, 500);
         }
-    }
+    };
+
+    const isFormValid = email.trim() !== "" && password.trim() !== "";
 
     return (
         <div className="container">
@@ -71,21 +112,30 @@ const Login = () => {
                     </div>
 
                     <div className="d-grid">
-                        <button
-                            type="submit"
-                            className="inputButton"
-                            onClick={(e) => loginWithUsernameAndPassword(e)}
-                        >
-                            Submit
-                        </button>
+                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
+                            <Box sx={{ m: 1, position: 'relative' }}>
+                                <Button
+                                    type="button"
+                                    className="inputButton"
+                                    variant="contained"
+                                    sx={{ ...buttonSx, backgroundColor: backgroundColor }}
+                                    disabled={!isFormValid || loading}
+                                    onClick={handleLogin}
+                                >
+                                    {loading ? (
+                                        <CircularProgress size={24} sx={{ color: green[500] }} />
+                                    ) : success ? (
+                                        <CheckIcon />
+                                    ) : showFailIcon ? (
+                                        <ClearIcon />
+                                    ) : (
+                                        "Login"
+                                    )}
+                                </Button>
+                            </Box>
+                        </Box>
                     </div>
                     <br />
-
-                    {/* <div className="centered-text">
-                        <span>
-                            Need to sign up for an account? <Link to="./signup">Click here.</Link>
-                        </span>
-                    </div> */}
                 </form>
             </div>
         </div>
