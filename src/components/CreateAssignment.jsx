@@ -11,7 +11,7 @@ import {
   getDoc,
   Timestamp,
 } from "firebase/firestore";
-import { db } from "../config/Fire-base";
+import { db } from "../config/fire-base";
 
 export default function CreateAssignment({ firebaseUser, onClose }) {
   const [open, setOpen] = useState(true);
