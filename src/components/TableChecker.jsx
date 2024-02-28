@@ -257,11 +257,20 @@ const TableChecker = ({ firebaseUser }) => {
       if (assignmentDoc.exists()) {
         // Extract the data from the document
         const assignmentData = assignmentDoc.data();
+        const courseName = assignmentData.Course_name;
+
+        // Get the student_id from the user document
+        const studentId = assignmentData.Student_id;
+
+        const submissionTimestamp = assignmentData.submissionDate;
 
         // Construct the updated row object
         const updatedRow = {
+          id: updatedRowId,
           ...assignmentData,
-          Course: assignmentData.Course_name, // Assuming Course_name is the correct field name
+          Course: courseName,
+          personal_id: studentId,
+          submission_date: submissionTimestamp,
         };
 
         // Return the updated row
