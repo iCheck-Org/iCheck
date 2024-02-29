@@ -18,6 +18,7 @@ import Tabs from "./Tabs/Tabs";
 import AlertSnackbar from "./MuiComponents/AlertSnackbar";
 import AssignmentDownload from "./FileOperations/AssignmentDownload";
 import Tooltip from "@mui/material/Tooltip";
+import { RingLoader } from "react-spinners";
 
 const TableChecker = ({ firebaseUser }) => {
   const [fileDownloaded, setFileDownloadedSuccessfuly] = useState(false);
@@ -186,6 +187,7 @@ const TableChecker = ({ firebaseUser }) => {
 
   const [rows, setRows] = useState([]);
   const [uploadOpen, setUploadOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true); // State to track loading status
 
   useEffect(() => {
     const fetchData = async () => {
@@ -235,8 +237,10 @@ const TableChecker = ({ firebaseUser }) => {
         );
 
         setRows(rows);
+        setIsLoading(false); // Data fetching complete, set loading to false
       } catch (error) {
         console.error("Error fetching data from Firestore:", error);
+        setIsLoading(false); // Set loading to false in case of error
       }
     };
 
@@ -314,22 +318,28 @@ const TableChecker = ({ firebaseUser }) => {
 
   return (
     <Box height={500} width={1190}>
-      <div style={{ height: "140%", width: "100%" }}>
-        <DataGrid
-          autoHeight
-          initialState={{
-            pagination: { paginationModel: { pageSize: 8 } },
-          }}
-          pageSizeOptions={[8, 16, 32]}
-          columns={columns.map((column) => ({
-            ...column,
-          }))}
-          rows={rows}
-          slots={{
-            toolbar: GridToolbar,
-          }}
-        />
-      </div>
+      {isLoading ? ( // Display loading indicator while data is being fetched
+        <Backdrop open={true} sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+          <RingLoader color="#36d7b7" />
+        </Backdrop>
+      ) : (
+        <div style={{ height: "140%", width: "100%" }}>
+          <DataGrid
+            autoHeight
+            initialState={{
+              pagination: { paginationModel: { pageSize: 8 } },
+            }}
+            pageSizeOptions={[8, 16, 32]}
+            columns={columns.map((column) => ({
+              ...column,
+            }))}
+            rows={rows}
+            slots={{
+              toolbar: GridToolbar,
+            }}
+          />
+        </div>
+      )}
       <AlertSnackbar
         open={fileDownloaded}
         setOpen={setFileDownloadedSuccessfuly}

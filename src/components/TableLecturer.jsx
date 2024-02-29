@@ -139,7 +139,7 @@ const TableLecturer = ({ firebaseUser }) => {
           <div>
             <IconButton
               id="Download"
-              style={{ height: "100%" }}
+              style={{ height: "100%" }} 
               disabled={!isClickableDownload}
             >
               <Tooltip title="Download Assignment" followCursor>
@@ -164,10 +164,10 @@ const TableLecturer = ({ firebaseUser }) => {
                     <span
                       style={{
                         position: "absolute",
-                        top: "22px", // Adjust as needed
-                        left: "9px", // Adjust as needed
-                        width: "7px", // Adjust as needed
-                        height: "7px", // Adjust as needed
+                        top: "22px",
+                        left: "9px", 
+                        width: "7px", 
+                        height: "7px", 
                         backgroundColor: isAppeal ? "green" : "orange",
                         borderRadius: "50%",
                       }}
