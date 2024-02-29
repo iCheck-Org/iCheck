@@ -6,6 +6,7 @@ import { Modal as BaseModal } from "@mui/base/Modal";
 import { Box } from "@mui/material";
 import { collection, doc, addDoc, getDoc, Timestamp } from "firebase/firestore";
 import { db } from "../config/fire-base";
+import 'animate.css';
 
 export default function CreateAssignment({ firebaseUser, onClose }) {
   const [open, setOpen] = useState(true);
@@ -121,7 +122,7 @@ export default function CreateAssignment({ firebaseUser, onClose }) {
         onClose={handleClose}
         slots={{ backdrop: StyledBackdrop }}
       >
-        <ModalContent sx={{ width: 1000, height: 600 }}>
+        <ModalContent className="animate__animated animate__zoomIn animate__faster" sx={{ width: 1000, height: 600 }}>
           <Box
             width={900}
             height={400}
