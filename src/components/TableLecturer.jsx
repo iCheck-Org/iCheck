@@ -147,8 +147,7 @@ const TableLecturer = ({ firebaseUser }) => {
               <IconButton
                 id="ShowAppeal"
                 onClick={() => {
-                  console.log(value.row.id),
-                    setShowTabs((prevState) => !prevState);
+                  setShowAppeal(true)
                 }}
                 disabled={!isClickableShow}
               >
