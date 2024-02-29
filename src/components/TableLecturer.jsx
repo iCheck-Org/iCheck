@@ -163,7 +163,6 @@ const TableLecturer = ({ firebaseUser }) => {
                 <IconButton
                   onClick={() => setShowReview((prevState) => !prevState)}
                   disabled={!isClickableShow}
-                  title="View Review"
                 >
                   <Tooltip title="Show Review" followCursor>
                     <VisibilityIcon />
