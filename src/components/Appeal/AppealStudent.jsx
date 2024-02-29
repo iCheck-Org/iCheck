@@ -47,25 +47,22 @@ export default function AppealStudent({ assignment}) {
     try {
       // Get a reference to the Firestore document
       const documentRef = doc(db, "assignments", assignment.id);
-
+  
       // Create an object with the grade and comment data
       const data = {
         Appeal: appealValue, // Assume appealValue is the value entered by the user in the appealTextBox input field
-        AppealAns: appealAnsValue,
       };
-
+  
       // Use updateDoc() method to update the document with the new data
       await updateDoc(documentRef, data);
       console.log("Document successfully updated!");
       setOpen(false); // Close the modal after successful submission
       onClose(); // Call the onClose function passed from the parent component
-      // Reset appealValue after submission
-      setAppealValue(""); // or setAppealValue(null);
-      setAppealAnsValue("");
     } catch (error) {
       console.error("Error updating document: ", error);
     }
   };
+  
 
   const handleAppealValue = (event) => {
     const { value } = event.target;
