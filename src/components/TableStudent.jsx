@@ -18,6 +18,7 @@ import AssignmentUpload from "./FileOperations/AssignmentUpload";
 import "../pages/styles.css";
 import Tooltip from "@mui/material/Tooltip";
 import { db } from "../config/fire-base";
+import { RingLoader } from "react-spinners";
 
 const TableStudent = ({ firebaseUser }) => {
   const columns = [
@@ -165,6 +166,7 @@ const TableStudent = ({ firebaseUser }) => {
 
   const [rows, setRows] = useState([]);
   const [uploadOpen, setUploadOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true); // State to track loading status
 
   useEffect(() => {
     const fetchData = async () => {
@@ -175,10 +177,7 @@ const TableStudent = ({ firebaseUser }) => {
         }
 
         const assignmentsSnapshot = await getDocs(
-          query(
-            collection(db, "assignments"),
-            where("Owner", "==", firebaseUser.id) // TODO : id?!?! Respond:Yes.
-          )
+          query(collection(db, "assignments"), where("Owner", "==", firebaseUser.id))
         );
 
         const data = await Promise.all(
@@ -200,6 +199,7 @@ const TableStudent = ({ firebaseUser }) => {
         );
 
         setRows(data);
+        setIsLoading(false); // Set loading to false when data fetching is completed
       } catch (error) {
         console.error("Error fetching data from Firestore:", error);
       }
@@ -271,23 +271,28 @@ const TableStudent = ({ firebaseUser }) => {
 
   return (
     <Box height={500} width={1190} style={{ position: "relative" }}>
-      <div style={{ height: "140%", width: "100%" }}>
-        <DataGrid
-          autoHeight
-          initialState={{
-            pagination: { paginationModel: { pageSize: 8 } },
-          }}
-          pageSizeOptions={[8, 16, 32]}
-          columns={columns.map((column) => ({
-            ...column,
-          }))}
-          rows={rows}
-          slots={{
-            toolbar: GridToolbar,
-          }}
-        />
-      </div>
+      {/* Render loading indicator */}
+      {isLoading && (
+        <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }} open={true}>
+          <RingLoader color="#36d7b7" />
+        </Backdrop>
+      )}
 
+      {/* Render DataGrid when not loading */}
+      {!isLoading && (
+        <div style={{ height: "100%", width: "100%" }}>
+          <DataGrid
+            autoHeight
+            initialState={{ pagination: { paginationModel: { pageSize: 8 } } }}
+            pageSizeOptions={[8, 16, 32]}
+            columns={columns.map((column) => ({ ...column }))}
+            rows={rows}
+            slots={{ toolbar: GridToolbar }}
+          />
+        </div>
+      )}
+
+      {/* Render upload modal */}
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={uploadOpen}

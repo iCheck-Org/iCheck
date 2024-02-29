@@ -22,6 +22,7 @@ import AlertSnackbar from "./MuiComponents/AlertSnackbar";
 import Tabs from "./Tabs/Tabs";
 import Tooltip from "@mui/material/Tooltip";
 import RateReviewIcon from "@mui/icons-material/RateReview";
+import { RingLoader } from "react-spinners";
 
 const TableLecturer = ({ firebaseUser }) => {
   const [fileDownloaded, setFileDownloadedSuccessfuly] = useState(false);
@@ -30,6 +31,7 @@ const TableLecturer = ({ firebaseUser }) => {
   const [uploadOpen, setUploadOpen] = useState(false);
   const [showAppealTable, setShowAppealTable] = useState(false);
   const [assignmentsSnapshot, setAssignmentsSnapshot] = useState([]);
+  
 
   const columns = [
     {
@@ -137,7 +139,7 @@ const TableLecturer = ({ firebaseUser }) => {
           <div>
             <IconButton
               id="Download"
-              style={{ height: "100%" }} // Set the height of the IconButton container
+              style={{ height: "100%" }}
               disabled={!isClickableDownload}
             >
               <Tooltip title="Download Assignment" followCursor>
@@ -226,6 +228,8 @@ const TableLecturer = ({ firebaseUser }) => {
     },
   ];
 
+  const [isLoading, setIsLoading] = useState(true); // State to track loading status
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -278,7 +282,9 @@ const TableLecturer = ({ firebaseUser }) => {
           })
         );
         setRows(rows);
+        setIsLoading(false); // Set loading to false when data fetching is completed
       } catch (error) {
+        setIsLoading(false);
         console.error("Error fetching data from Firestore:", error);
       }
     };
@@ -352,74 +358,84 @@ const TableLecturer = ({ firebaseUser }) => {
       }
     } catch (error) {
       console.error("Error handling row update:", error);
+      
     }
   };
-
   return (
-    <div>
-    {/* CreateAssignment button */}
-    <button
-        className="upload-assigment-button"
-        onClick={() => setShowCreateAssignment((prevState) => !prevState)}
-      >
-        <Tooltip>Create Assignment</Tooltip>
-    </button>
-    
-    <Box height={500} width={1190} position="relative"> 
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          position: "absolute",
-          top: 0,
-          right: 0,
-          zIndex: 1, // Ensure it's above the DataGrid
-        }}
-      >
-        <SwitchAppeal onToggle={setShowAppealTable} />
-      </Box>
+    <>
+        {isLoading ? (
+            <Backdrop open={true} sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+                <RingLoader color="#36d7b7" />
+            </Backdrop>
+        ) : (
+            <div>
+                {/* CreateAssignment button */}
+                <button
+                    className="upload-assigment-button"
+                    onClick={() => setShowCreateAssignment((prevState) => !prevState)}
+                >
+                    <Tooltip>Create Assignment</Tooltip>
+                </button>
 
-      {/* Conditionally render the CreateAssignment component */}
-      {showCreateAssignment && (
-        <CreateAssignment
-          firebaseUser={firebaseUser}
-          onClose={() => setShowCreateAssignment(false)}
-        />
-      )}
+                <Box height={500} width={1190} position="relative">
+                    <Box
+                        sx={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            position: "absolute",
+                            top: 0,
+                            right: 0,
+                            zIndex: 1, // Ensure it's above the DataGrid
+                        }}
+                    >
+                        <SwitchAppeal onToggle={setShowAppealTable} />
+                    </Box>
 
-      {/* DataGrid component */}
-      <div style={{ height: "100%", width: "100%", marginTop: "40px" }}>
-        <DataGrid
-          autoHeight
-          initialState={{
-            pagination: { paginationModel: { pageSize: 8 } },
-          }}
-          pageSizeOptions={[8, 16, 32]}
-          columns={columns.map((column) => ({
-            ...column,
-          }))}
-          rows={rows}
-          slots={{
-            toolbar: GridToolbar,
-          }}
-        />
-      </div>
+                    {/* Conditionally render the CreateAssignment component */}
+                    {showCreateAssignment && (
+                        <CreateAssignment
+                            firebaseUser={firebaseUser}
+                            onClose={() => setShowCreateAssignment(false)}
+                        />
+                    )}
 
-      {/* Snackbar and Backdrop components */}
-      <AlertSnackbar
-        open={fileDownloaded}
-        setOpen={setFileDownloadedSuccessfuly}
-        severity="success"
-        message="File was downloaded successfully"
-      />
-      <Backdrop
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={uploadOpen}
-        onClick={handleUploadClose}
-      ></Backdrop>
-    </Box>
-    </div>
-  );
+                    {/* DataGrid component */}
+                    <div style={{ height: "100%", width: "100%", marginTop: "40px" }}>
+                        <DataGrid
+                            autoHeight
+                            initialState={{
+                                pagination: { paginationModel: { pageSize: 8 } },
+                            }}
+                            pageSizeOptions={[8, 16, 32]}
+                            columns={columns.map((column) => ({
+                                ...column,
+                            }))}
+                            rows={rows}
+                            slots={{
+                                toolbar: GridToolbar,
+                            }}
+                        />
+                    </div>
+
+                    {/* Snackbar and Backdrop components */}
+                    <AlertSnackbar
+                        open={fileDownloaded}
+                        setOpen={setFileDownloadedSuccessfuly}
+                        severity="success"
+                        message="File was downloaded successfully"
+                    />
+                    <Backdrop
+                        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                        open={uploadOpen}
+                        onClick={handleUploadClose}
+                    ></Backdrop>
+                </Box>
+            </div>
+        )}
+    </>
+);
+
+  
 };
 
 export default TableLecturer;
