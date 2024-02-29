@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { doc , updateDoc } from 'firebase/firestore';
-import { db } from '../../config/Fire-base';
+import { db } from '../../config/fire-base';
 import TextBox from '../MuiComponents/TextBox';
 
 
-export default function AppealTabs({ assignment }) {
+export default function AppealTabs({ assignment, onSuccessGrade }) {
   const [grade, setGrade] = useState('');
   const [newGrade, setNewGrade] = useState('');
   const [lecturerAnswer, setLecturerAnswer] = useState('');
@@ -27,6 +27,7 @@ export default function AppealTabs({ assignment }) {
       // Update the local state 'grade' with the new value
       setGrade(newGrade);
       setSubmitClicked(true);
+      onSuccessGrade(assignment.id);
   
       // Optionally, you can perform additional actions upon successful submission
     } catch (error) {

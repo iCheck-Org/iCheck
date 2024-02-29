@@ -176,6 +176,7 @@ const TableLecturer = ({ firebaseUser }) => {
                 assignment={value.row}
                 typePermision={firebaseUser.type}
                 onClose={() => setShowAppeal(false)}
+                onSuccessGrade={handleRowUpdate}
               />
             )}
 
