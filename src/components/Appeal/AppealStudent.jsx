@@ -73,82 +73,69 @@ export default function AppealStudent({ assignment}) {
   };
 
   return (
-        <div style={{ display: "flex", alignItems: "center", width: "100%" }}>
-          {/* Container for Checker's comment */}
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              marginRight: "20px",
-              borderRight: "1px solid #ccc",
-            }}
-          >
-            {appealAnsFieldExists ? (
-              <>
-                <Box width={300}>
-                  <h3>Lecturer's Respond</h3>
-
-                  <TextBox
-                    value={appealAnsValue}
-                    onChange={() => {}}
-                    disabled
-                  />
-                  <h3>Grade</h3>
-                  <input
-                    type="text"
-                    placeholder="Grade"
-                    style={{
-                      width: "12%",
-                      height: "10%",
-                      textAlign: "start",
-                      paddingLeft: "10px",
-                    }}
-                    value={grade}
-                    onChange={() => {}}
-                  />
-                </Box>
-              </>
-            ) : (
-              <>
-                {/* Render content when appealAnsFieldExists is false */}
-                <Box width={250}>
-                  <h3>Checker's comment</h3>
-                  <TextBox value={comment} onChange={() => {}} />
-                </Box>
-                <Box width={150} height={100} sx={{ textAlign: "center" }}>
-                  <h3>Grade</h3>
-                  <input
-                    type="text"
-                    placeholder="Grade"
-                    style={{
-                      width: "25%",
-                      height: "30%",
-                      textAlign: "start",
-                      paddingLeft: "10px",
-                    }}
-                    value={grade}
-                    onChange={() => {}}
-                  />
-                </Box>
-              </>
-            )}
-          </div>
-
-          <Box width={500} height={365} sx={{ textAlign: "center" }}>
-            {!appealFieldExists ? (
-              <>
-                <h3>Write appeal</h3>
-                <TextBox value={appealValue} onChange={handleAppealValue} />
-                <button onClick={handleAppealSubmit}>Send</button>
-              </>
-            ) : (
-              <>
-                <h3>Your's appeal</h3>
-                <TextBox value={appealValue} onChange={() => {}} disabled />
-              </>
-            )}
-          </Box>
-        </div>
+    <div style={{ display: "flex", alignItems: "center", width: "100%" }}>
+      {/* Container for Checker's comment */}
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          marginRight: "20px",
+          borderRight: "1px solid #ccc",
+          paddingRight: "20px", // Added padding to create space between the divider and content
+        }}
+      >
+        {appealAnsFieldExists ? (
+          <>
+            <Box width={300} height={365}>
+              <h3>Lecturer's Respond</h3>
+  
+              <TextBox
+                value={appealAnsValue}
+                onChange={() => {}}
+                disabled
+              />
+              <Box display="flex" alignItems="center" justifyContent="center" width={150} height={100} sx={{ textAlign: "center" }}>
+              <div style={{ marginRight: "15px" }}>
+                <h3>Grade:</h3>
+              </div>
+              <label style={{ backgroundColor: grade > 60 ? '#C8E6C9' : '#FFCDD2', padding: '4px', borderRadius: '4px' }}>{grade}</label>
+              </Box>
+            </Box>
+          </>
+        ) : (
+          <>
+            {/* Render content when appealAnsFieldExists is false */}
+            <Box width={250}>
+              <h3>Checker's comment</h3>
+              <TextBox value={comment} onChange={() => {}} />
+            </Box>
+            <Box display="flex" alignItems="center" justifyContent="center" width={150} height={100} sx={{ textAlign: "center" }}>
+              <div style={{ marginRight: "15px"}}>
+                <h3>Grade:</h3>
+              </div>
+              <label style={{ backgroundColor: grade > 60 ? '#C8E6C9' : '#FFCDD2', padding: '4px', borderRadius: '4px' }}>{grade}</label>
+            </Box>
+          </>
+        )}
+        {/* Divider to visually separate Checker's comment and Lecturer's Respond */}
+      </div>
+  
+      <Box width={480} height={365} sx={{ textAlign: "center" }}>
+        {!appealFieldExists ? (
+          <>
+            <h3>Write appeal</h3>
+            <TextBox value={appealValue} onChange={handleAppealValue} />
+            <button style={{marginTop:32}} onClick={handleAppealSubmit}>Send</button>
+          </>
+        ) : (
+          <>
+            <h3>Your's appeal</h3>
+            <TextBox value={appealValue} onChange={() => {}} disabled />
+          </>
+        )}
+      </Box>
+    </div>
   );
+  
 }
 

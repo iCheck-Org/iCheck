@@ -66,6 +66,7 @@ const TextareaElement = styled('textarea', {
   box-shadow: 0px 2px 4px ${
     theme.palette.mode === 'dark' ? 'rgba(0,0,0, 0.5)' : 'rgba(0,0,0, 0.05)'
   };
+  resize: none; /* Disable resizing */
 
   &:hover {
     border-color: ${blue[400]};

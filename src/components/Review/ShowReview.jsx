@@ -25,22 +25,11 @@ export default function ShowReview({ assignment }) {
         <h2>Checker's Comment</h2>
         <TextBox value={comment} onChange={() => {}} />
       </Box>
-      <Box width={700} height={300} sx={{ textAlign: "center" }}>
-        <h3>Grade</h3>
-        {
-          <input
-            type="text"
-            placeholder="Grade"
-            style={{
-              width: "5%",
-              height: "10%",
-              textAlign: "start",
-              paddingLeft: "10px",
-            }}
-            value={grade}
-            onChange={() => {}}
-          />
-        }
+      <Box display="flex" alignItems="center" justifyContent="center" width={150} height={100} sx={{ textAlign: "center" }}>
+              <div style={{ marginRight: "15px" }}>
+                <h3>Grade:</h3>
+              </div>
+              <label style={{ backgroundColor: grade > 60 ? '#C8E6C9' : '#FFCDD2', padding: '4px', borderRadius: '4px' }}>{grade}</label>
       </Box>
     </div>
   );
