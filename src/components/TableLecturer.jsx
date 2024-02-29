@@ -21,6 +21,7 @@ import "../pages/styles.css";
 import AlertSnackbar from "./MuiComponents/AlertSnackbar";
 import Tabs from "./Tabs/Tabs";
 import Tooltip from "@mui/material/Tooltip";
+import RateReviewIcon from '@mui/icons-material/RateReview';
 
 const TableLecturer = ({ firebaseUser }) => {
   const [fileDownloaded, setFileDownloadedSuccessfuly] = useState(false);
@@ -139,14 +140,13 @@ const TableLecturer = ({ firebaseUser }) => {
               </Tooltip>
             </IconButton>
 
-            {/* Conditionally render the visibility icon */}
             {showAppealTable ? (
               <IconButton
                 onClick={() => setShowAppeal((prevState) => !prevState)}
                 disabled={!isClickableShow}
               >
                 <Tooltip title="Show Appeal" followCursor>
-                  <VisibilityIcon />
+                  <RateReviewIcon />
                 </Tooltip>
               </IconButton>
             ) : (
@@ -184,6 +184,7 @@ const TableLecturer = ({ firebaseUser }) => {
                 assignment={value.row}
                 onClose={() => setShowWriteReview(false)}
                 firebaseUser={firebaseUser}
+                onSuccessGrade={handleRowUpdate}
               />
             )}
 
@@ -346,8 +347,8 @@ const TableLecturer = ({ firebaseUser }) => {
           className="upload-assigment-button"
           onClick={() => setShowCreateAssignment((prevState) => !prevState)}
         >
-          <Tooltip title="Create Assignment" followCursor>
-            Upload Assignment
+          <Tooltip>
+            Create Assignment
           </Tooltip>
         </button>
       </Box>
@@ -377,7 +378,6 @@ const TableLecturer = ({ firebaseUser }) => {
           pageSizeOptions={[8, 16, 32]}
           columns={columns.map((column) => ({
             ...column,
-            // flex: 1, // Allow cells to stretch to fill the column width
           }))}
           rows={rows}
         />
