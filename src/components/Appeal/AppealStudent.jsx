@@ -73,59 +73,85 @@ export default function AppealStudent({ assignment}) {
   };
 
   return (
-    <div style={{ display: "flex", alignItems: "center", width: "100%" }}>
-      {/* Container for Checker's comment */}
+    <div style={{ display: "flex", alignItems: "stretch", width: "100%" }}>
+      {/* Container for Checker's comment and Write appeal */}
       <div
         style={{
           display: "flex",
           flexDirection: "column",
           marginRight: "20px",
           borderRight: "1px solid #ccc",
-          paddingRight: "20px", // Added padding to create space between the divider and content
+          paddingRight: "20px",
         }}
       >
+        {/* Checker's comment section */}
         {appealAnsFieldExists ? (
-          <>
-            <Box width={300} height={365}>
-              <h3>Lecturer's Respond</h3>
-  
-              <TextBox
-                value={appealAnsValue}
-                onChange={() => {}}
-                disabled
-              />
-              <Box display="flex" alignItems="center" justifyContent="center" width={150} height={100} sx={{ textAlign: "center" }}>
+          <Box width={300} height={365}>
+            <h3>Lecturer's Respond</h3>
+            <TextBox value={appealAnsValue} onChange={() => {}} disabled />
+            <Box 
+              display="flex" 
+              alignItems="center" 
+              justifyContent="center" 
+              width={150} 
+              height={50} 
+              sx={{ textAlign: "center" }}
+              style={{ marginTop: '30px' }}
+            >
               <div style={{ marginRight: "15px" }}>
-                <h3>Grade:</h3>
+                <h3 style={{ margin: '0' }}>Grade:</h3>
               </div>
-              <label style={{ backgroundColor: grade > 60 ? '#C8E6C9' : '#FFCDD2', padding: '4px', borderRadius: '4px' }}>{grade}</label>
-              </Box>
+              <label 
+                style={{ 
+                  backgroundColor: grade > 60 ? '#C8E6C9' : '#FFCDD2', 
+                  padding: '4px', 
+                  borderRadius: '4px',
+                }}
+              >
+                {grade}
+              </label>
             </Box>
-          </>
+          </Box>
         ) : (
-          <>
-            {/* Render content when appealAnsFieldExists is false */}
-            <Box width={250}>
-              <h3>Checker's comment</h3>
-              <TextBox value={comment} onChange={() => {}} />
-            </Box>
-            <Box display="flex" alignItems="center" justifyContent="center" width={150} height={100} sx={{ textAlign: "center" }}>
+          <Box width={250}>
+            <h3>Checker's comment</h3>
+            <TextBox value={comment} onChange={() => {}} />
+            <Box 
+              display="flex" 
+              alignItems="center" 
+              justifyContent="center" 
+              width={150} 
+              height={50} 
+              sx={{ textAlign: "center" }}
+              style={{ marginTop: '30px' }} // Adjusted margin bottom
+            >
               <div style={{ marginRight: "15px"}}>
-                <h3>Grade:</h3>
+                <h3 style={{ margin: '0' }}>Grade:</h3>
               </div>
-              <label style={{ backgroundColor: grade > 60 ? '#C8E6C9' : '#FFCDD2', padding: '4px', borderRadius: '4px' }}>{grade}</label>
+              <label 
+                style={{ 
+                  backgroundColor: grade > 60 ? '#C8E6C9' : '#FFCDD2', 
+                  padding: '4px', 
+                  borderRadius: '4px',
+                }}
+              >
+                {grade}
+              </label>
             </Box>
-          </>
+          </Box>
         )}
-        {/* Divider to visually separate Checker's comment and Lecturer's Respond */}
       </div>
   
+      {/* Write appeal section */}
       <Box width={480} height={365} sx={{ textAlign: "center" }}>
         {!appealFieldExists ? (
           <>
             <h3>Write appeal</h3>
             <TextBox value={appealValue} onChange={handleAppealValue} />
-            <button style={{marginTop:32}} onClick={handleAppealSubmit}>Send</button>
+            <button type="button"
+                className="inputButton"
+                variant="contained" 
+                style={{marginTop:40}} onClick={handleAppealSubmit}>Send</button>
           </>
         ) : (
           <>
@@ -136,6 +162,9 @@ export default function AppealStudent({ assignment}) {
       </Box>
     </div>
   );
+  
+  
+  
   
 }
 
