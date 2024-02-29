@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { Box, IconButton, Backdrop } from "@mui/material";
 import {
   collection,
@@ -21,7 +21,7 @@ import "../pages/styles.css";
 import AlertSnackbar from "./MuiComponents/AlertSnackbar";
 import Tabs from "./Tabs/Tabs";
 import Tooltip from "@mui/material/Tooltip";
-import RateReviewIcon from '@mui/icons-material/RateReview';
+import RateReviewIcon from "@mui/icons-material/RateReview";
 
 const TableLecturer = ({ firebaseUser }) => {
   const [fileDownloaded, setFileDownloadedSuccessfuly] = useState(false);
@@ -110,6 +110,7 @@ const TableLecturer = ({ firebaseUser }) => {
         const dueDate = dueDateTimestamp.getTime(); // Get timestamp from JavaScript Date object
         const isPastDueDate = dueDate <= currentDate;
         const grade = value.row["Grade"];
+        const appeal = value.row["AppealAns"];
 
         // disable the buttons if the file is not uploaded
         const isClickableDownload =
@@ -121,6 +122,8 @@ const TableLecturer = ({ firebaseUser }) => {
           isPastDueDate && grade === "" && File_doc !== "";
         const isClickableShow =
           grade !== null && grade !== undefined && grade !== "";
+
+        const isAppeal = appeal !== null && appeal !== undefined;
 
         const [showReview, setShowReview] = useState(false);
         const [showWriteReview, setShowWriteReview] = useState(false);
@@ -142,11 +145,28 @@ const TableLecturer = ({ firebaseUser }) => {
 
             {showAppealTable ? (
               <IconButton
-                onClick={() => setShowAppeal((prevState) => !prevState)}
+                id="ShowAppeal"
+                onClick={() => {
+                  console.log(value.row.id),
+                    setShowTabs((prevState) => !prevState);
+                }}
                 disabled={!isClickableShow}
               >
                 <Tooltip title="Show Appeal" followCursor>
-                  <RateReviewIcon />
+                  <span style={{ position: "relative", display: "flex" }}>
+                    <RateReviewIcon />
+                    <span
+                      style={{
+                        position: "absolute",
+                        top: "22px", // Adjust as needed
+                        left: "9px", // Adjust as needed
+                        width: "7px", // Adjust as needed
+                        height: "7px", // Adjust as needed
+                        backgroundColor: isAppeal ? "green" : "orange",
+                        borderRadius: "50%",
+                      }}
+                    />
+                  </span>
                 </Tooltip>
               </IconButton>
             ) : (
@@ -256,10 +276,8 @@ const TableLecturer = ({ firebaseUser }) => {
               personal_id: studentId,
               submission_date: submissionTimestamp,
             };
-            // }
           })
         );
-
         setRows(rows);
       } catch (error) {
         console.error("Error fetching data from Firestore:", error);
@@ -342,34 +360,27 @@ const TableLecturer = ({ firebaseUser }) => {
 
   return (
     <Box height={500} width={1190}>
-      <Box height={80} width={1190}>
+      <Box width={1190} sx={{ display: "flex" }}>
         {/* Use a function to toggle the state */}
         <button
           className="upload-assigment-button"
           onClick={() => setShowCreateAssignment((prevState) => !prevState)}
         >
-          <Tooltip>
-            Create Assignment
-          </Tooltip>
+          <Tooltip>Create Assignment</Tooltip>
         </button>
-      </Box>
 
-      {/* Conditionally render the CreateAssignment component */}
-      {showCreateAssignment && (
-        <CreateAssignment
-          firebaseUser={firebaseUser}
-          onClose={() => setShowCreateAssignment(false)}
-        />
-      )}
-      <Box
-        display="flex"
-        justifyContent="flex-end"
-        height={40}
-        style={{ marginTop: "-4%" }}
-      >
-        <SwitchAppeal onToggle={setShowAppealTable} />
-      </Box>
+        {/* Conditionally render the CreateAssignment component */}
+        {showCreateAssignment && (
+          <CreateAssignment
+            firebaseUser={firebaseUser}
+            onClose={() => setShowCreateAssignment(false)}
+          />
+        )}
 
+        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+          <SwitchAppeal onToggle={setShowAppealTable} />
+        </Box>
+      </Box>
       <div style={{ height: "105%", width: "100%" }}>
         <DataGrid
           autoHeight
@@ -381,6 +392,9 @@ const TableLecturer = ({ firebaseUser }) => {
             ...column,
           }))}
           rows={rows}
+          slots={{
+            toolbar: GridToolbar,
+          }}
         />
       </div>
 

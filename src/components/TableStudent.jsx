@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { Box, IconButton, Backdrop } from "@mui/material";
 import {
   collection,
@@ -270,7 +270,7 @@ const TableStudent = ({ firebaseUser }) => {
   };
 
   return (
-    <Box height={400} width={1190} style={{ position: "relative" }}>
+    <Box height={500} width={1190} style={{ position: "relative" }}>
       <div style={{ height: "140%", width: "100%" }}>
         <DataGrid
           autoHeight
@@ -282,6 +282,9 @@ const TableStudent = ({ firebaseUser }) => {
             ...column,
           }))}
           rows={rows}
+          slots={{
+            toolbar: GridToolbar,
+          }}
         />
       </div>
 
