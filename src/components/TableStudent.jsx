@@ -38,7 +38,7 @@ const TableStudent = ({ firebaseUser }) => {
       headerName: "Due Date",
       width: 150,
       align: "left",
-      flex:1,
+      flex: 1,
       valueFormatter: (params) => {
         // Convert timestamp to Date object
         const dueDate = params.value && params.value.toDate();
@@ -52,8 +52,8 @@ const TableStudent = ({ firebaseUser }) => {
       headerName: "Submission Date",
       width: 150,
       align: "left",
-      flex:1,
-      
+      flex: 1,
+
       valueFormatter: (params) => {
         // Convert timestamp to Date object
         const dueDate = params.value && params.value.toDate();
@@ -67,7 +67,7 @@ const TableStudent = ({ firebaseUser }) => {
       headerName: "Status",
       width: 200,
       align: "left",
-      
+
       renderCell: (params) => {
         let status = params.value;
 
@@ -102,7 +102,7 @@ const TableStudent = ({ firebaseUser }) => {
       headerName: "Actions",
       width: 150,
       align: "left",
-      flex:1,
+      flex: 1,
       renderCell: (value) => {
         const File_doc = value.row["File_doc"]; // Access the row object and get the value of "File_doc"
         const currentDate = new Date().getTime(); // Get current timestamp
@@ -195,7 +195,6 @@ const TableStudent = ({ firebaseUser }) => {
               Course: courseName,
               submission_date: submissionTimestamp,
               Grade: grade,
-
             };
           })
         );

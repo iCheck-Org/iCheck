@@ -1,13 +1,13 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from "react";
 import { IconButton } from "@mui/material";
-import CircularProgress from '@mui/material/CircularProgress';
-import { green, grey } from '@mui/material/colors';
-import CheckIcon from '@mui/icons-material/Check';
+import CircularProgress from "@mui/material/CircularProgress";
+import { green, grey } from "@mui/material/colors";
+import CheckIcon from "@mui/icons-material/Check";
 import GetAppIcon from "@mui/icons-material/GetApp";
 import { collection, getDocs } from "firebase/firestore";
-import { db } from "../../config/fire-base"
-import Tooltip from '@mui/material/Tooltip';
-import AlertSnackbar from '../MuiComponents/AlertSnackbar';
+import { db } from "../../config/fire-base";
+import Tooltip from "@mui/material/Tooltip";
+import AlertSnackbar from "../MuiComponents/AlertSnackbar";
 
 const AssignmentDownload = ({ row, disabled }) => {
   const [loading, setLoading] = useState(false);
@@ -68,18 +68,26 @@ const AssignmentDownload = ({ row, disabled }) => {
     <div>
       <Tooltip title="Download Assignment" followCursor>
         <span>
-          <div style={{ position: 'relative', display: 'inline-block' }}>
+          <div style={{ position: "relative", display: "inline-block" }}>
             <IconButton
               aria-label="save"
               sx={{
-                bgcolor: disabled ? "transparent" : success ? green[500] : "transparent",
+                bgcolor: disabled
+                  ? "transparent"
+                  : success
+                  ? green[500]
+                  : "transparent",
                 color: disabled ? grey[500] : success ? "#FFF" : grey[550],
                 width: 40,
                 height: 40,
                 boxShadow: disabled ? "none" : "none",
                 opacity: disabled ? 0.5 : 1,
                 "&:hover": {
-                  bgcolor: disabled ? "transparent" : success ? green[700] : "transparent",
+                  bgcolor: disabled
+                    ? "transparent"
+                    : success
+                    ? green[700]
+                    : "transparent",
                 },
               }}
               onClick={handleClick}
@@ -92,7 +100,7 @@ const AssignmentDownload = ({ row, disabled }) => {
                 size={40}
                 sx={{
                   color: green[500],
-                  position: 'absolute',
+                  position: "absolute",
                   top: 0,
                   left: 0,
                 }}
