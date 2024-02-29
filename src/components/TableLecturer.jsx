@@ -25,6 +25,11 @@ import RateReviewIcon from "@mui/icons-material/RateReview";
 
 const TableLecturer = ({ firebaseUser }) => {
   const [fileDownloaded, setFileDownloadedSuccessfuly] = useState(false);
+  const [showCreateAssignment, setShowCreateAssignment] = useState(false);
+  const [rows, setRows] = useState([]);
+  const [uploadOpen, setUploadOpen] = useState(false);
+  const [showAppealTable, setShowAppealTable] = useState(false);
+  const [assignmentsSnapshot, setAssignmentsSnapshot] = useState([]);
 
   const columns = [
     {
@@ -221,11 +226,6 @@ const TableLecturer = ({ firebaseUser }) => {
     },
   ];
 
-  const [rows, setRows] = useState([]);
-  const [uploadOpen, setUploadOpen] = useState(false);
-  const [showAppealTable, setShowAppealTable] = useState(false);
-  const [assignmentsSnapshot, setAssignmentsSnapshot] = useState([]);
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -355,32 +355,40 @@ const TableLecturer = ({ firebaseUser }) => {
     }
   };
 
-  const [showCreateAssignment, setShowCreateAssignment] = useState(false);
-
   return (
-    <Box height={500} width={1190}>
-      <Box width={1190} sx={{ display: "flex" }}>
-        {/* Use a function to toggle the state */}
-        <button
-          className="upload-assigment-button"
-          onClick={() => setShowCreateAssignment((prevState) => !prevState)}
-        >
-          <Tooltip>Create Assignment</Tooltip>
-        </button>
-
-        {/* Conditionally render the CreateAssignment component */}
-        {showCreateAssignment && (
-          <CreateAssignment
-            firebaseUser={firebaseUser}
-            onClose={() => setShowCreateAssignment(false)}
-          />
-        )}
-
-        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-          <SwitchAppeal onToggle={setShowAppealTable} />
-        </Box>
+    <div>
+    {/* CreateAssignment button */}
+    <button
+        className="upload-assigment-button"
+        onClick={() => setShowCreateAssignment((prevState) => !prevState)}
+      >
+        <Tooltip>Create Assignment</Tooltip>
+    </button>
+    
+    <Box height={500} width={1190} position="relative"> 
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          position: "absolute",
+          top: 0,
+          right: 0,
+          zIndex: 1, // Ensure it's above the DataGrid
+        }}
+      >
+        <SwitchAppeal onToggle={setShowAppealTable} />
       </Box>
-      <div style={{ height: "105%", width: "100%" }}>
+
+      {/* Conditionally render the CreateAssignment component */}
+      {showCreateAssignment && (
+        <CreateAssignment
+          firebaseUser={firebaseUser}
+          onClose={() => setShowCreateAssignment(false)}
+        />
+      )}
+
+      {/* DataGrid component */}
+      <div style={{ height: "100%", width: "100%", marginTop: "40px" }}>
         <DataGrid
           autoHeight
           initialState={{
@@ -397,6 +405,7 @@ const TableLecturer = ({ firebaseUser }) => {
         />
       </div>
 
+      {/* Snackbar and Backdrop components */}
       <AlertSnackbar
         open={fileDownloaded}
         setOpen={setFileDownloadedSuccessfuly}
@@ -409,6 +418,7 @@ const TableLecturer = ({ firebaseUser }) => {
         onClick={handleUploadClose}
       ></Backdrop>
     </Box>
+    </div>
   );
 };
 
