@@ -32,13 +32,9 @@ const AssignmentDownload = ({ row, disabled }) => {
       querySnapshot.forEach((doc) => {
         if (doc.id === File_doc) {
           const downloadURL = doc.data().url;
-          const filename = downloadURL.split("/").pop();
-          const link = document.createElement("a");
-          link.href = downloadURL;
-          link.setAttribute("download", filename);
-          document.body.appendChild(link);
-          link.click();
-          link.remove();
+          setTimeout(() => {
+            window.open(downloadURL, '_blank');
+          }, 600); // Delay of 2 seconds (2000 milliseconds)
           setFileDownloadedSuccessfully(true);
           setSuccess(true); // Set success state
         }
