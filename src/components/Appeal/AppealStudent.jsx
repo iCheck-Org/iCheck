@@ -119,6 +119,7 @@ export default function AppealStudent({ assignment }) {
               <label
                 style={{
                   backgroundColor: grade > 60 ? "#C8E6C9" : "#FFCDD2",
+                  width: "50px",
                   padding: "4px",
                   borderRadius: "4px",
                 }}

@@ -29,7 +29,7 @@ export default function ShowReview({ assignment }) {
               <div style={{ marginRight: "15px" }}>
                 <h3>Grade:</h3>
               </div>
-              <label style={{ backgroundColor: grade > 60 ? '#C8E6C9' : '#FFCDD2', padding: '4px', borderRadius: '4px' }}>{grade}</label>
+              <label style={{ backgroundColor: grade > 60 ? '#C8E6C9' : '#FFCDD2', width: "50px", padding: '4px', borderRadius: '4px' }}>{grade}</label>
       </Box>
     </div>
   );

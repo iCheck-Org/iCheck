@@ -97,6 +97,23 @@ const TableStudent = ({ firebaseUser }) => {
       headerName: "Grade",
       width: 80,
       align: "center",
+
+      renderCell: (params) => {
+        let grade = params.value;
+
+        let backgroundColor = "";
+        if (grade >= 0 && grade <= 60) {
+          backgroundColor = "#FFCDD2"; // Orange color when grade is below 60
+        } else {
+          backgroundColor = "#C8E6C9"; // Green color for other grade
+        }
+
+        return (
+          <div style={{ backgroundColor, width: "50px", padding: "8px", borderRadius: "4px" }}>
+            {grade}
+          </div>
+        );
+      },
     },
     {
       field: "Actions",

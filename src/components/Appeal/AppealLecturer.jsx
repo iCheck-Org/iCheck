@@ -60,6 +60,7 @@ export default function AppealTabs({ assignment, onSuccessGrade }) {
     <label 
       style={{ 
         backgroundColor: grade > 60 ? '#C8E6C9' : '#FFCDD2', // Background color based on grade
+        width: "50px",
         padding: '4px', 
         borderRadius: '4px' 
       }}
