@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { auth, db } from "../config/fire-base.jsx";
 import { doc, getDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
+import './styles.css';
 
 export default function Dashboard() {
   const navigate = useNavigate();

@@ -69,9 +69,8 @@ const Login = () => {
   return (
     <div className="container">
       <div className="row justify-content-center">
-        <img src={logo} alt="Logo" className="logo" />
         <h2 className="text-3xl font-bold mb-2 signup-title text-center">
-          iCheck
+          iCheck.
         </h2>
 
         <div className="subtitle">Start your journey with us today.</div>

@@ -1,5 +1,12 @@
 body {
-    background-color: #fff; /* White background color */
+  background-color: #fffdf1; /* White background color */
+}
+
+.login-container {
+  background-color: #fffdf1; /* White background color */
+  background-image: url('../logo/a_6.jpg');
+  background-size: cover; /* Cover the entire background */
+  background-position: center; /* Center the background image */
 }
 
 .btn-primary {
@@ -18,8 +25,9 @@ body {
 
 .signup-title {
   color: rgb(70, 148, 244);
-  font-size: 3em; /* Adjust this value to make the title bigger or smaller */
-  margin-top: +100px; /* Adjust this value to move the title higher or lower */
+  font-family: "Avenir LT Pro 85 Heavy", sans-serif;
+  font-size: 4em; /* Adjust this value to make the title bigger or smaller */
+  margin-top: +0px; /* Adjust this value to move the title higher or lower */
 }
 
 .form-input {
@@ -123,4 +131,53 @@ body {
   position: absolute; /* or 'fixed' or 'sticky' */
   top: 12%;
   right: 2%;
+}
+
+@font-face {
+  font-family: "Duke Charming DEMO";
+  src: url("https://db.onlinewebfonts.com/t/ad06daefd952a28c59ab22f35fcd9369.eot");
+  src: url("https://db.onlinewebfonts.com/t/ad06daefd952a28c59ab22f35fcd9369.eot?#iefix")format("embedded-opentype"),
+  url("https://db.onlinewebfonts.com/t/ad06daefd952a28c59ab22f35fcd9369.woff2")format("woff2"),
+  url("https://db.onlinewebfonts.com/t/ad06daefd952a28c59ab22f35fcd9369.woff")format("woff"),
+  url("https://db.onlinewebfonts.com/t/ad06daefd952a28c59ab22f35fcd9369.ttf")format("truetype"),
+  url("https://db.onlinewebfonts.com/t/ad06daefd952a28c59ab22f35fcd9369.svg#Duke Charming DEMO")format("svg");
+}
+
+#welcomeMessage {
+  color: rgb(36, 48, 94); /* Change the color */
+  font-family: "Ranua Trials";
+  font-size: 16px; /* Change the font size to make it smaller */
+  position: absolute; /* Position the text absolutely */
+  bottom: 20%; /* Align the text to the bottom */
+  left: 11%; /* Center the text horizontally */
+}
+
+
+@font-face {
+  font-family: "Ranua Trials";
+  src: url("https://db.onlinewebfonts.com/t/5bd42517ea0fe77ccfb4c74b7bc20fe5.eot");
+  src: url("https://db.onlinewebfonts.com/t/5bd42517ea0fe77ccfb4c74b7bc20fe5.eot?#iefix")format("embedded-opentype"),
+  url("https://db.onlinewebfonts.com/t/5bd42517ea0fe77ccfb4c74b7bc20fe5.woff2")format("woff2"),
+  url("https://db.onlinewebfonts.com/t/5bd42517ea0fe77ccfb4c74b7bc20fe5.woff")format("woff"),
+  url("https://db.onlinewebfonts.com/t/5bd42517ea0fe77ccfb4c74b7bc20fe5.ttf")format("truetype"),
+  url("https://db.onlinewebfonts.com/t/5bd42517ea0fe77ccfb4c74b7bc20fe5.svg#Ranua Trials")format("svg");
+}
+
+/* import font */
+@font-face {
+  font-family: "Avenir LT Pro 85 Heavy";
+  src: url("https://db.onlinewebfonts.com/t/79e4dc6a81171b1523795cb6b2bc7b2f.eot");
+  src: url("https://db.onlinewebfonts.com/t/79e4dc6a81171b1523795cb6b2bc7b2f.eot?#iefix") format("embedded-opentype"),
+       url("https://db.onlinewebfonts.com/t/79e4dc6a81171b1523795cb6b2bc7b2f.woff2") format("woff2"),
+       url("https://db.onlinewebfonts.com/t/79e4dc6a81171b1523795cb6b2bc7b2f.woff") format("woff"),
+       url("https://db.onlinewebfonts.com/t/79e4dc6a81171b1523795cb6b2bc7b2f.ttf") format("truetype"),
+       url("https://db.onlinewebfonts.com/t/79e4dc6a81171b1523795cb6b2bc7b2f.svg#Avenir LT Pro 85 Heavy") format("svg");
+}
+
+/* styles.css or your preferred stylesheet */
+#logo-text {
+  font-family: "Avenir LT Pro 85 Heavy", sans-serif;
+  font-size: 36px; /* Set the desired font size */
+  font-weight: bold; /* Optionally set the font weight to bold */
+  color: #ffffff; /* Set the desired text color */
 }

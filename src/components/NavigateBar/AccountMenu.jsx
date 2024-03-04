@@ -53,7 +53,7 @@ export default function AccountMenu(props) {
             aria-haspopup="true"
             aria-expanded={open ? "true" : undefined}
           >
-            <Avatar sx={{ width: 39, height: 39 }}>
+            <Avatar sx={{ width: 39, height: 39, bgcolor: "#fffdf1", color: "#374785" }}>
               {firebaseUser.name[0]}{" "}
             </Avatar>
           </IconButton>
@@ -135,7 +135,7 @@ export default function AccountMenu(props) {
         </Collapse>
         <Divider />
         <MenuItem onClick={handleLogout} sx={{ color: "#ff5a4d" }}>
-          <ListItemIcon sx={{ color: "#ff5a4d" }}>
+          <ListItemIcon sx={{ color: "#ee6868" }}>
             <Logout fontSize="small" />
           </ListItemIcon>
           Logout
