@@ -5,64 +5,57 @@ import TextBox from "../MuiComponents/TextBox";
 import { db } from "../../config/fire-base";
 
 
-export default function AppealStudent({ assignment}) {
+export default function AppealStudent({ assignment }) {
   const [comment, setComment] = useState("");
   const [grade, setGrade] = useState("");
-  const [appealValue, setAppealValue] = useState(""); // Define state for appeal input value
-  const [appealAnsValue, setAppealAnsValue] = useState(""); // Define state for appeal input value
-  const [appealFieldExists, setAppealFieldExists] = useState(false); // State to track if "Appeal" field exists
-  const [appealAnsFieldExists, setAppealAnsFieldExists] = useState(false); // State to track if lecturer ans the appeal
+  const [appealValue, setAppealValue] = useState("");
+  const [appealAnsValue, setAppealAnsValue] = useState("");
+  const [appealFieldExists, setAppealFieldExists] = useState(false);
+  const [appealAnsFieldExists, setAppealAnsFieldExists] = useState(false);
   const [open, setOpen] = useState(true);
+  const [showSubmitButton, setShowSubmitButton] = useState(false); // State to track whether to show the "Submit" button
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-          const data = assignment
-          setComment(data.Comment || "");
-          setGrade(data.Grade || "");
-          // Check if "Appeal" field exists
-          if ("Appeal" in data) {
-            setAppealFieldExists(true);
-            setAppealValue(data.Appeal); // Set appealValue state to the value of "Appeal" field
-          }
-
-          // Check if "AppealAns" field exists
-          if ("AppealAns" in data) {
-            setAppealAnsFieldExists(true);
-            setAppealAnsValue(data.AppealAns); // Set appealValue state to the value of "AppealAns" field
-          } else {
-            setAppealAnsFieldExists(false);
-          }
-
-          setOpen(true); // Update the state to open the modal after data fetching is complete
+        const data = assignment;
+        setComment(data.Comment || "");
+        setGrade(data.Grade || "");
+        if ("Appeal" in data) {
+          setAppealFieldExists(true);
+          setAppealValue(data.Appeal);
+        }
+        if ("AppealAns" in data) {
+          setAppealAnsFieldExists(true);
+          setAppealAnsValue(data.AppealAns);
+        } else {
+          setAppealAnsFieldExists(false);
+        }
+        setOpen(true);
+        // Set the state to show the "Submit" button only when necessary
+        setShowSubmitButton(!("Appeal" in data || "AppealAns" in data));
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
 
     fetchData();
-  }, [appealValue, appealAnsValue]);
+  }, [assignment]);
 
   const handleAppealSubmit = async () => {
     try {
-      // Get a reference to the Firestore document
       const documentRef = doc(db, "assignments", assignment.id);
-  
-      // Create an object with the grade and comment data
       const data = {
-        Appeal: appealValue, // Assume appealValue is the value entered by the user in the appealTextBox input field
+        Appeal: appealValue,
       };
-  
-      // Use updateDoc() method to update the document with the new data
       await updateDoc(documentRef, data);
       console.log("Document successfully updated!");
-      setOpen(false); // Close the modal after successful submission
-      onClose(); // Call the onClose function passed from the parent component
+      setOpen(false);
+      onClose();
     } catch (error) {
       console.error("Error updating document: ", error);
     }
   };
-  
 
   const handleAppealValue = (event) => {
     const { value } = event.target;
@@ -71,7 +64,6 @@ export default function AppealStudent({ assignment}) {
 
   return (
     <div style={{ display: "flex", alignItems: "stretch", width: "100%" }}>
-      {/* Container for Checker's comment and Write appeal */}
       <div
         style={{
           display: "flex",
@@ -81,28 +73,27 @@ export default function AppealStudent({ assignment}) {
           paddingRight: "20px",
         }}
       >
-        {/* Checker's comment section */}
         {appealAnsFieldExists ? (
           <Box width={300} height={365}>
             <h3>Lecturer's Respond</h3>
             <TextBox value={appealAnsValue} onChange={() => {}} disabled />
-            <Box 
-              display="flex" 
-              alignItems="center" 
-              justifyContent="center" 
-              width={150} 
-              height={50} 
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              width={150}
+              height={50}
               sx={{ textAlign: "center" }}
-              style={{ marginTop: '30px' }}
+              style={{ marginTop: "30px" }}
             >
               <div style={{ marginRight: "15px" }}>
-                <h3 style={{ margin: '0' }}>Grade:</h3>
+                <h3 style={{ margin: "0" }}>Grade:</h3>
               </div>
-              <label 
-                style={{ 
-                  backgroundColor: grade > 60 ? '#C8E6C9' : '#FFCDD2', 
-                  padding: '4px', 
-                  borderRadius: '4px',
+              <label
+                style={{
+                  backgroundColor: grade > 60 ? "#C8E6C9" : "#FFCDD2",
+                  padding: "4px",
+                  borderRadius: "4px",
                 }}
               >
                 {grade}
@@ -113,23 +104,23 @@ export default function AppealStudent({ assignment}) {
           <Box width={250}>
             <h3>Checker's comment</h3>
             <TextBox value={comment} onChange={() => {}} />
-            <Box 
-              display="flex" 
-              alignItems="center" 
-              justifyContent="center" 
-              width={150} 
-              height={50} 
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              width={150}
+              height={50}
               sx={{ textAlign: "center" }}
-              style={{ marginTop: '30px' }} // Adjusted margin bottom
+              style={{ marginTop: "30px" }}
             >
-              <div style={{ marginRight: "15px"}}>
-                <h3 style={{ margin: '0' }}>Grade:</h3>
+              <div style={{ marginRight: "15px" }}>
+                <h3 style={{ margin: "0" }}>Grade:</h3>
               </div>
-              <label 
-                style={{ 
-                  backgroundColor: grade > 60 ? '#C8E6C9' : '#FFCDD2', 
-                  padding: '4px', 
-                  borderRadius: '4px',
+              <label
+                style={{
+                  backgroundColor: grade > 60 ? "#C8E6C9" : "#FFCDD2",
+                  padding: "4px",
+                  borderRadius: "4px",
                 }}
               >
                 {grade}
@@ -138,30 +129,31 @@ export default function AppealStudent({ assignment}) {
           </Box>
         )}
       </div>
-  
-      {/* Write appeal section */}
+
       <Box width={480} height={365} sx={{ textAlign: "center" }}>
-        {!appealFieldExists ? (
+        {!appealFieldExists && !appealAnsFieldExists && showSubmitButton ? ( // Only show the "Submit" button when necessary
           <>
             <h3>Write appeal</h3>
             <TextBox value={appealValue} onChange={handleAppealValue} />
-            <button type="button"
-                className="inputButton"
-                variant="contained" 
-                style={{marginTop:40}} onClick={handleAppealSubmit}>Send</button>
+            <button
+              type="button"
+              className="inputButton"
+              variant="contained"
+              style={{ marginTop: 40 }}
+              onClick={handleAppealSubmit}
+            >
+              Send
+            </button>
           </>
         ) : (
           <>
-            <h3>Your's appeal</h3>
+            <h3>Your appeal</h3>
             <TextBox value={appealValue} onChange={() => {}} disabled />
           </>
         )}
       </Box>
     </div>
   );
-  
-  
-  
-  
 }
+
 
