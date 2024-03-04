@@ -1,12 +1,13 @@
-body {
-  background-color: #fffdf1; /* White background color */
-}
 
-.login-container {
-  background-color: #fffdf1; /* White background color */
+
+body {
   background-image: url('../logo/a_6.jpg');
   background-size: cover; /* Cover the entire background */
   background-position: center; /* Center the background image */
+}
+
+.table{
+  background-color: #fbf9f6
 }
 
 .btn-primary {

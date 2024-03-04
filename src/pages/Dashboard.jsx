@@ -7,7 +7,8 @@ import { useNavigate } from "react-router-dom";
 import { auth, db } from "../config/fire-base.jsx";
 import { doc, getDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
-import './styles.css';
+import { Helmet } from "react-helmet";
+import "./styles.css";
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -37,6 +38,13 @@ export default function Dashboard() {
 
   return (
     <div>
+      <Helmet
+        bodyAttributes={{
+          style:
+            'background-image: none !important; url("path/to/image.jpg"); background-size: cover; background-position: center; background-repeat: no-repeat;',
+        }}
+      />
+
       {firebaseUser && (
         <>
           <ResponsiveDrawer firebaseUser={firebaseUser} />

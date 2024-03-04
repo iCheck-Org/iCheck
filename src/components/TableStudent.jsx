@@ -119,7 +119,7 @@ const TableStudent = ({ firebaseUser }) => {
 
         const [showTabs, setShowTabs] = useState(false);
         return (
-          <div>
+          <div >
             <div style={{ display: "inline-block", marginRight: "8px" }}>
               <IconButton id="Download" disabled={!isClickableDownload}>
                 <AssignmentDownload
@@ -280,7 +280,7 @@ const TableStudent = ({ firebaseUser }) => {
 
       {/* Render DataGrid when not loading */}
       {!isLoading && (
-        <div style={{ height: "100%", width: "100%" }}>
+        <div style={{ height: "100%", width: "100%" }} className="table">
           <DataGrid
             autoHeight
             initialState={{ pagination: { paginationModel: { pageSize: 8 } } }}
