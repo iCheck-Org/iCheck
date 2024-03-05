@@ -50,7 +50,7 @@ export default function AccountMenu(props) {
                 bgcolor: isIconButtonClicked
                   ? "rgbargb(182, 213, 230, 0.001)"
                   : "#f0f0f0",
-                color: "#374785",
+                color: "#374785"
               }}
             >
               {firebaseUser.name[0]}{" "}

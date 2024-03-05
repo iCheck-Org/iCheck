@@ -27,6 +27,8 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Unstable_Grid2';
 import AppWidgetSummary from './MuiComponents/app-widget-summary';
 import {calculateAverageGrade, calculateOpenAssignments} from './CalculationFunc/LecturerCalc.jsx';
+import { styled } from "@mui/system";
+
 
 const TableLecturer = ({ firebaseUser }) => {
   const [fileDownloaded, setFileDownloadedSuccessfuly] = useState(false);

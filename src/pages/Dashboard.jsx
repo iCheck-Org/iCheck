@@ -9,6 +9,8 @@ import { doc, getDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 import { Helmet } from "react-helmet";
 import "./styles.css";
+import { styled } from "@mui/system";
+
 
 export default function Dashboard() {
   const navigate = useNavigate();

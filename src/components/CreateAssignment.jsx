@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import clsx from "clsx";
-import { styled, css } from "@mui/system";
+import { styled } from "@mui/system";
 import { Modal as BaseModal } from "@mui/base/Modal";
-import { Box, Tooltip } from "@mui/material";
+import { Box } from "@mui/material";
 import { collection, doc, addDoc, getDoc, Timestamp } from "firebase/firestore";
 import { db } from "../config/fire-base";
 import "animate.css";
@@ -134,7 +134,9 @@ export default function CreateAssignment({ firebaseUser, onClose }) {
               gap: "72px",
             }}
           >
-            <label htmlFor="assignmentNo" className="assignment-text">Course Name:</label>
+            <label htmlFor="assignmentNo" className="assignment-text">
+              Course Name:
+            </label>
             {/* Render course options as a select dropdown */}
             <select
               className="inputBox"
@@ -151,7 +153,9 @@ export default function CreateAssignment({ firebaseUser, onClose }) {
           </Box>
           {/* Box for Assignment No. */}
           <Box sx={{ display: "flex", flexDirection: "row", gap: "28px" }}>
-            <label htmlFor="assignmentNo" className="assignment-text">Assignment Number:</label>
+            <label htmlFor="assignmentNo" className="assignment-text">
+              Assignment Number:
+            </label>
             <input
               className="inputBox"
               type="text"
@@ -162,7 +166,9 @@ export default function CreateAssignment({ firebaseUser, onClose }) {
           </Box>
           {/* Box for Due Date */}
           <Box sx={{ display: "flex", flexDirection: "row", gap: "100px" }}>
-            <label htmlFor="dueDate" className="assignment-text">Due Date:</label>
+            <label htmlFor="dueDate" className="assignment-text">
+              Due Date:
+            </label>
             <input
               className="inputBox"
               type="datetime-local"
