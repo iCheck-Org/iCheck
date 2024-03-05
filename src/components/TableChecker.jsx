@@ -19,6 +19,10 @@ import AlertSnackbar from "./MuiComponents/AlertSnackbar";
 import AssignmentDownload from "./FileOperations/AssignmentDownload";
 import Tooltip from "@mui/material/Tooltip";
 import { RingLoader } from "react-spinners";
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Unstable_Grid2';
+import AppWidgetSummary from './MuiComponents/app-widget-summary';
+import { calculateOpenAssignments } from "./CalculationFunc/CheckerCalc";
 
 const TableChecker = ({ firebaseUser }) => {
   const [fileDownloaded, setFileDownloadedSuccessfuly] = useState(false);
@@ -188,7 +192,10 @@ const TableChecker = ({ firebaseUser }) => {
   const [rows, setRows] = useState([]);
   const [uploadOpen, setUploadOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true); // State to track loading status
-
+  const [{ unCheckedAssignmentCount, checkedAssignmentCount }, setAssignmentsCounts] = useState({
+    unCheckedAssignmentCount: 0,
+    checkedAssignmentCount: 0,
+  });
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -196,9 +203,9 @@ const TableChecker = ({ firebaseUser }) => {
           console.log("User is not defined. Aborting data fetching.");
           return;
         }
-
+    
         const userCourses = firebaseUser.courses || [];
-
+    
         // Fetch assignments that match the user's courses
         const assignmentsSnapshot = await getDocs(
           query(
@@ -206,37 +213,39 @@ const TableChecker = ({ firebaseUser }) => {
             where("Course-ref", "in", userCourses)
           )
         );
-
+    
+        // Filter assignments based on conditions
+        const filteredAssignments = assignmentsSnapshot.docs
+          .filter((doc) =>
+            doc.data()["Due Date"].toDate() < new Date() &&
+            (doc.data().Checker === firebaseUser.name || doc.data().Checker === "")
+          );
+        const { unCheckedAssignmentCount, checkedAssignmentCount } = calculateOpenAssignments(filteredAssignments);
         // Map the fetched assignments data
         const rows = await Promise.all(
-          assignmentsSnapshot.docs
-            .filter(
-              (doc) =>
-                doc.data()["Due Date"].toDate() < new Date() &&
-                (doc.data().Checker === firebaseUser.name ||
-                doc.data().Checker === "")
-            )
-            .map(async (doc) => {
-              const assignmentData = doc.data();
-
-              const courseName = assignmentData.Course_name;
-
-              // Get the student_id from the user document
-              const studentId = assignmentData.Student_id;
-
-              const submissionTimestamp = assignmentData.submissionDate;
-
-              // If no matching user document found or no matching pdf document found, return assignment data without modifying
-              return {
-                id: doc.id,
-                ...assignmentData,
-                Course: courseName,
-                personal_id: studentId,
-                submission_date: submissionTimestamp,
-              };
-            })
+          filteredAssignments.map(async (doc) => {
+            
+            const assignmentData = doc.data();
+            const courseName = assignmentData.Course_name;
+            
+    
+            // Get the student_id from the user document
+            const studentId = assignmentData.Student_id;
+    
+            const submissionTimestamp = assignmentData.submissionDate;
+            
+            // If no matching user document found or no matching pdf document found, return assignment data without modifying
+            return {
+              id: doc.id,
+              ...assignmentData,
+              Course: courseName,
+              personal_id: studentId,
+              submission_date: submissionTimestamp,
+            };
+          })
         );
-
+    
+        setAssignmentsCounts({ unCheckedAssignmentCount, checkedAssignmentCount });
         setRows(rows);
         setIsLoading(false); // Data fetching complete, set loading to false
       } catch (error) {
@@ -244,6 +253,7 @@ const TableChecker = ({ firebaseUser }) => {
         setIsLoading(false); // Set loading to false in case of error
       }
     };
+    
 
     console.log("Starting data fetching process...");
     fetchData();
@@ -318,41 +328,64 @@ const TableChecker = ({ firebaseUser }) => {
   };
 
   return (
-    <Box height={500} width={1190}>
-      {isLoading ? ( // Display loading indicator while data is being fetched
-        <Backdrop open={true} sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
-          <RingLoader color="#36d7b7" />
-        </Backdrop>
-      ) : (
-        <div style={{ width: "100%" }} className="table">
-          <DataGrid
-            autoHeight
-            initialState={{
-              pagination: { paginationModel: { pageSize: 8 } },
-            }}
-            pageSizeOptions={[8, 16, 32]}
-            columns={columns.map((column) => ({
-              ...column,
-            }))}
-            rows={rows}
-            slots={{
-              toolbar: GridToolbar,
-            }}
-          />
-        </div>
-      )}
-      <AlertSnackbar
-        open={fileDownloaded}
-        setOpen={setFileDownloadedSuccessfuly}
-        severity="success"
-        message="File was downloaded successfully"
-      />
-      <Backdrop
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={uploadOpen}
-        onClick={handleUploadClose}
-      ></Backdrop>
-    </Box>
+    <Container maxWidth="xl">
+      <div style={{ height: '40px' }}></div>
+        <Grid container spacing={3} marginLeft={6}>
+            <Grid xs={12} sm={6} md={3}>
+              <AppWidgetSummary
+                title="Open assignments"
+                total={unCheckedAssignmentCount}
+                color="#FFCDD2"
+                icon={<img alt="icon" src="/src/logo/icons8-pen-50.png" />}
+              />
+            </Grid>
+
+            <Grid xs={12} sm={6} md={3}>
+              <AppWidgetSummary
+                title="Close assignments"
+                total={checkedAssignmentCount}
+                color="#ffc79f"
+                icon={<img alt="icon" src="/src/logo/wired-flat-1947-aztec-pyramid.gif" />}
+              />
+            </Grid>
+          </Grid>
+      <br />
+      <Box height={500} width={1190}>
+        {isLoading ? ( // Display loading indicator while data is being fetched
+          <Backdrop open={true} sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+            <RingLoader color="#36d7b7" />
+          </Backdrop>
+        ) : (
+          <div style={{ width: "100%" }} className="table">
+            <DataGrid
+              autoHeight
+              initialState={{
+                pagination: { paginationModel: { pageSize: 8 } },
+              }}
+              pageSizeOptions={[8, 16, 32]}
+              columns={columns.map((column) => ({
+                ...column,
+              }))}
+              rows={rows}
+              slots={{
+                toolbar: GridToolbar,
+              }}
+            />
+          </div>
+        )}
+        <AlertSnackbar
+          open={fileDownloaded}
+          setOpen={setFileDownloadedSuccessfuly}
+          severity="success"
+          message="File was downloaded successfully"
+        />
+        <Backdrop
+          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={uploadOpen}
+          onClick={handleUploadClose}
+        ></Backdrop>
+      </Box>
+    </Container>
   );
 };
 
