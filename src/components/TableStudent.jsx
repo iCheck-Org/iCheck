@@ -27,19 +27,19 @@ import { calculateAverageGrade, calculateOpenAssignments, calculateAppealRequest
 const TableStudent = ({ firebaseUser }) => {
   const columns = [
     {
-      field: "Course",
+      field: "course_name",
       headerName: "Course Name",
       width: 150,
       align: "left",
     },
     {
-      field: "Assignment No.",
+      field: "assignment No.",
       headerName: "Assignment No.",
       width: 150,
       align: "left",
     },
     {
-      field: "Due Date",
+      field: "due Date",
       headerName: "Due Date",
       width: 150,
       align: "left",
@@ -68,7 +68,7 @@ const TableStudent = ({ firebaseUser }) => {
       },
     },
     {
-      field: "Checker",
+      field: "checker",
       headerName: "Status",
       width: 200,
       align: "left",
@@ -97,7 +97,7 @@ const TableStudent = ({ firebaseUser }) => {
       },
     },
     {
-      field: "Grade",
+      field: "grade",
       headerName: "Grade",
       width: 80,
       align: "center",
@@ -128,7 +128,7 @@ const TableStudent = ({ firebaseUser }) => {
       },
     },
     {
-      field: "Actions",
+      field: "actions",
       headerName: "Actions",
       width: 150,
       align: "left",
@@ -136,7 +136,7 @@ const TableStudent = ({ firebaseUser }) => {
       renderCell: (value) => {
         const File_doc = value.row["File_doc"]; // Access the row object and get the value of "File_doc"
         const currentDate = new Date().getTime(); // Get current timestamp
-        const dueDateTimestamp = value.row["Due Date"].toDate(); // Convert Firestore timestamp to JavaScript Date object
+        const dueDateTimestamp = value.row["due Date"].toDate(); // Convert Firestore timestamp to JavaScript Date object
         const dueDate = dueDateTimestamp.getTime(); // Get timestamp from JavaScript Date object
         const isPastDueDate = dueDate >= currentDate;
 
@@ -144,7 +144,7 @@ const TableStudent = ({ firebaseUser }) => {
         const isClickableUpload = isPastDueDate;
         const isClickableDownload =
           File_doc !== null && File_doc !== undefined && File_doc !== "";
-        const isClickableShow = value.row.Grade !== "";
+        const isClickableShow = value.row.grade !== "";
 
         const [showTabs, setShowTabs] = useState(false);
         return (
@@ -214,7 +214,7 @@ const TableStudent = ({ firebaseUser }) => {
         const assignmentsSnapshot = await getDocs(
           query(
             collection(db, "assignments"),
-            where("Owner", "==", firebaseUser.id)
+            where("owner", "==", firebaseUser.id)
           )
         );
         
@@ -231,9 +231,9 @@ const TableStudent = ({ firebaseUser }) => {
         const data = await Promise.all(
           assignmentsSnapshot.docs.map(async (doc) => {
             const assignmentData = doc.data();
-            const courseName = assignmentData.Course_name;
+            const courseName = assignmentData.course_name;
             const submissionTimestamp = assignmentData.submissionDate;
-            const grade = assignmentData.Grade;
+            const grade = assignmentData.grade;
 
             // Return the assignment data along with the course name
             return {
@@ -241,7 +241,7 @@ const TableStudent = ({ firebaseUser }) => {
               ...assignmentData,
               Course: courseName,
               submission_date: submissionTimestamp,
-              Grade: grade,
+              grade: grade,
             };
           })
         );
@@ -275,7 +275,7 @@ const TableStudent = ({ firebaseUser }) => {
         const updatedRow = {
           id: updatedRowId,
           ...assignmentData,
-          Course: assignmentData.Course_name, // Assuming Course_name is the correct field name
+          Course: assignmentData.course_name, // Assuming Course_name is the correct field name
         };
 
         // Return the updated row

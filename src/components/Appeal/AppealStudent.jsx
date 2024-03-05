@@ -20,12 +20,12 @@ export default function AppealStudent({ assignment, onSuccessAppeal}) {
       try {
         const data = assignment;
         setComment(data.Comment || "");
-        setGrade(data.Grade || "");
-        if ("Appeal" in data) {
+        setGrade(data.grade || "");
+        if ("appeal" in data) {
           setAppealFieldExists(true);
           setAppealValue(data.Appeal);
         }
-        if ("AppealAns" in data) {
+        if ("appealAns" in data) {
           setAppealAnsFieldExists(true);
           setAppealAnsValue(data.AppealAns);
         } else {
@@ -46,7 +46,7 @@ export default function AppealStudent({ assignment, onSuccessAppeal}) {
     try {
       const documentRef = doc(db, "assignments", assignment.id);
       const data = {
-        Appeal: appealValue,
+        appeal: appealValue,
       };
       await updateDoc(documentRef, data);
       console.log("Document successfully updated!");

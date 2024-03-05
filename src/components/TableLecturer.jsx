@@ -44,9 +44,9 @@ const TableLecturer = ({ firebaseUser }) => {
       width: 150,
       align: "left",
     },
-    { field: "Course", headerName: "Course Name", width: 150, align: "left" },
+    { field: "course_name", headerName: "Course Name", width: 150, align: "left" },
     {
-      field: "Assignment No.",
+      field: "assignment No.",
       headerName: "Assignment No.",
       width: 150,
       align: "left",
@@ -66,7 +66,7 @@ const TableLecturer = ({ firebaseUser }) => {
       },
     },
     {
-      field: "Due Date",
+      field: "due Date",
       headerName: "Due Date",
       width: 150,
       align: "left",
@@ -81,7 +81,7 @@ const TableLecturer = ({ firebaseUser }) => {
       },
     },
     {
-      field: "Checker",
+      field: "checker",
       headerName: "Status",
       width: 200,
       align: "left",
@@ -110,18 +110,18 @@ const TableLecturer = ({ firebaseUser }) => {
       },
     },
     {
-      field: "Actions",
+      field: "actions",
       headerName: "Actions",
       width: 150,
       align: "left",
       renderCell: (value) => {
         const File_doc = value.row["File_doc"]; // Access the row object and get the value of "File_doc"
         const currentDate = new Date().getTime(); // Get current timestamp
-        const dueDateTimestamp = value.row["Due Date"].toDate(); // Convert Firestore timestamp to JavaScript Date object
+        const dueDateTimestamp = value.row["due Date"].toDate(); // Convert Firestore timestamp to JavaScript Date object
         const dueDate = dueDateTimestamp.getTime(); // Get timestamp from JavaScript Date object
         const isPastDueDate = dueDate <= currentDate;
-        const grade = value.row["Grade"];
-        const appeal = value.row["AppealAns"];
+        const grade = value.row["grade"];
+        const appeal = value.row["appealAns"];
 
         // disable the buttons if the file is not uploaded
         const isClickableDownload =
@@ -256,7 +256,7 @@ const TableLecturer = ({ firebaseUser }) => {
           snapshot = await getDocs(
             query(
               collection(db, "assignments"),
-              where("Course-ref", "in", LecturerCourses)
+              where("course-ref", "in", LecturerCourses)
             )
           );
           setAssignmentsSnapshot(snapshot);
@@ -265,7 +265,7 @@ const TableLecturer = ({ firebaseUser }) => {
         // Filter assignments based on the showAppealTable flag
         if (showAppealTable) {
           let docs = assignmentsSnapshot.docs.filter(
-            (doc) => doc.data().Appeal
+            (doc) => doc.data().appeal
           );
           snapshot = { ...snapshot, docs };
         }
@@ -275,10 +275,10 @@ const TableLecturer = ({ firebaseUser }) => {
           snapshot.docs.map(async (doc) => {
             const assignmentData = doc.data();
 
-            const courseName = assignmentData.Course_name;
+            const courseName = assignmentData.course_name;
 
             // Get the student_id from the user document
-            const studentId = assignmentData.Student_id;
+            const studentId = assignmentData.student_id;
 
             const submissionTimestamp = assignmentData.submissionDate;
             // If no matching user document found or no matching pdf document found, return assignment data without modifying
@@ -298,7 +298,7 @@ const TableLecturer = ({ firebaseUser }) => {
         const averageGrade = calculateAverageGrade(assignmentsSnapshot);
         setAverageGrade(averageGrade);
         // Calculate total number of appeals for widget
-        settotalAppeals(assignmentsSnapshot.docs.filter((doc) => doc.data().Appeal).length);
+        settotalAppeals(assignmentsSnapshot.docs.filter((doc) => doc.data().appeal).length);
         // Calculate number of open assignments for widget
         const openAssignmants = calculateOpenAssignments(assignmentsSnapshot);
         setOpenAssignmentsCount(openAssignmants)
@@ -329,10 +329,10 @@ const TableLecturer = ({ firebaseUser }) => {
       if (assignmentDoc.exists()) {
         // Extract the data from the document
         const assignmentData = assignmentDoc.data();
-        const courseName = assignmentData.Course_name;
+        const courseName = assignmentData.course_name;
 
         // Get the student_id from the user document
-        const studentId = assignmentData.Student_id;
+        const studentId = assignmentData.student_id;
 
         const submissionTimestamp = assignmentData.submissionDate;
 

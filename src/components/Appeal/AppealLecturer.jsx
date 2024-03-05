@@ -13,7 +13,7 @@ export default function AppealTabs({ assignment, onSuccessGrade }) {
   const [submitClicked, setSubmitClicked] = useState(false);
 
   useEffect(() => {
-          setGrade(assignment.Grade || ''); // Set the current grade from the Firestore document
+          setGrade(assignment.grade || ''); // Set the current grade from the Firestore document
   }, [assignment]);
 
 
@@ -21,8 +21,8 @@ export default function AppealTabs({ assignment, onSuccessGrade }) {
     try {
       const assignmentDocRef = doc(db, 'assignments', assignment.id);
       await updateDoc(assignmentDocRef, {
-        Grade: newGrade, // Update the grade with the new value
-        AppealAns: lecturerAnswer
+        grade: newGrade, // Update the grade with the new value
+        appealAns: lecturerAnswer
       });
       console.log('Document successfully updated!');
       
@@ -41,13 +41,13 @@ export default function AppealTabs({ assignment, onSuccessGrade }) {
     <div>
       {/* TextBox for lecturer's answer */}
       <div style={{ marginBottom: '20px' }}>
-        {!('AppealAns' in assignment) ? (
+        {!('appealAns' in assignment) ? (
           <TextBox 
             value={lecturerAnswer} 
             onChange={(event) => setLecturerAnswer(event.target.value)} 
           />
         ) : (
-          <TextBox value={assignment.AppealAns} onChange={() => {}} disabled />
+          <TextBox value={assignment.appealAns} onChange={() => {}} disabled />
         )}
       </div>
       
@@ -72,7 +72,7 @@ export default function AppealTabs({ assignment, onSuccessGrade }) {
 
 {/* Input for new grade */}
 <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-  {!('AppealAns' in assignment) && !submitClicked && (
+  {!('appealAns' in assignment) && !submitClicked && (
     <>
       <h4 style={{ margin: '0', marginRight: '10px' }}>New Grade:</h4> {/* Adjusted margin */}
       <input 
@@ -86,7 +86,7 @@ export default function AppealTabs({ assignment, onSuccessGrade }) {
 </div>
       {/* Submit button */}
       <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px', marginRight:'70px'}}>
-        {!('AppealAns' in assignment) && !submitClicked && (
+        {!('appealAns' in assignment) && !submitClicked && (
           <button 
             type="button"
             className="inputButton"
