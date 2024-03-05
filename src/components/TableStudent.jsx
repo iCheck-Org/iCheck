@@ -9,8 +9,8 @@ import {
   getDoc,
   doc,
 } from "firebase/firestore";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import { format, set } from "date-fns";
+import PreviewIcon from "@mui/icons-material/Preview";
+import { format } from "date-fns";
 import Tabs from "./Tabs/Tabs";
 import AssignmentDownload from "./FileOperations/AssignmentDownload";
 import AssignmentUpload from "./FileOperations/AssignmentUpload";
@@ -176,7 +176,7 @@ const TableStudent = ({ firebaseUser }) => {
               disabled={!isClickableShow}
             >
               <Tooltip title="View Review" followCursor>
-                <VisibilityIcon />
+                <PreviewIcon />
               </Tooltip>
             </IconButton>
             {showTabs && (

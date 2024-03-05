@@ -10,7 +10,7 @@ import {
   doc,
 } from "firebase/firestore";
 import GradingIcon from "@mui/icons-material/Grading";
-import VisibilityIcon from "@mui/icons-material/Visibility";
+import PreviewIcon from "@mui/icons-material/Preview";
 import { format } from "date-fns";
 import { db } from "../config/fire-base";
 import WriteReview from "./Review/WriteReview";
@@ -159,7 +159,7 @@ const TableChecker = ({ firebaseUser }) => {
               disabled={!isClickableShow}
             >
               <Tooltip title="Show Review" followCursor>
-                <VisibilityIcon />
+                <PreviewIcon />
               </Tooltip>
             </IconButton>
 
