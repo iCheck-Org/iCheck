@@ -218,7 +218,7 @@ const TableChecker = ({ firebaseUser }) => {
         const filteredAssignments = assignmentsSnapshot.docs
           .filter((doc) =>
             doc.data()["due Date"].toDate() < new Date() &&
-            (doc.data().Checker === firebaseUser.name || doc.data().Checker === "")
+            (doc.data().checker === firebaseUser.name || doc.data().checker === "")
           );
         const { unCheckedAssignmentCount, checkedAssignmentCount } = calculateOpenAssignments(filteredAssignments);
         // Map the fetched assignments data

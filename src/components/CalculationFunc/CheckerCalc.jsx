@@ -4,7 +4,7 @@ export const calculateOpenAssignments = (assignmentsData) => {
     let unCheckedAssignmentCount = 0;
   
     assignmentsData.forEach((assignmentData) => {
-      const checker = assignmentData.data().Checker;
+      const checker = assignmentData.data().checker;
       if (checker === "") {
         console.log("I enter here!");
         unCheckedAssignmentCount++;
