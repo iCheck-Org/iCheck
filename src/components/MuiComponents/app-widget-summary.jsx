@@ -28,14 +28,12 @@ export default function AppWidgetSummary({
           backgroundColor: color,
           width: 220,
           height: 90,
-          alignContent: "center",
           alignItems: "center",
-
           ...sx,
         }}
         {...other}
       >
-        {icon && <Box sx={{ width: 64, height: 64 }}>{icon}</Box>}
+        {icon && <Box sx={{ width: 50, height: 64 }}>{icon}</Box>}
 
         <Stack spacing={0.5}>
           <Typography
@@ -49,9 +47,7 @@ export default function AppWidgetSummary({
             variant="subtitle2"
             sx={{ color: "#24305e", fontFamily: "Ranua Trials" }}
           >
-            {title.split(" ").map((word, index) => (
-              <div key={index}>{word}</div>
-            ))}
+            {title}
           </Typography>
         </Stack>
       </Card>
