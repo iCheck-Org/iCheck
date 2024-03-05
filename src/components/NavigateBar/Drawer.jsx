@@ -33,6 +33,7 @@ function ResponsiveDrawer(props) {
         sx={{
           width: "100%",
           backgroundColor: "#37b0f2",
+          zIndex: 100,
         }}
       >
         <Toolbar>

@@ -23,6 +23,10 @@ import Tabs from "./Tabs/Tabs";
 import Tooltip from "@mui/material/Tooltip";
 import RateReviewIcon from "@mui/icons-material/RateReview";
 import { RingLoader } from "react-spinners";
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Unstable_Grid2';
+import AppWidgetSummary from './MuiComponents/app-widget-summary';
+import {calculateAverageGrade, calculateOpenAssignments} from './CalculationFunc/LecturerCalc.jsx';
 
 const TableLecturer = ({ firebaseUser }) => {
   const [fileDownloaded, setFileDownloadedSuccessfuly] = useState(false);
@@ -229,6 +233,12 @@ const TableLecturer = ({ firebaseUser }) => {
   ];
 
   const [isLoading, setIsLoading] = useState(true); // State to track loading status
+  const [amountOfLecturerCourses, setAmountOfLecturerCourses] = useState(0);
+  const [averageGrade, setAverageGrade] = useState(0);
+  const [totalAppeals, settotalAppeals] = useState(0);
+  const [openAssignmentsCount, setOpenAssignmentsCount] = useState(0);
+
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -281,9 +291,22 @@ const TableLecturer = ({ firebaseUser }) => {
             };
           })
         );
+
+        // Set the amount of lecturer courses for widget
+        setAmountOfLecturerCourses(LecturerCourses.length);
+        // Calculate average grade for widget
+        const averageGrade = calculateAverageGrade(assignmentsSnapshot);
+        setAverageGrade(averageGrade);
+        // Calculate total number of appeals for widget
+        settotalAppeals(assignmentsSnapshot.docs.filter((doc) => doc.data().Appeal).length);
+        // Calculate number of open assignments for widget
+        const openAssignmants = calculateOpenAssignments(assignmentsSnapshot);
+        setOpenAssignmentsCount(openAssignmants)
+
         setRows(rows);
         setIsLoading(false); // Set loading to false when data fetching is completed
-      } catch (error) {
+      } 
+      catch (error) {
         setIsLoading(false);
         console.error("Error fetching data from Firestore:", error);
       }
@@ -367,8 +390,47 @@ const TableLecturer = ({ firebaseUser }) => {
             <Backdrop open={true} sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
                 <RingLoader color="#36d7b7" />
             </Backdrop>
-        ) : (
-            <div>
+        ) :
+        (
+          <Container maxWidth="xl">
+            <div style={{ height: '60px' }}></div>
+                <Grid container spacing={0.5} marginLeft={6}>
+                    <Grid xs={12} sm={6} md={3}>
+                      <AppWidgetSummary
+                        title="Avarage Grades"
+                        total={averageGrade}
+                        color="#C8E6C9"
+                        icon={<img alt="icon" src="/src/logo/wired-flat-2237-champagne-flutes.png"/>}
+                      />
+                    </Grid>
+                    <Grid xs={12} sm={6} md={3}>
+                      <AppWidgetSummary
+                        title="Total Appeals"
+                        total={totalAppeals}
+                        color="#FFCDD2"
+                        icon={<img alt="icon" src="/src/logo/icons8-pen-50.png" />}
+                      />
+                    </Grid>
+
+                    <Grid xs={12} sm={6} md={3}>
+                      <AppWidgetSummary
+                        title="Open Assignments"
+                        total={openAssignmentsCount}
+                        color="#f6efb7"
+                        icon={<img alt="icon" src="/src/logo/icons8-edit-50.png" />}
+                      />
+                    </Grid>
+
+                    <Grid xs={12} sm={6} md={3}>
+                      <AppWidgetSummary
+                        title="Open Courses"
+                        total={amountOfLecturerCourses}
+                        color="#ffc79f"
+                        icon={<img alt="icon" src="/src/logo/wired-flat-1947-aztec-pyramid.gif" />}
+                      />
+                    </Grid>
+                  </Grid>
+              <div>
                 {/* CreateAssignment button */}
                 <button
                     className="upload-assigment-button"
@@ -400,7 +462,7 @@ const TableLecturer = ({ firebaseUser }) => {
                     )}
 
                     {/* DataGrid component */}
-                    <div style={{ width: "100%", marginTop: "50px" }} className="table">
+                    <div style={{ width: "100%", marginTop: "30px" }} className="table">
                         <DataGrid
                             autoHeight
                             initialState={{
@@ -431,11 +493,11 @@ const TableLecturer = ({ firebaseUser }) => {
                     ></Backdrop>
                 </Box>
             </div>
+          </Container>
         )}
     </>
 );
 
-  
 };
 
 export default TableLecturer;

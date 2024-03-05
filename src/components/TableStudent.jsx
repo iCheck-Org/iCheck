@@ -319,42 +319,46 @@ const TableStudent = ({ firebaseUser }) => {
 
   return (
     <Container maxWidth="xl">
-      <div style={{ height: '40px' }}></div>
+      <div style={{ height: '50px' }}></div>
       <Grid container spacing={3} marginLeft={6}>
-          <Grid xs={12} sm={6} md={3}>
-            <AppWidgetSummary
-              title="Avarage Grade"
-              total={averageGrade}
-              color="#C8E6C9"
-              icon={<img alt="icon" src="/src/logo/wired-flat-2237-champagne-flutes.png"/>}
-            />
-          </Grid>
-          <Grid xs={12} sm={6} md={3}>
-            <AppWidgetSummary
-              title="Open Assignments"
-              total={openAssignmentsCount}
-              color="#FFCDD2"
-              icon={<img alt="icon" src="/src/logo/icons8-pen-50.png" />}
-            />
-          </Grid>
+      {!isLoading && (
+    <Grid container spacing={3} marginLeft={6}>
+      <Grid xs={12} sm={6} md={3}>
+        <AppWidgetSummary
+          title="Average Grade"
+          total={averageGrade}
+          color="#C8E6C9"
+          icon={<img alt="icon" src="/src/logo/wired-flat-2237-champagne-flutes.png"/>}
+        />
+      </Grid>
+      <Grid xs={12} sm={6} md={3}>
+        <AppWidgetSummary
+          title="Open Assignments"
+          total={openAssignmentsCount}
+          color="#FFCDD2"
+          icon={<img alt="icon" src="/src/logo/icons8-pen-50.png" />}
+        />
+      </Grid>
 
-          <Grid xs={12} sm={6} md={3}>
-            <AppWidgetSummary
-              title="Open Appeals"
-              total={openAppealRequestsCount}
-              color="#f6efb7"
-              icon={<img alt="icon" src="/src/logo/icons8-edit-50.png" />}
-            />
-          </Grid>
+      <Grid xs={12} sm={6} md={3}>
+        <AppWidgetSummary
+          title="Open Appeals"
+          total={openAppealRequestsCount}
+          color="#f6efb7"
+          icon={<img alt="icon" src="/src/logo/icons8-edit-50.png" />}
+        />
+      </Grid>
 
-          <Grid xs={12} sm={6} md={3}>
-            <AppWidgetSummary
-              title="Total Assignments"
-              total={totalAssignmentsCount}
-              color="#ffc79f"
-              icon={<img alt="icon" src="/src/logo/wired-flat-1947-aztec-pyramid.gif" />}
-            />
-          </Grid>
+      <Grid xs={12} sm={6} md={3}>
+        <AppWidgetSummary
+          title="Total Assignments"
+          total={totalAssignmentsCount}
+          color="#ffc79f"
+          icon={<img alt="icon" src="/src/logo/wired-flat-1947-aztec-pyramid.gif" />}
+        />
+      </Grid>
+    </Grid>
+  )}
         </Grid>
     <br />
     <Box height={500} width={1190} style={{ position: "relative" }}>
