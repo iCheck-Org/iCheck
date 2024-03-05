@@ -115,7 +115,7 @@ const TableLecturer = ({ firebaseUser }) => {
       width: 150,
       align: "left",
       renderCell: (value) => {
-        const File_doc = value.row["File_doc"]; // Access the row object and get the value of "File_doc"
+        const File_doc = value.row["file_doc"]; // Access the row object and get the value of "File_doc"
         const currentDate = new Date().getTime(); // Get current timestamp
         const dueDateTimestamp = value.row["due Date"].toDate(); // Convert Firestore timestamp to JavaScript Date object
         const dueDate = dueDateTimestamp.getTime(); // Get timestamp from JavaScript Date object

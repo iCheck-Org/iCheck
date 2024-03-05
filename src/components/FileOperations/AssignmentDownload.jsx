@@ -27,7 +27,7 @@ const AssignmentDownload = ({ row, disabled }) => {
 
   const handleFileDownload = async () => {
     try {
-      const File_doc = row["File_doc"];
+      const File_doc = row["file_doc"];
       const querySnapshot = await getDocs(collection(db, "pdfs"));
       querySnapshot.forEach((doc) => {
         if (doc.id === File_doc) {
