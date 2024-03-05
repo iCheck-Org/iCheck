@@ -41,7 +41,7 @@ function a11yProps(index) {
   };
 }
 
-export default function LogicTabs({ assignment, typePermision, onSuccessGrade}) {
+export default function LogicTabs({ assignment, typePermision, onSuccessGrade, onSuccessAppeal}) {
   const [value, setValue] = useState(0); // Initialize value state
 
   const handleChange = (event, newValue) => {
@@ -70,7 +70,7 @@ export default function LogicTabs({ assignment, typePermision, onSuccessGrade}) 
         <ShowReview assignment={assignment} />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        <AppealStudent assignment={assignment} />
+        <AppealStudent assignment={assignment} onSuccessAppeal={onSuccessAppeal}/>
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
         <AppealTabs assignment={assignment} onSuccessGrade={onSuccessGrade} />

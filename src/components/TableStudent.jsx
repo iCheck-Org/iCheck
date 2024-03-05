@@ -159,7 +159,6 @@ const TableStudent = ({ firebaseUser }) => {
             <IconButton
               id="Review"
               onClick={() => {
-                console.log(value.row.id),
                   setShowTabs((prevState) => !prevState);
               }}
               disabled={!isClickableShow}
@@ -173,6 +172,7 @@ const TableStudent = ({ firebaseUser }) => {
                 assignment={value.row}
                 onClose={() => setShowTabs((prevState) => !prevState)}
                 typePermision={firebaseUser.type}
+                onSuccessAppeal={handleRowUpdate}
               />
             )}
           </div>

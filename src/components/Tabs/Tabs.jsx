@@ -7,7 +7,7 @@ import LogicTabs from "./LogicTabs";
 import ClearIcon from '@mui/icons-material/Clear'; //close icon
 import { IconButton } from "@mui/material";
 
-export default function Tabs({ assignment, onClose, typePermision, onSuccessGrade }) {
+export default function Tabs({ assignment, onClose, typePermision, onSuccessGrade, onSuccessAppeal }) {
   console.log(assignment);
   const [open, setOpen] = useState(true);
 
@@ -43,7 +43,7 @@ export default function Tabs({ assignment, onClose, typePermision, onSuccessGrad
         </IconButton>
 
 
-        <LogicTabs assignment={assignment} typePermision={typePermision} onSuccessGrade={onSuccessGrade}/>
+        <LogicTabs assignment={assignment} typePermision={typePermision} onSuccessGrade={onSuccessGrade} onSuccessAppeal={onSuccessAppeal}/>
       </ModalContent>
     </Modal>
   );

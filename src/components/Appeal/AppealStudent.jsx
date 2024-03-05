@@ -5,7 +5,7 @@ import TextBox from "../MuiComponents/TextBox";
 import { db } from "../../config/fire-base";
 
 
-export default function AppealStudent({ assignment }) {
+export default function AppealStudent({ assignment, onSuccessAppeal}) {
   const [comment, setComment] = useState("");
   const [grade, setGrade] = useState("");
   const [appealValue, setAppealValue] = useState("");
@@ -51,7 +51,7 @@ export default function AppealStudent({ assignment }) {
       await updateDoc(documentRef, data);
       console.log("Document successfully updated!");
       setOpen(false);
-      onClose();
+      onSuccessAppeal(assignment.id);
     } catch (error) {
       console.error("Error updating document: ", error);
     }
@@ -60,6 +60,7 @@ export default function AppealStudent({ assignment }) {
   const handleAppealValue = (event) => {
     const { value } = event.target;
     setAppealValue(value);
+    
   };
 
   return (
