@@ -95,7 +95,7 @@ export default function AccountMenu(props) {
               display: "inline-block",
               padding: "1px 6px",
               borderRadius: "5px",
-              backgroundColor: "#B6D5E6",
+              backgroundColor: "#f6efb7",
             }}
           >
             <Typography
@@ -111,7 +111,7 @@ export default function AccountMenu(props) {
           <Divider className="dividerStyle" sx={{ marginTop: "16px" }} />
           <IconButton
             onClick={handleLogout}
-            sx={{ color: "#494f4e", marginTop: "5px" }}
+            sx={{ color: "#494f4e", marginTop: "3px" }}
           >
             <Tooltip title="Logout" enterDelay={"300"}>
               <Logout fontSize="small" />
