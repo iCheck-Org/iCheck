@@ -150,7 +150,7 @@ export default function CreateAssignment({ firebaseUser, onClose }) {
             </select>
           </Box>
           {/* Box for Assignment No. */}
-          <Box sx={{ display: "flex", flexDirection: "row", gap: "26px" }}>
+          <Box sx={{ display: "flex", flexDirection: "row", gap: "28px" }}>
             <label htmlFor="assignmentNo" className="assignment-text">Assignment Number:</label>
             <input
               className="inputBox"
