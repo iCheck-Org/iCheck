@@ -27,7 +27,7 @@ export default function CreateAssignment({ firebaseUser, onClose }) {
 
           // Iterate through the user's courses and fetch course names
           userData.courses.forEach((courseId) => {
-            const courseDocRef = doc(db, "courses-test", courseId);
+            const courseDocRef = doc(db, "courses", courseId);
             const coursePromise = getDoc(courseDocRef).then(
               (courseDocSnapshot) => {
                 if (courseDocSnapshot.exists()) {
@@ -68,7 +68,7 @@ export default function CreateAssignment({ firebaseUser, onClose }) {
 
   const handleCreateAssignment = async () => {
     try {
-      const courseDocRef = doc(db, "courses-test", selectedCourse);
+      const courseDocRef = doc(db, "courses", selectedCourse);
       const courseDocSnapshot = await getDoc(courseDocRef);
 
       if (courseDocSnapshot.exists()) {
@@ -86,16 +86,16 @@ export default function CreateAssignment({ firebaseUser, onClose }) {
               const studentID = studentData.personal_id; // Set studentID here
 
               const assignmentData = {
-                Owner: student,
-                "Assignment No.": assignmentNo,
+                owner: student,
+                "assignment No.": assignmentNo,
                 // Convert dueDate to a Firestore Timestamp
-                "Due Date": Timestamp.fromDate(new Date(dueDate)),
-                Checker: "",
-                Grade: "",
-                File_doc: "",
-                "Course-ref": selectedCourse,
-                Course_name: courseData.name,
-                Student_id: studentID, // Use studentID here
+                "due Date": Timestamp.fromDate(new Date(dueDate)),
+                checker: "",
+                grade: "",
+                file_doc: "",
+                "course-ref": selectedCourse,
+                course_name: courseData.name,
+                student_id: studentID, // Use studentID here
               };
 
               // Add the assignment document to the "assignments" collection

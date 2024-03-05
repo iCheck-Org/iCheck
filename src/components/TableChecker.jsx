@@ -35,13 +35,13 @@ const TableChecker = ({ firebaseUser }) => {
       align: "left",
     },
     {
-      field: "Course",
+      field: "course_name",
       headerName: "Course Name",
       width: 150,
       align: "left",
     },
     {
-      field: "Assignment No.",
+      field: "assignment No.",
       headerName: "Assignment No.",
       width: 150,
       align: "left",
@@ -61,7 +61,7 @@ const TableChecker = ({ firebaseUser }) => {
       },
     },
     {
-      field: "Due Date",
+      field: "due Date",
       headerName: "Due Date",
       width: 150,
       align: "left",
@@ -75,7 +75,7 @@ const TableChecker = ({ firebaseUser }) => {
       },
     },
     {
-      field: "Checker",
+      field: "checker",
       headerName: "Status",
       width: 200,
       align: "left",
@@ -103,17 +103,17 @@ const TableChecker = ({ firebaseUser }) => {
       },
     },
     {
-      field: "Actions",
+      field: "actions",
       headerName: "Actions",
       width: 150,
       align: "left",
       renderCell: (value) => {
         const File_doc = value.row["File_doc"]; // Access the row object and get the value of "File_doc"
         const currentDate = new Date().getTime(); // Get current timestamp
-        const dueDateTimestamp = value.row["Due Date"].toDate(); // Convert Firestore timestamp to JavaScript Date object
+        const dueDateTimestamp = value.row["due Date"].toDate(); // Convert Firestore timestamp to JavaScript Date object
         const dueDate = dueDateTimestamp.getTime(); // Get timestamp from JavaScript Date object
         const isPastDueDate = dueDate <= currentDate;
-        const grade = value.row["Grade"];
+        const grade = value.row["grade"];
 
         const isClickableDownload =
           File_doc !== null &&
@@ -210,14 +210,14 @@ const TableChecker = ({ firebaseUser }) => {
         const assignmentsSnapshot = await getDocs(
           query(
             collection(db, "assignments"),
-            where("Course-ref", "in", userCourses)
+            where("course-ref", "in", userCourses)
           )
         );
     
         // Filter assignments based on conditions
         const filteredAssignments = assignmentsSnapshot.docs
           .filter((doc) =>
-            doc.data()["Due Date"].toDate() < new Date() &&
+            doc.data()["due Date"].toDate() < new Date() &&
             (doc.data().Checker === firebaseUser.name || doc.data().Checker === "")
           );
         const { unCheckedAssignmentCount, checkedAssignmentCount } = calculateOpenAssignments(filteredAssignments);
@@ -226,11 +226,11 @@ const TableChecker = ({ firebaseUser }) => {
           filteredAssignments.map(async (doc) => {
             
             const assignmentData = doc.data();
-            const courseName = assignmentData.Course_name;
+            const courseName = assignmentData.course_name;
             
     
             // Get the student_id from the user document
-            const studentId = assignmentData.Student_id;
+            const studentId = assignmentData.student_id;
     
             const submissionTimestamp = assignmentData.submissionDate;
             
@@ -272,10 +272,10 @@ const TableChecker = ({ firebaseUser }) => {
       if (assignmentDoc.exists()) {
         // Extract the data from the document
         const assignmentData = assignmentDoc.data();
-        const courseName = assignmentData.Course_name;
+        const courseName = assignmentData.course_name;
 
         // Get the student_id from the user document
-        const studentId = assignmentData.Student_id;
+        const studentId = assignmentData.student_id;
 
         const submissionTimestamp = assignmentData.submissionDate;
 

@@ -20,12 +20,12 @@ export default function WriteReview({
   const [commentInputValue, setCommentInputValue] = useState(""); // Define state for comment input value
 
   useEffect(() => {
-    if ("Comment" in assignment) {
+    if ("comment" in assignment) {
       setHasComment(true);
-      setCommentInputValue(assignment.Comment);
+      setCommentInputValue(assignment.comment);
     }
-    if ("Grade" in assignment) {
-      setGradeInputValue(assignment.Grade);
+    if ("grade" in assignment) {
+      setGradeInputValue(assignment.grade);
     }
   }, [assignment]);
 
@@ -40,9 +40,9 @@ export default function WriteReview({
       const documentRef = doc(db, "assignments", assignment.id);
       // Create an object with the grade and comment data
       const data = {
-        Grade: gradeInputValue,
-        Comment: commentInputValue,
-        Checker: `${firebaseUser.name}`,
+        grade: gradeInputValue,
+        comment: commentInputValue,
+        checker: `${firebaseUser.name}`,
       };
 
       // Use updateDoc() method to update the document with the new data

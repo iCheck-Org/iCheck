@@ -5,7 +5,7 @@ export const calculateAverageGrade = (assignmentsSnapshot) => {
     // Loop through each assignment
     assignmentsSnapshot.docs.forEach((doc) => {
       const assignmentData = doc.data();
-      const grade = parseInt(assignmentData.Grade);
+      const grade = parseInt(assignmentData.grade);
 
       // Check if the grade is a valid number
       if (!isNaN(grade)) {
@@ -28,7 +28,7 @@ export const calculateOpenAssignments = (assignmentsSnapshot) => {
 
     assignmentsSnapshot.docs.forEach((doc) => {
       const assignmentData = doc.data();
-      const dueDateTimestamp = assignmentData["Due Date"].toDate();
+      const dueDateTimestamp = assignmentData["due Date"].toDate();
       const dueDate = dueDateTimestamp.getTime();
       totalAssignmentsCount++;
 
@@ -45,7 +45,7 @@ export const calculateAppealRequests = (assignmentsSnapshot) => {
     let openAppealRequestsCount = 0;
     assignmentsSnapshot.docs.forEach((doc) => {
       const assignmentData = doc.data();
-      if ("Appeal" in assignmentData && !("AppealAns" in assignmentData)) {
+      if ("appeal" in assignmentData && !("appealAns" in assignmentData)) {
         openAppealRequestsCount++;
       }
     });
