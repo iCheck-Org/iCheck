@@ -3,10 +3,11 @@ import PropTypes from "prop-types";
 import clsx from "clsx";
 import { styled, css } from "@mui/system";
 import { Modal as BaseModal } from "@mui/base/Modal";
-import { Box } from "@mui/material";
+import { Box, Tooltip } from "@mui/material";
 import { collection, doc, addDoc, getDoc, Timestamp } from "firebase/firestore";
 import { db } from "../config/fire-base";
-import 'animate.css';
+import "animate.css";
+import "../pages/styles.css";
 
 export default function CreateAssignment({ firebaseUser, onClose }) {
   const [open, setOpen] = useState(true);
@@ -115,67 +116,67 @@ export default function CreateAssignment({ firebaseUser, onClose }) {
 
   return (
     <div>
-      <Modal
-        aria-labelledby="unstyled-modal-title"
-        aria-describedby="unstyled-modal-description"
+      <BaseModal
+        className={"modal" + " animate_animated animatezoomIn animate_faster"}
         open={open}
         onClose={handleClose}
         slots={{ backdrop: StyledBackdrop }}
       >
-        <ModalContent className="animate__animated animate__zoomIn animate__faster" sx={{ width: 1000, height: 600 }}>
+        <div className="modal-content">
+          <Box sx={{ marginTop: "10px" }} />
+
+          <h2>Assignment Creation</h2>
           <Box
-            width={900}
-            height={400}
             sx={{
+              marginTop: "10px",
               display: "flex",
-              flexDirection: "column",
-              justifyContent: "flex-start",
-              alignItems: "center",
-              gap: "16px",
-              padding: "24px",
+              flexDirection: "row",
+              gap: "72px",
             }}
           >
-            <h2 style={{ textAlign: "center" }}>
-              Create assignment to students
-            </h2>
-            <div style={{ marginTop: "30px" }} />
-            <h3 id="unstyled-modal-title" className="modal-title">
-              Choose course
-            </h3>
+            <label htmlFor="assignmentNo">Course Name:</label>
             {/* Render course options as a select dropdown */}
-            <select onChange={handleSelectChange} value={selectedCourse}>
-              <option value="">Select a course</option>
+            <select
+              className="inputBox"
+              onChange={handleSelectChange}
+              value={selectedCourse}
+            >
+              <option value=""></option>
               {courseOptions.map((course) => (
                 <option key={course.id} value={course.id}>
                   {course.name}
                 </option>
               ))}
             </select>
-            {/* Box for Assignment No. */}
-            <Box sx={{ display: "flex", flexDirection: "row", gap: "16px" }}>
-              <label htmlFor="assignmentNo">Assignment No.</label>
-              <input
-                type="text"
-                id="assignmentNo"
-                value={assignmentNo}
-                onChange={(e) => setAssignmentNo(e.target.value)}
-              />
-            </Box>
-            {/* Box for Due Date */}
-            <Box sx={{ display: "flex", flexDirection: "row", gap: "16px" }}>
-              <label htmlFor="dueDate">Due Date</label>
-              <input
-                type="datetime-local"
-                id="dueDate"
-                value={dueDate}
-                onChange={(e) => setDueDate(e.target.value)}
-              />
-            </Box>
-            {/* Create button */}
-            <button onClick={handleCreateAssignment}>Create</button>
           </Box>
-        </ModalContent>
-      </Modal>
+          {/* Box for Assignment No. */}
+          <Box sx={{ display: "flex", flexDirection: "row", gap: "17px" }}>
+            <label htmlFor="assignmentNo">Assignment Number:</label>
+            <input
+              className="inputBox"
+              type="text"
+              id="assignmentNo"
+              value={assignmentNo}
+              onChange={(e) => setAssignmentNo(e.target.value)}
+            />
+          </Box>
+          {/* Box for Due Date */}
+          <Box sx={{ display: "flex", flexDirection: "row", gap: "105px" }}>
+            <label htmlFor="dueDate">Due Date:</label>
+            <input
+              className="inputBox"
+              type="datetime-local"
+              id="dueDate"
+              value={dueDate}
+              onChange={(e) => setDueDate(e.target.value)}
+            />
+          </Box>
+          {/* Create button */}
+          <button className="inputButton" onClick={handleCreateAssignment}>
+            Create
+          </button>
+        </div>
+      </BaseModal>
     </div>
   );
 }
@@ -197,37 +198,6 @@ Backdrop.propTypes = {
   open: PropTypes.bool,
 };
 
-const blue = {
-  200: "#99CCFF",
-  300: "#66B2FF",
-  400: "#3399FF",
-  500: "#007FFF",
-  600: "#0072E5",
-  700: "#0066CC",
-};
-
-const grey = {
-  50: "#F3F6F9",
-  100: "#E5EAF2",
-  200: "#DAE2ED",
-  300: "#C7D0DD",
-  400: "#B0B8C4",
-  500: "#9DA8B7",
-  600: "#6B7A90",
-  700: "#434D5B",
-  800: "#303740",
-  900: "#1C2025",
-};
-
-const Modal = styled(BaseModal)`
-  position: fixed;
-  z-index: 1300;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
 const StyledBackdrop = styled(Backdrop)`
   z-index: -1;
   position: fixed;
@@ -235,69 +205,3 @@ const StyledBackdrop = styled(Backdrop)`
   background-color: rgb(0 0 0 / 0.5);
   -webkit-tap-highlight-color: transparent;
 `;
-
-const ModalContent = styled("div")(
-  ({ theme }) => css`
-    font-family: "IBM Plex Sans", sans-serif;
-    font-weight: 500;
-    text-align: start;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    overflow: hidden;
-    background-color: ${theme.palette.mode === "dark" ? grey[900] : "#fff"};
-    border-radius: 8px;
-    border: 1px solid ${theme.palette.mode === "dark" ? grey[700] : grey[200]};
-    box-shadow: 0 4px 12px
-      ${theme.palette.mode === "dark" ? "rgb(0 0 0 / 0.5)" : "rgb(0 0 0 / 0.2)"};
-    padding: 24px;
-    color: ${theme.palette.mode === "dark" ? grey[50] : grey[900]};
-
-    & .modal-title {
-      margin: 0;
-      line-height: 1.5rem;
-      margin-bottom: 8px;
-    }
-
-    & .modal-description {
-      margin: 0;
-      line-height: 1.5rem;
-      font-weight: 400;
-      color: ${theme.palette.mode === "dark" ? grey[400] : grey[800]};
-      margin-bottom: 4px;
-    }
-  `
-);
-
-const TriggerButton = styled("button")(
-  ({ theme }) => css`
-    font-family: "IBM Plex Sans", sans-serif;
-    font-weight: 600;
-    font-size: 0.875rem;
-    line-height: 1.5;
-    padding: 8px 16px;
-    border-radius: 8px;
-    transition: all 150ms ease;
-    cursor: pointer;
-    background: ${theme.palette.mode === "dark" ? grey[900] : "#fff"};
-    border: 1px solid ${theme.palette.mode === "dark" ? grey[700] : grey[200]};
-    color: ${theme.palette.mode === "dark" ? grey[200] : grey[900]};
-    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-
-    &:hover {
-      background: ${theme.palette.mode === "dark" ? grey[800] : grey[50]};
-      border-color: ${theme.palette.mode === "dark" ? grey[600] : grey[300]};
-    }
-
-    &:active {
-      background: ${theme.palette.mode === "dark" ? grey[700] : grey[100]};
-    }
-
-    &:focus-visible {
-      box-shadow: 0 0 0 4px
-        ${theme.palette.mode === "dark" ? blue[300] : blue[200]};
-      outline: none;
-    }
-  `
-);

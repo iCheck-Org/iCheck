@@ -1,9 +1,7 @@
-
 import "./App.css";
 import Login from "./pages/Login.jsx";
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Dashboard from "./pages/Dashboard.jsx";
-import MessageBoard from "./pages/MessageBoard.jsx";
 import Signup from "./pages/Signup.jsx";
 import { RingLoader } from "react-spinners";
 import { useState, useEffect } from "react";
@@ -33,10 +31,6 @@ function App() {
           <Route index element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route
-            path="/message-board"
-            element={<MessageBoard isLoading={isLoading} />}
-          />
         </Routes>
       )}
     </div>

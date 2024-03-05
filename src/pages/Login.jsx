@@ -8,7 +8,6 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { green, red } from "@mui/material/colors";
 import CheckIcon from "@mui/icons-material/Check"; // success icon
 import ClearIcon from "@mui/icons-material/Clear"; // fail icon
-import { Helmet } from "react-helmet";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -115,7 +114,7 @@ const Login = () => {
                   type="button"
                   className="inputButton"
                   variant="contained"
-                  style={{ ...buttonSx, backgroundColor: backgroundColor }} // Change sx to style
+                  style={{ ...buttonSx, backgroundColor: backgroundColor }} 
                   disabled={!isFormValid || loading}
                   onClick={handleLogin}
                 >

@@ -284,3 +284,54 @@ body {
 }
 
 
+.modal{
+  position: fixed;
+  z-index: 1200;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+    font-family: "IBM Plex Sans", sans-serif;
+    font-weight: bold;
+    background-color: #fbfbf8;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    color: #434d5b;
+    width: 400px;
+    height: 300px;
+    display: flex;
+    align-items: center;
+    flex-direction:column;
+    gap:5px;
+    
+}
+
+.modal-content .inputBox {
+  height: 25px;
+  width: 155px;
+  border-radius: 5px;
+  background-color: #e8f0fe;
+  font-size: smaller;
+  padding: 0;
+  margin: 0;
+  text-align: center;
+  color: #454f5c;
+}
+
+.modal-content .inputButton {
+  margin-top: 30px;
+  background-color: rgb(70, 148, 244);
+  color: white; /* White text color */
+  padding: 10px 10px; /* Padding for size */
+  border-radius: 10px; /* Large border radius for round corners */
+  cursor: pointer; /* Cursor pointer on hover */
+  text-align: center; /* Center the text */
+}
+
+.modal-content .inputButton:hover {
+  background-color: rgb(36, 115, 211);
+
+}
