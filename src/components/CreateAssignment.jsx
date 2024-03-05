@@ -134,7 +134,7 @@ export default function CreateAssignment({ firebaseUser, onClose }) {
               gap: "72px",
             }}
           >
-            <label htmlFor="assignmentNo">Course Name:</label>
+            <label htmlFor="assignmentNo" className="assignment-text">Course Name:</label>
             {/* Render course options as a select dropdown */}
             <select
               className="inputBox"
@@ -150,8 +150,8 @@ export default function CreateAssignment({ firebaseUser, onClose }) {
             </select>
           </Box>
           {/* Box for Assignment No. */}
-          <Box sx={{ display: "flex", flexDirection: "row", gap: "17px" }}>
-            <label htmlFor="assignmentNo">Assignment Number:</label>
+          <Box sx={{ display: "flex", flexDirection: "row", gap: "26px" }}>
+            <label htmlFor="assignmentNo" className="assignment-text">Assignment Number:</label>
             <input
               className="inputBox"
               type="text"
@@ -161,8 +161,8 @@ export default function CreateAssignment({ firebaseUser, onClose }) {
             />
           </Box>
           {/* Box for Due Date */}
-          <Box sx={{ display: "flex", flexDirection: "row", gap: "105px" }}>
-            <label htmlFor="dueDate">Due Date:</label>
+          <Box sx={{ display: "flex", flexDirection: "row", gap: "100px" }}>
+            <label htmlFor="dueDate" className="assignment-text">Due Date:</label>
             <input
               className="inputBox"
               type="datetime-local"
