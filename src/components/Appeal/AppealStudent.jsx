@@ -19,15 +19,15 @@ export default function AppealStudent({ assignment, onSuccessAppeal}) {
     const fetchData = async () => {
       try {
         const data = assignment;
-        setComment(data.Comment || "");
+        setComment(data.comment || "");
         setGrade(data.grade || "");
         if ("appeal" in data) {
           setAppealFieldExists(true);
-          setAppealValue(data.Appeal);
+          setAppealValue(data.appeal);
         }
         if ("appealAns" in data) {
           setAppealAnsFieldExists(true);
-          setAppealAnsValue(data.AppealAns);
+          setAppealAnsValue(data.appealAns);
         } else {
           setAppealAnsFieldExists(false);
         }

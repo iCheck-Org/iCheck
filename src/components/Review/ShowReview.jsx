@@ -10,7 +10,7 @@ export default function ShowReview({ assignment }) {
 
   useEffect(() => {
     const data = assignment;
-    setComment(data.Comment || "");
+    setComment(data.comment || "");
     setGrade(data.grade || "");
     setOpen(true); // Update the state to open the modal after data fetching is complete
   }, [assignment]);
