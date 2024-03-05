@@ -10,7 +10,7 @@ import {
   doc,
 } from "firebase/firestore";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import { format } from "date-fns";
+import { format, set } from "date-fns";
 import Tabs from "./Tabs/Tabs";
 import AssignmentDownload from "./FileOperations/AssignmentDownload";
 import AssignmentUpload from "./FileOperations/AssignmentUpload";
@@ -19,6 +19,10 @@ import "../pages/styles.css";
 import Tooltip from "@mui/material/Tooltip";
 import { db } from "../config/fire-base";
 import { RingLoader } from "react-spinners";
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Unstable_Grid2';
+import AppWidgetSummary from './MuiComponents/app-widget-summary';
+import { calculateAverageGrade, calculateOpenAssignments, calculateAppealRequests} from "./CalculationFunc/StudentsCalc.jsx";
 
 const TableStudent = ({ firebaseUser }) => {
   const columns = [
@@ -102,9 +106,10 @@ const TableStudent = ({ firebaseUser }) => {
         let grade = params.value;
 
         let backgroundColor = "";
-        if (grade >= 0 && grade <= 60) {
+        if (grade && grade >= 0 && grade <= 60) {
           backgroundColor = "#FFCDD2"; // Orange color when grade is below 60
-        } else {
+        }
+        else if (grade && grade > 60 && grade <= 100) {
           backgroundColor = "#C8E6C9"; // Green color for other grade
         }
 
@@ -191,6 +196,12 @@ const TableStudent = ({ firebaseUser }) => {
   const [rows, setRows] = useState([]);
   const [uploadOpen, setUploadOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true); // State to track loading status
+  const [averageGrade, setAverageGrade] = useState(0);
+  const [openAppealRequestsCount, setopenAppealRequestsCount] = useState(0);
+  const [{ totalAssignmentsCount, openAssignmentsCount }, setAssignmentsCounts] = useState({
+    totalAssignmentsCount: 0,
+    openAssignmentsCount: 0,
+  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -206,6 +217,16 @@ const TableStudent = ({ firebaseUser }) => {
             where("Owner", "==", firebaseUser.id)
           )
         );
+        
+        // Calculate average grade
+        const averageGrade = calculateAverageGrade(assignmentsSnapshot);
+        setAverageGrade(averageGrade);
+        // Calculate open assignments count
+        const { openAssignmentsCount, totalAssignmentsCount } = calculateOpenAssignments(assignmentsSnapshot);
+        setAssignmentsCounts({ openAssignmentsCount, totalAssignmentsCount });
+        // Calculate open appeal requests count
+        const openAppealRequestsCount = calculateAppealRequests(assignmentsSnapshot);
+        setopenAppealRequestsCount(openAppealRequestsCount);
 
         const data = await Promise.all(
           assignmentsSnapshot.docs.map(async (doc) => {
@@ -297,6 +318,45 @@ const TableStudent = ({ firebaseUser }) => {
   };
 
   return (
+    <Container maxWidth="xl">
+      <div style={{ height: '40px' }}></div>
+      <Grid container spacing={3} marginLeft={6}>
+          <Grid xs={12} sm={6} md={3}>
+            <AppWidgetSummary
+              title="Avarage Grade"
+              total={averageGrade}
+              color="#C8E6C9"
+              icon={<img alt="icon" src="/src/logo/wired-flat-2237-champagne-flutes.png"/>}
+            />
+          </Grid>
+          <Grid xs={12} sm={6} md={3}>
+            <AppWidgetSummary
+              title="Open Assignments"
+              total={openAssignmentsCount}
+              color="#FFCDD2"
+              icon={<img alt="icon" src="/src/logo/icons8-pen-50.png" />}
+            />
+          </Grid>
+
+          <Grid xs={12} sm={6} md={3}>
+            <AppWidgetSummary
+              title="Open Appeals"
+              total={openAppealRequestsCount}
+              color="#f6efb7"
+              icon={<img alt="icon" src="/src/logo/icons8-edit-50.png" />}
+            />
+          </Grid>
+
+          <Grid xs={12} sm={6} md={3}>
+            <AppWidgetSummary
+              title="Total Assignments"
+              total={totalAssignmentsCount}
+              color="#ffc79f"
+              icon={<img alt="icon" src="/src/logo/wired-flat-1947-aztec-pyramid.gif" />}
+            />
+          </Grid>
+        </Grid>
+    <br />
     <Box height={500} width={1190} style={{ position: "relative" }}>
       {/* Render loading indicator */}
       {isLoading && (
@@ -329,6 +389,7 @@ const TableStudent = ({ firebaseUser }) => {
         onClick={handleUploadClose}
       ></Backdrop>
     </Box>
+    </Container>
   );
 };
 

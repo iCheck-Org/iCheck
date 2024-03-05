@@ -212,8 +212,9 @@ const TableChecker = ({ firebaseUser }) => {
           assignmentsSnapshot.docs
             .filter(
               (doc) =>
-                doc.data().Checker === firebaseUser.name ||
-                doc.data().Checker === ""
+                doc.data()["Due Date"].toDate() < new Date() &&
+                (doc.data().Checker === firebaseUser.name ||
+                doc.data().Checker === "")
             )
             .map(async (doc) => {
               const assignmentData = doc.data();
