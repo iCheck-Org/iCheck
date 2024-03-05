@@ -51,6 +51,7 @@ function ResponsiveDrawer(props) {
               variant="h6"
               noWrap
               component="div"
+              sx={{ color: '#fff' }}
             >
               {firebaseUser && firebaseUser.name
                 ? `Good ${timeOfDay.charAt(0).toUpperCase() + timeOfDay.slice(1)}, ${firebaseUser.name}!`

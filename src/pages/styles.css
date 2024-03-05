@@ -325,6 +325,7 @@ body {
   margin: 0;
   text-align: center;
   color: #454f5c;
+  margin-top: 2px;
 }
 
 .modal-content .inputButton {
@@ -340,4 +341,11 @@ body {
 .modal-content .inputButton:hover {
   background-color: rgb(36, 115, 211);
 
+}
+
+.modal-content .assignment-text{
+  background-color: #c8e6c9;
+  padding: 4px;
+  border-radius: 5px;
+  font-size: smaller;
 }
