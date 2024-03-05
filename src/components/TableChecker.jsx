@@ -323,7 +323,7 @@ const TableChecker = ({ firebaseUser }) => {
           <RingLoader color="#36d7b7" />
         </Backdrop>
       ) : (
-        <div style={{ height: "140%", width: "100%" }}>
+        <div style={{ width: "100%" }} className="table">
           <DataGrid
             autoHeight
             initialState={{

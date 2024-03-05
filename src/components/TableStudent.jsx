@@ -109,7 +109,14 @@ const TableStudent = ({ firebaseUser }) => {
         }
 
         return (
-          <div style={{ backgroundColor, width: "50px", padding: "8px", borderRadius: "4px" }}>
+          <div
+            style={{
+              backgroundColor,
+              width: "50px",
+              padding: "8px",
+              borderRadius: "4px",
+            }}
+          >
             {grade}
           </div>
         );
@@ -136,7 +143,7 @@ const TableStudent = ({ firebaseUser }) => {
 
         const [showTabs, setShowTabs] = useState(false);
         return (
-          <div >
+          <div>
             <div style={{ display: "inline-block", marginRight: "8px" }}>
               <IconButton id="Download" disabled={!isClickableDownload}>
                 <AssignmentDownload
@@ -159,7 +166,7 @@ const TableStudent = ({ firebaseUser }) => {
             <IconButton
               id="Review"
               onClick={() => {
-                  setShowTabs((prevState) => !prevState);
+                setShowTabs((prevState) => !prevState);
               }}
               disabled={!isClickableShow}
             >
@@ -194,7 +201,10 @@ const TableStudent = ({ firebaseUser }) => {
         }
 
         const assignmentsSnapshot = await getDocs(
-          query(collection(db, "assignments"), where("Owner", "==", firebaseUser.id))
+          query(
+            collection(db, "assignments"),
+            where("Owner", "==", firebaseUser.id)
+          )
         );
 
         const data = await Promise.all(
@@ -290,14 +300,17 @@ const TableStudent = ({ firebaseUser }) => {
     <Box height={500} width={1190} style={{ position: "relative" }}>
       {/* Render loading indicator */}
       {isLoading && (
-        <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }} open={true}>
+        <Backdrop
+          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={true}
+        >
           <RingLoader color="#36d7b7" />
         </Backdrop>
       )}
 
       {/* Render DataGrid when not loading */}
       {!isLoading && (
-        <div style={{ height: "100%", width: "100%" }} className="table">
+        <div style={{ width: "100%" }} className="table">
           <DataGrid
             autoHeight
             initialState={{ pagination: { paginationModel: { pageSize: 8 } } }}

@@ -400,7 +400,7 @@ const TableLecturer = ({ firebaseUser }) => {
                     )}
 
                     {/* DataGrid component */}
-                    <div style={{ height: "100%", width: "100%", marginTop: "40px" }}>
+                    <div style={{ width: "100%", marginTop: "50px" }} className="table">
                         <DataGrid
                             autoHeight
                             initialState={{
