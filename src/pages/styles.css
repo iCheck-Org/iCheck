@@ -351,3 +351,21 @@ body {
   border-radius: 5px;
   font-size: smaller;
 }
+
+/* Media queries for responsiveness */
+@media screen and (max-width: 600px) {
+  /* Adjust styles for smaller screens here */
+  .inputBox {
+    width: 90%; /* Adjusted */
+    max-width: none; /* Added */
+  }
+  
+  .upload-assigment-button {
+    top: 6px; /* Adjusted */
+    right: 5%; /* Adjusted */
+  }
+  
+  .logo {
+    top: 60px; /* Adjusted */
+  }
+}

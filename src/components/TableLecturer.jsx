@@ -404,7 +404,7 @@ const TableLecturer = ({ firebaseUser }) => {
           <Grid container spacing={0.5} marginLeft={6}>
             <Grid xs={12} sm={6} md={3}>
               <AppWidgetSummary
-                title="Avarage Grades"
+                title="Average Grades"
                 total={averageGrade}
                 color="#C8E6C9"
                 icon={

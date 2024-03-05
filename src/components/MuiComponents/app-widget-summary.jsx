@@ -1,16 +1,22 @@
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
-import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
-
-  
+import Box from "@mui/material/Box";
+import Card from "@mui/material/Card";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 
 // ----------------------------------------------------------------------
 
-export default function AppWidgetSummary({ title, total, icon, color = 'primary', sx, ...other }) {
-    return (
+export default function AppWidgetSummary({
+  title,
+  total,
+  icon,
+  color = "primary",
+  sx,
+  ...other
+}) {
+  return (
+    <Box sx={{ display: "flex" }}>
       <Card
         component={Stack}
         spacing={3}
@@ -21,28 +27,42 @@ export default function AppWidgetSummary({ title, total, icon, color = 'primary'
           borderRadius: 2,
           backgroundColor: color,
           width: 220,
-          height: 100,
+          height: 90,
+          alignContent: "center",
+          alignItems: "center",
+
           ...sx,
         }}
         {...other}
       >
         {icon && <Box sx={{ width: 64, height: 64 }}>{icon}</Box>}
-  
+
         <Stack spacing={0.5}>
-          <Typography variant="h4"  sx={{ color: '#24305e' }} >{total}</Typography>
-  
-          <Typography variant="subtitle2" sx={{ color: '#24305e' }}>
-            {title}
+          <Typography
+            variant="h4"
+            sx={{ color: "#24305e", fontFamily: "Ranua Trials" }}
+          >
+            {total}
+          </Typography>
+
+          <Typography
+            variant="subtitle2"
+            sx={{ color: "#24305e", fontFamily: "Ranua Trials" }}
+          >
+            {title.split(" ").map((word, index) => (
+              <div key={index}>{word}</div>
+            ))}
           </Typography>
         </Stack>
       </Card>
-    );
-  }
-  
-  AppWidgetSummary.propTypes = {
-    color: PropTypes.string,
-    icon: PropTypes.oneOfType([PropTypes.element, PropTypes.string]),
-    sx: PropTypes.object,
-    title: PropTypes.string,
-    total: PropTypes.number,
-  };
+    </Box>
+  );
+}
+
+AppWidgetSummary.propTypes = {
+  color: PropTypes.string,
+  icon: PropTypes.oneOfType([PropTypes.element, PropTypes.string]),
+  sx: PropTypes.object,
+  title: PropTypes.string,
+  total: PropTypes.number,
+};
