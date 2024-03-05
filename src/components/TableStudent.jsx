@@ -319,7 +319,7 @@ const TableStudent = ({ firebaseUser }) => {
 
   return (
     <Container maxWidth="xl">
-      <div style={{ height: '40px' }}></div>
+      <div style={{ height: '50px' }}></div>
       <Grid container spacing={3} marginLeft={6}>
       {!isLoading && (
     <Grid container spacing={3} marginLeft={6}>
