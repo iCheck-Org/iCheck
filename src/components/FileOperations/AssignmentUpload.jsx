@@ -38,7 +38,7 @@ export default function AssignmentUpload({ rowId, disabled, onUploadSuccess }) {
           setFileUploadedSuccessfuly(true);
           const assignmentRef = doc(db, "assignments", rowId);
           const assignmentDoc = await getDoc(assignmentRef);
-          const existingDocId = assignmentDoc.data().File_doc;
+          const existingDocId = assignmentDoc.data().file_doc;
 
           if (existingDocId) {
             const storageRef = ref(storage, file.name);
@@ -53,7 +53,7 @@ export default function AssignmentUpload({ rowId, disabled, onUploadSuccess }) {
 
             await updateDoc(assignmentRef, {
               submissionDate: serverTimestamp(),
-              File_doc: existingDocId,
+              file_doc: existingDocId,
             });
           } else {
             // If no document exists, create a new document
@@ -73,7 +73,7 @@ export default function AssignmentUpload({ rowId, disabled, onUploadSuccess }) {
 
             await updateDoc(assignmentRef, {
               submissionDate: serverTimestamp(),
-              File_doc: newDocRef.id,
+              file_doc: newDocRef.id,
             });
 
             // Notify parent component of successful upload
