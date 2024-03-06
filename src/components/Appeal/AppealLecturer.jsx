@@ -1,9 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from "react";
 import { doc , updateDoc } from 'firebase/firestore';
+import clsx from "clsx";
 import { db } from '../../config/fire-base';
 import TextBox from '../MuiComponents/TextBox';
 import { Box } from '@mui/material';
-import ReactiveButton from 'reactive-button';
+import CircularProgress from "@mui/material/CircularProgress";
+import { green } from "@mui/material/colors";
+import CheckIcon from "@mui/icons-material/Check";
 
 
 export default function AppealTabs({ assignment, onSuccessGrade }) {
@@ -11,6 +14,9 @@ export default function AppealTabs({ assignment, onSuccessGrade }) {
   const [newGrade, setNewGrade] = useState('');
   const [lecturerAnswer, setLecturerAnswer] = useState('');
   const [submitClicked, setSubmitClicked] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const timer = useRef(null);
 
   useEffect(() => {
           setGrade(assignment.grade || ''); // Set the current grade from the Firestore document
@@ -28,14 +34,41 @@ export default function AppealTabs({ assignment, onSuccessGrade }) {
       
       // Update the local state 'grade' with the new value
       setGrade(newGrade);
-      setSubmitClicked(true);
       onSuccessGrade(assignment.id);
-  
+      setSuccess(true);
       // Optionally, you can perform additional actions upon successful submission
     } catch (error) {
       console.error('Error updating document: ', error);
     }
   };
+
+  const clickLoading = async () => {
+    if (!loading) {
+      setLoading(true);
+      try {
+        await handleSubmit();
+        // Delay setting success state to true by 500 milliseconds
+        setTimeout(() => {
+          setSuccess(true);
+        }, 500);
+      } catch (error) {
+        console.error("Error creating assignments:", error);
+        // Handle any errors here if needed
+      }
+      setLoading(false); // Set loading to false after assignment creation
+      // Reset success state to false after a brief delay
+      setTimeout(() => {
+        setSuccess(false);
+        setSubmitClicked(true);
+      }, 700);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      clearTimeout(timer.current);
+    };
+  }, []);
 
   return (
     <div>
@@ -87,14 +120,19 @@ export default function AppealTabs({ assignment, onSuccessGrade }) {
       {/* Submit button */}
       <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px', marginRight:'70px'}}>
         {!('appealAns' in assignment) && !submitClicked && (
-          <button 
-            type="button"
-            className="inputButton"
-            variant="contained"
-            onClick={handleSubmit}
-          >
-            Submit
-          </button>
+          <button
+          className={clsx("inputButton", { successButton: success })}
+          onClick={clickLoading}
+          style={{ position: 'relative' }}
+        >
+          {loading ? (
+            <CircularProgress size={24} sx={{ color: green[700]}}/>
+          ) : success ? (
+            <CheckIcon />
+          ) : (
+            "Submit"
+          )}
+        </button>
         )}
       </div>
     </div>

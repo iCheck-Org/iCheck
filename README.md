@@ -16,20 +16,20 @@ iCheck. is a student assignment management system designed as a web application 
 - [Installation](#installation)
 - [Usage](#usage)
 - [UML Diagrams](#uml-diagrams)
+- [Architecture](#architecture)
 - [Contributing](#contributing)
-- [License](#license)
 
 ## Features
 - **Authentication**: Secure authentication system for students, assignment checkers, and lecturers.
 - **Role-based Access Control**: Different functionality and permissions based on user roles.
-- **Student Dashboard**: Interface for students to submit assignments and view feedback.
-- **Assignment Checker Interface**: Tools for assignment checking, including reviewing and providing feedback.
-- **Lecturer Dashboard**: Management tools for lecturers to oversee assignments and grading.
+- **Student Dashboard**: Interface for students to submit assignments, view feedback and view their average grade, total assignments, open assignments, and open appeals. Students can also apply appeals.
+- **Assignment Checker Dashboard**: Tools for assignment checking, including reviewing and providing feedback.
+- **Lecturer Dashboard**: Management tools for lecturers to oversee assignments, grading, assignment appeals. And to view their average grades, open assignments, total appeals, and open courses.
 - **Firebase Realtime Database Integration**: Utilizes Firebase for efficient data storage and synchronization.
 - **Material-UI (MUI)**: UI library for React components.
 
 ## Installation
-1. Clone the repository: `git clone <repository-url>`
+1. Clone the repository: `git clone https://github.com/iCheck-Org/iCheck.git`
 2. Install dependencies: `npm install`
 3. Configure Firebase Realtime Database: Create a Firebase project and set up Realtime Database according to your application's requirements.
 4. Configure Authentication: Set up Firebase Authentication to authenticate users based on their roles.
@@ -55,16 +55,19 @@ iCheck. is a student assignment management system designed as a web application 
 ## UML Diagrams
 
 ### Use Case Diagram
-![Use Case Diagram](./public/documents/UseCase.png)
+<img src="./public/documents/UseCase.png" alt="Use Case Diagram" width="600">
 
 ### Activity Diagram
-![Activity Diagram](./public/documents/Activity.png)
+<img src="./public/documents/Activity.png" alt="Activity Diagram" width="600">
 
 ### Sequence Diagram
-![Sequence Diagram](./public/documents/Sequence.png)
+<img src="./public/documents/Sequence.png" alt="Sequence Diagram" width="600">
+
+## Architecture
+The iCheck application follows the MVVM (Model-View-ViewModel) architecture pattern. This architectural pattern separates the application into three layers: Model, View, and ViewModel. 
+- **Model**: Represents the data and business logic of the application. In iCheck, Firebase Realtime Database serves as the Model layer, handling data storage and management.
+- **View**: Represents the user interface components. In iCheck, React components, built with Material-UI, constitute the View layer.
+- **ViewModel**: Acts as an intermediary between the Model and View layers. In iCheck, the ViewModel layer manages the presentation logic and state of the application, coordinating data flow between the Model and View.
 
 ## Contributing
-We welcome contributions from the community. If you have any ideas for improvements or would like to report a bug, please submit an issue or a pull request following our [contribution guidelines](CONTRIBUTING.md).
-
-## License
-This project is licensed under the [MIT License](LICENSE).
+We welcome contributions from the community. If you have any ideas for improvements or would like to report a bug, please submit an issue.

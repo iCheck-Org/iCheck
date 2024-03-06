@@ -330,8 +330,8 @@ const TableChecker = ({ firebaseUser }) => {
   return (
     <Container maxWidth="xl">
       <div style={{ height: '40px' }}></div>
-        <Grid container spacing={3} marginLeft={6}>
-            <Grid xs={12} sm={6} md={3}>
+        <Grid container spacing={3} marginLeft={40}>
+            <Grid xs={12} sm={6} md={3.2}>
               <AppWidgetSummary
                 title="Open assignments"
                 total={unCheckedAssignmentCount}
@@ -340,7 +340,7 @@ const TableChecker = ({ firebaseUser }) => {
               />
             </Grid>
 
-            <Grid xs={12} sm={6} md={3}>
+            <Grid xs={12} sm={6} md={3.2}>
               <AppWidgetSummary
                 title="Close assignments"
                 total={checkedAssignmentCount}

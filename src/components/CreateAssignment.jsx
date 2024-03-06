@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import clsx from "clsx";
 import { styled } from "@mui/system";
@@ -6,6 +6,9 @@ import { Modal as BaseModal } from "@mui/base/Modal";
 import { Box } from "@mui/material";
 import { collection, doc, addDoc, getDoc, Timestamp } from "firebase/firestore";
 import { db } from "../config/fire-base";
+import CircularProgress from "@mui/material/CircularProgress";
+import { green } from "@mui/material/colors";
+import CheckIcon from "@mui/icons-material/Check";
 import "animate.css";
 import "../pages/styles.css";
 
@@ -15,6 +18,39 @@ export default function CreateAssignment({ firebaseUser, onClose }) {
   const [selectedCourse, setSelectedCourse] = useState(""); // State to store the selected course
   const [assignmentNo, setAssignmentNo] = useState("");
   const [dueDate, setDueDate] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const timer = useRef(null);
+
+  const clickLoading = async () => {
+    if (!loading) {
+      setLoading(true);
+      try {
+        await handleCreateAssignment();
+        // Delay setting success state to true by 500 milliseconds
+        setTimeout(() => {
+          setSuccess(true);
+        }, 500);
+      } catch (error) {
+        console.error("Error creating assignments:", error);
+        // Handle any errors here if needed
+      }
+      setLoading(false); // Set loading to false after assignment creation
+      // Reset success state to false after a brief delay
+      setTimeout(() => {
+        setSuccess(false);
+        handleClose();
+      }, 700);
+    }
+  };
+  
+  
+
+  useEffect(() => {
+    return () => {
+      clearTimeout(timer.current);
+    };
+  }, []);
 
   useEffect(() => {
     const fetchCourseOptions = async () => {
@@ -22,10 +58,8 @@ export default function CreateAssignment({ firebaseUser, onClose }) {
         if (firebaseUser) {
           const userData = firebaseUser;
 
-          // Array to store promises for fetching course names
           const fetchCoursePromises = [];
 
-          // Iterate through the user's courses and fetch course names
           userData.courses.forEach((courseId) => {
             const courseDocRef = doc(db, "courses", courseId);
             const coursePromise = getDoc(courseDocRef).then(
@@ -41,9 +75,7 @@ export default function CreateAssignment({ firebaseUser, onClose }) {
             fetchCoursePromises.push(coursePromise);
           });
 
-          // Wait for all promises to resolve
           const courses = await Promise.all(fetchCoursePromises);
-          // Filter out any null values and set the course options in state
           const userCourseOptions = courses.filter((course) => course !== null);
           setCourseOptions(userCourseOptions);
         } else {
@@ -59,7 +91,7 @@ export default function CreateAssignment({ firebaseUser, onClose }) {
 
   const handleClose = () => {
     setOpen(false);
-    onClose(); // Call the onClose function passed from the parent component
+    onClose();
   };
 
   const handleSelectChange = (event) => {
@@ -74,7 +106,6 @@ export default function CreateAssignment({ firebaseUser, onClose }) {
       if (courseDocSnapshot.exists()) {
         const courseData = courseDocSnapshot.data();
 
-        // Create an assignment for each student in the course
         await Promise.all(
           courseData.students.map(async (student) => {
             const studentDocRef = doc(db, "users", student);
@@ -82,30 +113,26 @@ export default function CreateAssignment({ firebaseUser, onClose }) {
 
             if (!studentDocSnap.empty) {
               const studentData = studentDocSnap.data();
-              console.log(studentData.personal_id);
-              const studentID = studentData.personal_id; // Set studentID here
+              const studentID = studentData.personal_id;
 
               const assignmentData = {
                 owner: student,
                 "assignment No.": assignmentNo,
-                // Convert dueDate to a Firestore Timestamp
                 "due Date": Timestamp.fromDate(new Date(dueDate)),
                 checker: "",
                 grade: "",
                 file_doc: "",
                 "course-ref": selectedCourse,
                 course_name: courseData.name,
-                student_id: studentID, // Use studentID here
+                student_id: studentID,
               };
 
-              // Add the assignment document to the "assignments" collection
               await addDoc(collection(db, "assignments"), assignmentData);
             }
           })
         );
 
-        // Close the modal after creating assignments
-        handleClose();
+        setSuccess(true);
       } else {
         console.error("Course document not found");
       }
@@ -137,7 +164,6 @@ export default function CreateAssignment({ firebaseUser, onClose }) {
             <label htmlFor="assignmentNo" className="assignment-text">
               Course Name:
             </label>
-            {/* Render course options as a select dropdown */}
             <select
               className="inputBox"
               onChange={handleSelectChange}
@@ -151,7 +177,6 @@ export default function CreateAssignment({ firebaseUser, onClose }) {
               ))}
             </select>
           </Box>
-          {/* Box for Assignment No. */}
           <Box sx={{ display: "flex", flexDirection: "row", gap: "28px" }}>
             <label htmlFor="assignmentNo" className="assignment-text">
               Assignment Number:
@@ -164,7 +189,6 @@ export default function CreateAssignment({ firebaseUser, onClose }) {
               onChange={(e) => setAssignmentNo(e.target.value)}
             />
           </Box>
-          {/* Box for Due Date */}
           <Box sx={{ display: "flex", flexDirection: "row", gap: "100px" }}>
             <label htmlFor="dueDate" className="assignment-text">
               Due Date:
@@ -177,17 +201,45 @@ export default function CreateAssignment({ firebaseUser, onClose }) {
               onChange={(e) => setDueDate(e.target.value)}
             />
           </Box>
-          {/* Create button */}
-          <button className="inputButton" onClick={handleCreateAssignment}>
-            Create
-          </button>
+          <div className="d-grid">
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: "100%",
+              }}
+            ></Box>
+            <Box sx={{ m: 1, position: "relative" }}>
+            <button
+              className={clsx("inputButton", { successButton: success })}
+              onClick={clickLoading}
+              style={{ position: 'relative' }}
+            >
+              {loading ? (
+                <CircularProgress size={24} sx={{ color: green[700]}}/>
+              ) : success ? (
+                <CheckIcon />
+              ) : (
+                "Create"
+              )}
+            </button>
+
+            </Box>
+         </div>
+
+
+
+
+
+
+
         </div>
       </BaseModal>
     </div>
   );
 }
 
-// Styles and PropTypes omitted for brevity
 const Backdrop = React.forwardRef((props, ref) => {
   const { open, className, ...other } = props;
   return (
