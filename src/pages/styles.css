@@ -290,6 +290,10 @@ body {
   border-top-right-radius: 5px;
 }
 
+.successButton {
+  background-color: rgb(4, 158, 4) !important;
+}
+
 
 .modal{
   position: fixed;

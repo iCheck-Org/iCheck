@@ -61,7 +61,7 @@ export default function LogicTabs({ assignment, typePermision, onSuccessGrade, o
           ]}
           {typePermision === "lecturer" && [
             <Tab key={0} label="Checker's comment" {...a11yProps(0)} />,
-            <Tab key={1} label="Student's respond" {...a11yProps(1)} />,
+            <Tab key={1} label="Student's appeal" {...a11yProps(1)} />,
             <Tab key={2} label="Lecturer's respond" {...a11yProps(2)} />
           ]}
         </Tabs>
