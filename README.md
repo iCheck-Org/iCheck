@@ -54,14 +54,14 @@ iCheck. is a student assignment management system designed as a web application 
 
 ## UML Diagrams
 
+### Use Case Diagram
+![Use Case Diagram](./public/documents/UseCase.png)
+
 ### Activity Diagram
 ![Activity Diagram](./public/documents/Activity.png)
 
 ### Sequence Diagram
 ![Sequence Diagram](./public/documents/Sequence.png)
-
-### User Case Diagram
-![User Case Diagram](./public/documents/User%20Case.png)
 
 ## Contributing
 We welcome contributions from the community. If you have any ideas for improvements or would like to report a bug, please submit an issue or a pull request following our [contribution guidelines](CONTRIBUTING.md).
