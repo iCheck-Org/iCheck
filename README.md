@@ -18,7 +18,6 @@ iCheck. is a student assignment management system designed as a web application 
 - [UML Diagrams](#uml-diagrams)
 - [Architecture](#architecture)
 - [Contributing](#contributing)
-- [License](#license)
 
 ## Features
 - **Authentication**: Secure authentication system for students, assignment checkers, and lecturers.
