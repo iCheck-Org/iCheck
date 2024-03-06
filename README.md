@@ -22,9 +22,10 @@ iCheck. is a student assignment management system designed as a web application 
 <details>
 <summary><b>Documents</b></summary>
 
-- [Analysis Document](./public/documents/Analysis_Document.pdf)
 - [Initiation Document](./public/documents/Initiation_Document.pdf)
+- [Analysis Document](./public/documents/Analysis_Document.pdf)
 - [Requirements Documentm](./public/documents/Requirements_Document.pdf)
+- [Demo Video](./public/documents/iCheck.mp4)
 
 </details>
 
