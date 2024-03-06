@@ -23,9 +23,9 @@ iCheck. is a student assignment management system designed as a web application 
 ## Features
 - **Authentication**: Secure authentication system for students, assignment checkers, and lecturers.
 - **Role-based Access Control**: Different functionality and permissions based on user roles.
-- **Student Dashboard**: Interface for students to submit assignments and view feedback.
-- **Assignment Checker Interface**: Tools for assignment checking, including reviewing and providing feedback.
-- **Lecturer Dashboard**: Management tools for lecturers to oversee assignments and grading.
+- **Student Dashboard**: Interface for students to submit assignments, view feedback and view their average grade, total assignments, open assignments, and open appeals. Students can also apply appeals.
+- **Assignment Checker Dashboard**: Tools for assignment checking, including reviewing and providing feedback.
+- **Lecturer Dashboard**: Management tools for lecturers to oversee assignments, grading, assignment appeals. And to view their average grades, open assignments, total appeals, and open courses.
 - **Firebase Realtime Database Integration**: Utilizes Firebase for efficient data storage and synchronization.
 - **Material-UI (MUI)**: UI library for React components.
 
