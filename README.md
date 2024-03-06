@@ -71,7 +71,4 @@ The iCheck application follows the MVVM (Model-View-ViewModel) architecture patt
 - **ViewModel**: Acts as an intermediary between the Model and View layers. In iCheck, the ViewModel layer manages the presentation logic and state of the application, coordinating data flow between the Model and View.
 
 ## Contributing
-We welcome contributions from the community. If you have any ideas for improvements or would like to report a bug, please submit an issue or a pull request following our [contribution guidelines](CONTRIBUTING.md).
-
-## License
-This project is licensed under the [MIT License](LICENSE).
+We welcome contributions from the community. If you have any ideas for improvements or would like to report a bug, please submit an issue.
