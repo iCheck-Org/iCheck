@@ -149,7 +149,7 @@ export default function AppealStudent({ assignment, onSuccessAppeal}) {
           </>
         ) : (
           <>
-            <h3>Your appeal</h3>
+            <h3>Student Appeal</h3>
             <TextBox value={appealValue} onChange={() => {}} disabled />
           </>
         )}
