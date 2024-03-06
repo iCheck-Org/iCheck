@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import clsx from "clsx";
 import { styled, css } from "@mui/system";
@@ -6,6 +6,9 @@ import { Modal as BaseModal } from "@mui/base/Modal";
 import { Box } from "@mui/material";
 import TextBox from "../MuiComponents/TextBox";
 import { db } from "../../config/fire-base";
+import CircularProgress from "@mui/material/CircularProgress";
+import { green } from "@mui/material/colors";
+import CheckIcon from "@mui/icons-material/Check";
 import { doc, updateDoc, onSnapshot } from "firebase/firestore";
 
 export default function WriteReview({
@@ -18,6 +21,9 @@ export default function WriteReview({
   const [hasComment, setHasComment] = useState(false); // State to track if the assignment has a Comment
   const [gradeInputValue, setGradeInputValue] = useState(""); // Define state for grade input value
   const [commentInputValue, setCommentInputValue] = useState(""); // Define state for comment input value
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const timer = useRef(null);
 
   useEffect(() => {
     if ("comment" in assignment) {
@@ -49,13 +55,40 @@ export default function WriteReview({
       await updateDoc(documentRef, data);
 
       console.log("Document successfully updated!");
-      setOpen(false); // Close the modal after successful submission
-      onClose(); // Call the onClose function passed from the parent component
       onSuccessGrade(assignment.id);
+      setSuccess(true);
     } catch (error) {
       console.error("Error updating document: ", error);
     }
   };
+
+  const clickLoading = async () => {
+    if (!loading) {
+      setLoading(true);
+      try {
+        await handleSubmit();
+        // Delay setting success state to true by 500 milliseconds
+        setTimeout(() => {
+          setSuccess(true);
+        }, 500);
+      } catch (error) {
+        console.error("Error creating assignments:", error);
+        // Handle any errors here if needed
+      }
+      setLoading(false); // Set loading to false after assignment creation
+      // Reset success state to false after a brief delay
+      setTimeout(() => {
+        setSuccess(false);
+        handleClose();
+      }, 700);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      clearTimeout(timer.current);
+    };
+  }, []);
 
   return (
     <div>
@@ -114,7 +147,19 @@ export default function WriteReview({
               />
             </Box>
             <Box width={200} height={500} sx={{ textAlign: "center" }}>
-              <button onClick={handleSubmit}>Submit</button>
+            <button
+              className={clsx("inputButton", { successButton: success })}
+              onClick={clickLoading}
+              style={{ position: 'relative' }}
+            >
+              {loading ? (
+                <CircularProgress size={24} sx={{ color: green[700]}}/>
+              ) : success ? (
+                <CheckIcon />
+              ) : (
+                "Submit"
+              )}
+            </button>
             </Box>
           </ModalContent>
         )}
