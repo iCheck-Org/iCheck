@@ -3,6 +3,8 @@
 ## Description
 iCheck. is a student assignment management system designed as a web application to streamline the process of managing student assignments. It provides three different levels of permissions: one for students, one for assignment checkers, and one for lecturers. Each permission level has its own authentication and offers distinct functionality tailored to its users' needs. The application utilizes Firebase Realtime Database for data storage and management.
 
+https://github.com/iCheck-Org/iCheck/assets/72256735/86e69aa2-62af-4c64-9046-37cd9cb0959e
+
 ## Authors
 - [Dor Shir](https://github.com/Dorshir)
 - [Bar Alayof](https://github.com/barmud3)
